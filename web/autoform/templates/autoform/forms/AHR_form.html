@@ -1,0 +1,120 @@
+{% extends "autoform/form.html" %}
+{% load autoform_tags %}
+{% load static %}
+
+
+{% block pdf_name %}
+    AHR Form
+{% endblock %}
+
+{% block pdf_content %}
+    <div class="row">
+        <div class="col-8 mt-5">
+            <h4>Authorized Holder Representative</h4>
+            <p>
+                To General Manager, Mining and Petroleum Operations</br>
+                Department of Resources</br>
+                Po Box 15216, Brisbane 4001
+            </p>
+            {% auto_field "project.name" %}
+        </div>
+        <div class="col-4">
+            <div class="pdf-letterhead float-right" data-letterhead>
+                {% auto_field "company.name" %} </br>
+                {% auto_field "company.address" %} </br>
+                {% auto_field "company.number" %} </br>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <p class="mb-0">
+                Letter of authority to complete permit transactions</br>
+                I authorise
+            </p>
+            <p class="col-3 mx-auto">
+                {% auto_field "tenement.ahr_name" description='AHR Name' %} </br>
+                {% auto_field "tenement.ahr_email" description='AHR E-Mail' %} </br>
+                {% auto_field "tenement.ahr_phone_number" description='AHR Phone' %} </br>
+            </p>
+            <p>
+                To undertake the responsibilities of the Authorised Holder Representative described
+                below, in relation to permit/s applications for {% auto_field "company.name" %}.
+            </p>
+            <p>
+                I provide this authority for the duration of the application process and if granted
+                permit while they remain current.
+            </p>
+            <p>
+                I acknowledge that any requirements I may have for the Authorised Holder
+                Representative to see my approval before undertaking their responsibilities are
+                my responsibility to arrange and manage independently of this Letter of Authority,
+            </p>
+            <p>
+                I agree if there are changes to this authority, or there are changes in the
+                ownership of the application/s, or resulting permit/s. I will complete a new Letter of
+                Authority and submit it to the General Manager, Mining and Petroleum Operations
+            </p>
+            <p>
+                Authorised Holder Representative Responsibilities (AHR)
+            </p>
+            <p>
+                The AHR listed above has my explicit authority to undertake the following activities
+                and transactions with the Queensland Department of Natural Resources and Mines (The
+                Department) in relation to the permits listed above.
+            </p>
+            <ol type="1">
+                <li>
+                    Completing and lodging the permit related applications.
+                </li>
+                <li>
+                    Responding to requests for information form the Department relating to the
+                    permit application, or if granted, the permit.
+                </li>
+                <li>
+                    Being the registered point of contact for application and permit notices,
+                    letters or other interactions and transactions.
+                </li>
+                <li>
+                    Completion and submission of notices, reports, letters and other information or
+                    communication required to be completed by the Department
+                </li>
+                <li>
+                    Completion and submission of transactions throughout the active life of the
+                    permit (if granted)
+                </li>
+                <li>
+                    Granting access to the Department’s MyMinesOnline computer system to other
+                    people to have the ability to perform AHR responsibilities 1-5 listed above,
+                    but not the ability to grant additional access.
+                </li>
+            </ol>
+
+            <p>
+                Regards,</br>
+                {% auto_field "company.director.signature" type="image" %} </br>
+                {% auto_field "company.director.name" %} </br>
+            </p>
+            <p>
+                Sole Director</br>
+                {% auto_field "company.name" %} </br>
+                {% auto_field "current_date" %}
+            </p>
+            <p>Authorised Holder Representative</p>
+            <p>
+                I understand and agree with the delegation of my authority to the nominated AHR in relation to the
+                permit application and subsequent permits (If granted) as defined in this letter.
+            </p>
+            <p>
+                I understand and accept the responsibilities of the authorised Holder Representative
+                as defined in this letter
+            </p>
+            <p>
+                {% auto_field "tenement.ahr_name" description='AHR Name' %} </br>
+                {% auto_field "tenement.ahr_signature" type="image" %} </br>
+                {% auto_field "tenement.ahr_email" description='AHR E-Mail' %} </br>
+                {% auto_field "tenement.ahr_phone_number" description='AHR Phone' %} </br>
+            </p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'appboard/base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h3 class = "text-ofx-blue px-4 py-4">Project Index <span class="fa fa-project-diagram"/></h3>
+        <div class="row">
+                    <div class="col-12">
+                        <div class="card shadow mb-2">
+                        {# Project Tab #}
+                            <div class="card-header">
+                                <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                                    <a class="nav-link active" id="nav-projects-tab" data-bs-toggle="tab" data-bs-target="#nav-projects" role="tab" aria-controls="nav-projects" aria-selected="true">My Projects</a>
+                                    <a class="nav-link" id="nav-tenements-tab" data-bs-toggle="tab" data-bs-target="#nav-tenements" role="tab" aria-controls="nav-tenements" aria-selected="false">My Tenements</a>
+                                    <a class="nav-link" id="nav-reports-tab" data-bs-toggle="tab" data-bs-target="#nav-reports" role="tab" aria-controls="nav-reports" aria-selected="false">My Reports</a>
+                                </div>
+                            </div>
+                            <div class="card-body tab-content overflow-auto" id="nav-tabContent">
+                        {# Projects Tab #}
+                                <div class="tab-pane active" id="nav-projects" role="tabpanel" aria-labelledby="nav-projects-tab">
+                                    <table id="project-table" class="table table-sm dt-responsive" style="width: 100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Project Name</th>
+                                                <th>Permission</th>
+                                                <th>Tenements</th>
+                                                <th>Datasets</th>
+                                                <th>Date Created <span class="text-ofx-blue fa fa-question-circle" data-toggle="tooltip" title="YYYY-MM-DD"></span></th>
+                                                <th>Credits</th>
+                                                <th>Tags</th>
+                                                <th>
+                                                    <span data-toggle="modal" data-target="#createProjectModal">
+                                                        <button class="btn btn-sm btn-ofx-green float-right text-xs" data-toggle="tooltip" data-placement="left" title="New Project">
+                                                            <span class="fa fa-plus"/>
+                                                        </button>
+                                                    </span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                        {# Tenements Tab #}
+                                <div class="tab-pane" id="nav-tenements" role="tabpanel" aria-labelledby="nav-tenements-tab">
+                                    <table id="tenement-table" class="table table-sm dataTable w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>Permit ID</th>
+                                                <th>Project</th>
+                                                <th>Permit Status</th>
+                                                <th>Grant Date <span class="text-ofx-blue fa fa-question-circle" data-toggle="tooltip" title="YYYY-MM-DD"></span></th>
+                                                <th>Tags</th>
+                                                <th>
+                                                    <span data-toggle="modal" data-target="#addTenementModal">
+                                                        <button class="btn btn-sm btn-ofx-green float-right text-xs" data-toggle="tooltip" data-placement="left" title="Add Tenement">
+                                                            <span class="fa fa-plus"/>
+                                                        </button>
+                                                    </span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        {# Reports Tab #}
+                                <div class="tab-pane" id="nav-reports" role="tabpanel" aria-labelledby="nav-reports-tab">
+                                    <table id="report-table" class="table table-sm dataTable w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>Dataset</th>
+                                                <th>Project</th>
+                                                <th>Cleaner Report</th>
+                                                <th>Analysis Report</th>
+                                                <th>Type</th>
+                                                <th>
+        {# Since reports are created by other apps, we probably don't need this button #}
+        {#                                            <span data-toggle="modal" data-target="#addReportModal">#}
+        {#                                                <button class="btn btn-sm btn-ofx-green float-right text-xs" data-toggle="tooltip" data-placement="left" title="Add Tenement">#}
+        {#                                                    <span class="fa fa-plus"/>#}
+        {#                                                </button>#}
+        {#                                            </span>#}
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        {# END TABS #}
+                        </div>
+                    </div>
+                </div>
+
+    </div>
+{% endblock %}
+
+{% block extra_body %}
+    <script>
+        $(document).ready(function () {
+            $('#project-table').DataTable({
+                paging: false,
+                {#destroy: true,#}
+                columns: [
+                    {
+                        data: 'project', bSortable: true,
+                        mRender: function (project) { return "<a href=" + project.slug + "/>" + project.name + "</a>" }
+                    },
+                    { data: 'permission',   bSortable: true },
+                    { data: 'tenements',    bSortable: true },
+                    { data: 'datasets',     bSortable: true },
+                    { data: 'date_created', bSortable: true },
+                    { data: 'credits',      bSortable: false },
+                    { data: 'tags',         bSortable: false },
+                    {
+                        data: 'actions',    bSortable: false,
+                        mRender: function (data) {
+                            let action = (data > 7)?
+                                `<span data-toggle="modal" data-target="#deleteProjectModal">
+                                    <button class="btn btn-sm btn-ofx-fa-red" data-toggle="tooltip"
+                                            data-placement="bottom" title="Delete Project">
+                                        <span class="fa fa-trash"/>
+                                    </button>
+                                </span>` :
+                                `<span data-toggle="modal" data-target="#leaveProjectModal">
+                                    <button class="btn btn-sm btn-ofx-fa-red" data-toggle="tooltip" data-placement="bottom" title="Leave Project">
+                                        <span class="fa fa-user-alt-slash"/>
+                                    </button>
+                                </span>`;
+
+                            return `<div class="float-right">${action}</div>`;
+                        }
+                    }
+                ],
+                createdRow: function (row, data) {
+                    $(row).attr('id', data.project.id);
+                    $(row).attr('name', data.project.name);
+                },
+            })
+
+        });
+    </script>
+{% endblock %}

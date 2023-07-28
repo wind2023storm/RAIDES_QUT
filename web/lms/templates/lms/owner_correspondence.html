@@ -1,0 +1,49 @@
+{% if not items %}
+    <div><i>None</i></div>
+{% else %}
+    {% for correspondence in items %}
+        <li data-type="correspondence" data-id="{{ correspondence.id }}">
+            <table>
+                <tbody>
+                <tr>
+                    <th>Title:</th>
+                    <td>
+                        <span data-field="name" data-value="{{ correspondence.name }}">{{ correspondence.name }}</span>
+                        <button data-bs-toggle="modal" data-bs-target="#deleteCorrespondenceModal" data-action="delete"
+                                data-url="{% url 'lms:handle_correspondence' slug=project.slug action="delete" %}">
+                            Delete
+                        </button>
+                        <button data-bs-toggle="modal" data-bs-target="#modifyCorrespondenceModal" data-action="modify"
+                                data-url="{% url 'lms:handle_correspondence' slug=project.slug action="modify" %}">
+                            Modify
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Content:</th>
+                    <td data-field="content"
+                        data-value="{{ correspondence.content }}">{{ correspondence.content }}</td>
+                </tr>
+                <tr>
+                    <th>Date Created:</th>
+                    {# READONLY #}
+                    <td>{{ correspondence.date_created }} by {{ correspondence.user }}</td>
+                </tr>
+                <tr>
+                    <th>Last Modified:</th>
+                    {# READONLY #}
+                    <td>{{ correspondence.date_updated }} by {{ correspondence.user_updated }}</td>
+                </tr>
+                <tr>
+                    <th>Files:</th>
+                    <td>
+                        <ol>
+                            {% include 'lms/files.html' with project=project files=correspondence.files %}
+                        </ol>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+    {% endfor %}
+{% endif %}

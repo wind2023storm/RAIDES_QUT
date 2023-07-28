@@ -1,0 +1,1058 @@
+{% extends 'appboard/base.html' %}
+
+{% load static %}
+
+{% load modal_tags %}
+
+{% block extra_head %}
+    <link href="{% static 'geochem/css/geochem.css' %}" rel="stylesheet">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q==" crossorigin="anonymous"
+    referrerpolicy="no-referrer" />
+  
+    <meta name="project" content="">
+    <meta name="pid" content="">
+
+{% endblock %}
+
+{% block head_title %}
+    GeoChem
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mb-4 px-4 content-margin-top-offest">
+        <div class="text-ofx-blue row justify-content-center" >
+            <h4 class="text-ofx-blue mb-4">GeoChemical Analysis<i class=" ms-2 fas fa-fw fa-chart-line"></i></h4>
+        </div>
+
+        <div class="row justify-content-center my-2">
+
+            <div class="col-12">
+                {# Geochem Page Navs #}
+
+                <div class="card mb-4 shadow" id="applicationNav">
+                    <div class="card-header">
+                        <div class="nav nav-tabs card-header-tabs" id="nav-tab">
+                            <a class="nav-item nav-link active" id="nav-upload-tab">1. Dataset Upload</a>
+                            <a class="nav-item nav-link" id="nav-dataclean-tab">2. Data Cleaning</a>
+                            <a class="nav-item nav-link" id="nav-autochem-tab">3. Data Analysis</a>
+                            <a class="nav-item nav-link" id="nav-qccloud-tab">4. Reporting</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="nav-primary">
+                            {# File upload Tab #}
+                            <div id="nav-upload" class="tab-pane active">
+                                <form id="uploadForm" name="upload-form" method="POST" enctype="multipart/form-data"
+                                      action="{% url 'geochem:geochem_home' %}">
+                                    {% csrf_token %}
+                                    <p class="font-weight-bold mb-0">File Name <span
+                                            class="text-ofx-blue fa fa-question-circle"
+                                            data-bs-toggle="tooltip"
+                                            data-html="true"
+                                            title='Final name of uploaded dataset. Cannot contain:<br/>\ / : * ? " < > |'>
+                                            </span>
+                                    </p>
+
+                                    <input class="form-control" id="filename" name="filename"
+                                           placeholder="Merged Dataset Filename" onpaste="return false" required>
+                                    <p class="font-weight-bold mb-0 mt-2">Project</p>
+                                    {{ upload_form.project }}
+                                    <p class="font-weight-bold mb-0 mt-2">Data Type</p>
+                                    {{ upload_form.data_type }}
+                                    <p class="font-weight-bold mb-0 mt-2">Dataset Management/Upload</p>
+                                    <ul>
+                                        <li>
+                                            At least one dataset is required. All datasets will be merged together on
+                                            the <i>Index</i> column.
+                                            <ul>
+                                                <li>
+                                                    You can upload your own datasets, or use pre-uploaded datasets you
+                                                    have access to.
+                                                </li>
+                                                <li>
+                                                    Index column names don't need to be the same, however only values
+                                                    that that <i>ALL</i> datasets share will be kept.
+                                                </li>
+                                                <li>
+                                                    You can choose which columns you want to keep, however the index
+                                                    column is always kept.
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            You may select a specific sheet for each dataset as Excel workbooks may
+                                            contain more than one.
+                                            <ul>
+                                                <li>
+                                                    To use multiple sheets from the same file you must upload the same
+                                                    file for each sheet.
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            The program will attempt to find the header row for you, but you may have to
+                                            enter it manually after adding the file.
+                                            <ul>
+                                                <li>
+                                                    Dataset preview will highlight current selected header row.
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                    <table id="dataset-table" class="table dt-responsive  table-sm ">
+                                        <thead>
+                                        <tr>
+                                            <th>Dataset</th>
+                                            <th>Sheet <span class="text-ofx-blue fa fa-question-circle"
+                                                            data-bs-toggle="tooltip"
+                                                            title="Sheet in Workbook to use"></span>
+                                            </th>
+                                            <th>Header Row <span class="text-ofx-blue fa fa-question-circle"
+                                                                 data-bs-toggle="tooltip"
+                                                                 title="Row containing headers, typically '0' (top-most row)"></span>
+                                            </th>
+                                            <th>Index <span class="text-ofx-blue fa fa-question-circle"
+                                                            data-bs-toggle="tooltip"
+                                                            title="Datasets will be merged on this column"></span>
+                                            </th>
+                                            <th>Columns <span class="text-ofx-blue fa fa-question-circle"
+                                                              data-bs-toggle="tooltip"
+                                                              title="Columns to keep. Index is always kept."></span>
+                                            </th>
+                                            <th>
+                                                <span data-bs-toggle="modal" data-target="#addDatasetModal">
+                                                <button class="btn btn-sm float-right text-xs btn-ofx-green"
+                                                        type="button"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#addDatasetModal"
+                                                        id="addDataset">
+                                                    <span class="fa fa-plus"></span>
+                                                </button>
+                                                </span>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {# This will be populated by javascript #}
+                                        </tbody>
+                                    </table>
+                                    <div  title="Need to Select the Dataset file" data-bs-toogle="tooltip" class="p-3">
+                                    <button type="submit" class="btn btn-sm btn-ofx-green float-right" 
+                                    id="upload-merge" disabled>
+                                        Upload and Merge
+                                    </button>
+                                </div>   
+                                </form>
+                            </div>
+
+                            {# Dataclean Tab #}
+                            <div id="nav-dataclean" class="tab-pane">
+                                
+                                <h4 class="font-weight-bold geochem-phase-headers">Merged Data</h4>
+                                <table id="mergedData" class="table table-sm mb-5">
+                                </table>
+
+                                <form id="datacleanForm" name="dataclean-form" method="POST"
+                                      action="{% url 'geochem:handle_dataclean' %}">
+                                    {% csrf_token %}
+                                    <h4 class="font-weight-bold geochem-phase-headers">Dataclean Options</h4>
+                                    <div id="dataclean-options" class="d-flex flex-wrap justify-content-center">
+                                        <input type="checkbox" name="defineUnits" value="1" id="defineUnits"/>
+                                        <label for="defineUnits">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Define Units <span class="fas fa-plus-circle float-right"></span>
+                                                </div>
+                                                <div class="card-body overflow-auto">
+                                                    Select default units or an existing unit row.
+                                                </div>
+                                            </div>
+                                        </label>
+                                        
+                                        <input type="checkbox" name="removeNonNumeric" value="1" id="removeNonNumeric"/>
+                                        <label for="removeNonNumeric">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Remove Non-Numeric Values <span class="fas fa-plus-circle float-right"></span>
+                                                </div>
+                                                <div class="card-body overflow-auto">
+                                                    Removes non-numeric values in selected columns.
+                                                </div>
+                                            </div>
+                                        </label>
+                                        
+                                        <input type="checkbox" name="handleInequalities" value="1"
+                                               id="handleInequalities"/>
+                                        <label for="handleInequalities">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Handle Inequalities <span class="fas fa-plus-circle float-right"></span>
+                                                </div>
+                                                <div class="card-body overflow-auto">
+                                                    Cells beginning with ‘<‘ or ‘>’  will be replaced with a single number 
+                                                    as appropriate.
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        <input type="checkbox" name="removeComma" value="1" id="removeComma"/>
+                                        <label for="removeComma">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Replace Comma Separation <span class="fas fa-plus-circle float-right"></span>
+                                                </div>
+                                                <div class="card-body overflow-auto">
+                                                    Remove comma from comma separated floats.
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <input type="checkbox" name="imputeEmpty" value="1" id="imputeEmpty"/>
+                                        <label for="imputeEmpty">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Impute Empty Entries <span class="fas fa-plus-circle float-right"></span>
+                                                </div>
+                                                <div class="card-body overflow-auto">
+                                                    Replaces empty cells using selected option.
+                                                    <ul>
+                                                        <li>Replace with 0 (zero)</li>
+                                                        <li>Average Crustal Abundance</li>
+                                                        <li>Median/Mean</li>
+                                                        <li>Multiple Imputation with chained equations.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <input type="checkbox" name="convertUnits" value="1" id="convertUnits"/>
+                                        <label for="convertUnits">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Convert Uniform Units <span class="fas fa-plus-circle float-right"></span>
+                                                </div>
+                                                <div class="card-body overflow-auto">
+                                                    Convert selected columns from current units to chosen units.
+                                                    <ul>
+                                                        <li>Percent (%)</li>
+                                                        <li>Parts Per Million (PPM)</li>
+                                                        <li>Parts Per Billion (PPB)</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        <input type="checkbox" name="removeColumns" value="1" id="removeColumns"/>
+                                        <label for="removeColumns">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Remove Columns <span class="fas fa-plus-circle float-right"></span>
+                                                </div>
+                                                <div class="card-body overflow-auto">
+                                                    Removes columns selected or columns with a higher percentage of 
+                                                    empty cells than a chosen threshold.
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        <input type="checkbox" name="removeDuplicates" value="1" id="removeDuplicates"/>
+                                        <label for="removeDuplicates">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    Remove Duplicate Entries <span class="fas fa-plus-circle float-right"></span>
+                                                </div>
+                                                <div class="card-body overflow-auto">
+                                                    Removes duplicate entries (rows) from the dataset.
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div>
+                                        <button type="button" class="btn btn-sm btn-ofx-blue float-left" onclick="dataCleanForm_prev_tab()">
+                                            Back
+                                        </button>
+
+                                        <button type="submit" class="btn btn-sm btn-ofx-green float-right">
+                                            Submit Data Cleaning
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            {# Geochem Tab #}
+                            <div id="nav-autochem" class="tab-pane">
+                                <form id="dataAnalysisForm" name="dataAnalysis-form" method="POST"
+                                    action="{% url 'geochem:handle_dataanalysis' %}">
+                                {% csrf_token %}
+                                <h4 class="font-weight-bold geochem-phase-headers">Data Analysis Options</h4>
+                                <div id="dataclean-options" class="d-flex flex-wrap justify-content-center">
+                                    <input type="checkbox" name="simpleDatasetStats" value="1" id="simpleDatasetStats"/>
+                                   
+                                     <label for="simpleDatasetStats">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Simple Dataset Stats <span class="fas fa-plus-circle float-right"></span>
+                                            </div>
+                                            <div class="card-body overflow-auto">
+                                                Retrieves number of columns and rows,
+                                                the number of empty cells per row and column and
+                                                the size of the dataset in memory.                                            </div>
+                                            </div>
+                                    </label>
+                                    <input type="checkbox" name="summariseFloatColumn" value="1" id="summariseFloatColumn"/>
+                                   
+                                    <label for="summariseFloatColumn">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Summarise Float Column <span class="fas fa-plus-circle float-right"></span>
+                                            </div>
+                                            <div class="card-body overflow-auto">
+                                                This will calculate a number of statistics to do with a
+                                                specific column of numbers
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <input type="checkbox" name="pca" value="1" id="pca"/>
+                                    <label for="pca">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Principal Component Analysis                                                
+                                                <span class="fas fa-plus-circle float-right"></span>
+                                            </div>
+                                            <div class="card-body overflow-auto">
+                                                Performs a change of basis on the dataset which can be used
+                                                to reduce the dimensionality of the dataset.
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <input type="checkbox" name="correlationCoefficients" value="1" id="correlationCoefficients"/>
+                                    <label for="correlationCoefficients">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Correlation Coefficients
+                                                <span class="fas fa-plus-circle float-right"></span>
+                                            </div>
+                                            <div class="card-body overflow-auto">
+                                                Computes the Pearson, Kendall and Spearman correlation
+                                                coefficients for each pair of columns in the datasets.                                            
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <input type="checkbox" name="KMeans" value="1"
+                                            id="KMeans"/>
+                                    <label for="KMeans">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                K-Means
+                                                <span class="fas fa-plus-circle float-right"></span>
+                                            </div>
+                                            <div class="card-body overflow-auto">
+                                                Predicts cluster classification using k-means algorithm.
+                                            </div>
+                                        </div>
+                                  </label>
+
+                                    <input type="checkbox" name="randomForest" value="1" id="randomForest"/>
+                                    <label for="randomForest">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Random Forest <span class="fas fa-plus-circle float-right"></span>
+                                            </div>
+                                            <div class="card-body overflow-auto">
+                                                Uses a Random Forest to perform a regression. 
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                  <input type="checkbox" name="hierarchicalClustering" value="1" id="hierarchicalClustering"/>
+                                  <label for="hierarchicalClustering">
+                                      <div class="card">
+                                          <div class="card-header">
+                                            Hierarchical Clustering
+                                            <span class="fas fa-plus-circle float-right"></span>
+                                          </div>
+                                          <div class="card-body overflow-auto">
+                                            Performs a hierarchical clustering.
+                                          </div>
+                                      </div>
+                                  </label>
+
+                                  <input type="checkbox" name="neuralNetwork" value="1" id="neuralNetwork"/>
+                                  <label for="neuralNetwork">
+                                      <div class="card">
+                                          <div class="card-header">
+                                            Dense Neural Network Regression
+                                            <span class="fas fa-plus-circle float-right"></span>
+                                        </div>
+                                          <div class="card-body overflow-auto">
+                                            Uses a dense neural network to perform a regression.
+                                        </div>
+                                      </div>
+                                  </label>
+
+                                  <input type="checkbox" name="adaBoost" value="1" id="adaBoost"/>
+                                  <label for="adaBoost">
+                                      <div class="card">
+                                          <div class="card-header">
+                                            AdaBoost Regression
+                                            <span class="fas fa-plus-circle float-right"></span>
+                                        </div>
+                                          <div class="card-body overflow-auto">
+                                            Creates and fits an AdaBoost regressor.
+                                        </div>
+                                      </div>
+                                  </label>
+                                  
+                                  <!--
+                                  <input type="checkbox" name="functionalAnalysis" value="1" id="functionalAnalysis"/>
+                                  <label for="functionalAnalysis">
+                                      <div class="card">
+                                          <div class="card-header">
+                                            Functional Analysis
+                                        </div>
+                                          <div class="card-body overflow-auto">
+                                            Performs a factor analysis on the data.
+                                        </div>
+                                      </div>
+                                  </label>
+                                -->
+
+                                  <input type="checkbox" name="xgBoost" value="1" id="xgBoost"/>
+                                  <label for="xgBoost">
+                                      <div class="card">
+                                          <div class="card-header">
+                                            XGBoost Decision Tree
+                                            <span class="fas fa-plus-circle float-right"></span>
+                                        </div>
+                                          <div class="card-body overflow-auto">
+                                            Trains and tests an XGBoost decision tree on the data.
+                                        </div>
+                                      </div>
+                                  </label>
+                                </div>
+
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-ofx-blue float-left" onclick="prev_tab()">
+                                        Back
+                                    </button>
+
+                                    <button type="submit" class="btn btn-sm btn-ofx-green float-right">
+                                        Submit Data Analysis
+                                    </button>
+                                </div>
+                            </form>    
+                            </div>
+                            {# Reports Tab #}
+                            <div id="nav-cloud" class="tab-pane">
+                                <h4 class="geochem-phase-headers"> 
+                                    Downloadable Reports
+                                </h4>
+                                <div>
+                                    <div id="final_report_download_container" style="margin-bottom: 0.5rem;">
+                                    </div>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-ofx-blue float-left" onclick="restart()">
+                                        Back to Start
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{# File Upload Modals #}
+
+    <div class="modal fade" id="previewDatasetModal">
+        <div class="modal-dialog modal-xl" style="">
+            <div class="modal-content">
+                <div class="card-header">
+                    Dataset Preview
+
+                    <button id="previewDatasetClose" type="button" class="btn btn-sm btn-ofx-red float-right" data-bs-dismiss="modal">X</button>
+                </div>
+                <div class="card-body overflow-x-auto">
+                    <table id="previewTable" class="table table-sm">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addDatasetModal" tabindex="-1" style="z-index:20000">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="card-header">
+                    <div class="nav nav-tabs card-header-tabs" id="nav-dataset-add">
+                        <a class="nav-item nav-link active" id="nav-newFile-tab" data-bs-toggle="tab" href="#nav-newFile">
+                            File Upload
+                        </a>
+                        <a class="nav-item nav-link" id="nav-existingFile-tab" data-bs-toggle="tab"
+                           href="#nav-existingFile">
+                            Existing Data
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content mb-2">
+                        {# Upload a Dataset Pane #}
+                        <div class="tab-pane active" id="nav-newFile" aria-labelledby="nav-newFile-tab">
+                            <div class="file-area">
+                                <input type="file" id="dataset-field" accept=".csv, .xlsx, .xls" multiple>
+                                <div class="file-dummy">
+                                    <p>
+                                        <span class="fa fa-folder-open"></span>
+                                    </p>
+                                    <span class="block text-ofx-dark">Upload new Dataset(s)</span>
+                                </div>
+                            </div>
+
+                        </div>
+                        {# Select Existing Dataset Pane #}
+                        <div class="tab-pane" id="nav-existingFile" aria-labelledby="nav-existingFile-tab">
+                            <form id="getExistingDatasetsForm">
+                                {% csrf_token %}
+                                <div>
+                                    <select id="existing-datasets" name="datasets" class="selectpicker border"
+                                            data-style="btn-ofx-light" multiple>
+                                        {% for file in process_files %}
+                                            <option value="{{ file.0 }}">{{ file.1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <button id="dataset-modal-submit" type="submit"
+                                            class="btn btn-sm btn-ofx-green float-right">
+                                        Add Dataset
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{# Dataclean Modals #}
+
+    <div id="datacleanFormOptions">
+    {% modalform id='defineUnits' group='datacleanMethod' title='Define Units Options' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <div class="custom-control custom-radio">
+        {# Unit Default Option #}
+            <input type="hidden" value="0" id="includedefineUnits" class="include">
+            <input type="radio" id="defineUnits0" name="mode" class="custom-control-input" value="default" checked>
+            <label class="custom-control-label" for="defineUnits0">Unit Default
+                <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                title="The unit that the dataset values are in."></span>
+                <select class="form-control" name="unit" id="unit">
+                    <option value="ppb">Parts Per Billion (PPB)</option>
+                    <option value="ppm">Parts Per Million (PPM)</option>
+                    <option value="pc">Percent (%)</option>
+                </select>
+
+            </label>
+        </div>
+        <div class="custom-control custom-radio">
+        {# Unit Row Option #}
+            <input type="radio" id="defineUnits1" name="mode" class="custom-control-input" value="row">
+            <label class="custom-control-label" for="defineUnits1">Unit Row
+                <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                title="The row number that stores the unit of each column"></span>
+                <input type="number" name="row" class="form-control" value="1" min="1" disabled/>
+
+            </label>
+        </div>
+        <div class="custom-control custom-radio">
+        {# Unit Header Suffix Option #}
+            <input type="radio" id="defineUnits2" name="mode" class="custom-control-input" value="suffix">
+            <label class="custom-control-label" for="defineUnits2">Unit Header Suffix</label>
+            <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="Gets the unit attached at the end of the column name. Eg: Ag_ppm will assign PPM unit to the Ag column."></span>
+        </div>
+    {% endmodalform %}
+
+    {% modalform id='imputeEmpty' group='datacleanMethod' title='Impute Empty Entries' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <input type="hidden" value="0" id="includeimputeEmpty" class="include">
+        <label for="imputeEmptyMode" class="">Imputation Mode</label>
+        <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="Method to fill the missing values in the dataset"></span>
+        <select id="imputeEmptyMode" class="custom-select" name="mode">
+            <option value="zero">Replace with 0</option>
+            <option value="aca">Average Crystal Abundance (ACA)</option>
+            <option value="median">Median</option>
+            <option value="mean">Mean</option>
+            <option value="mode">Mode</option>
+            <option value="mice">Multiple imputation by chained equations</option>
+            <option value="missforest">MissForest</option>
+        </select>
+    {% endmodalform %}
+    
+    {% modalform id='removeDuplicates' group='datacleanMethod' title='Remove Duplicate Entries' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+         <input type="hidden" value="0" id="includeremoveDuplicates" class="include">
+        <table id='removeDuplicatesTable' class="table table-sm">
+            <thead>
+                <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                <th>Column Name</th>
+                <th>Column Type</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        
+    {% endmodalform %}    
+    {% modalform id='removeNonNumeric' group='datacleanMethod' title='Remove Non-Numeric Entries' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <input type="hidden" value="0" id="includeremoveNonNumeric" class="include">
+        <table id='removeNonNumericTable' class="table table-sm">
+            <thead>
+                <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                <th>Column Name</th>
+                <th>Column Type</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        
+    {% endmodalform %}    
+    {% modalform id='removeNonNumeric' group='datacleanMethod' title='Remove Non-Numeric Entries' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <input type="hidden" value="0" id="includeremoveNonNumeric" class="include">
+        <table id='removeNonNumericTable' class="table table-sm">
+            <thead>
+                <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                <th>Column Name</th>
+                <th>Column Type</th>
+            </thead>
+            <tbody>
+            </tbody>
+           <span class="text-sm text-danger mb-2">Must Use Impute Empty to replace empty cells after this.</span>
+        </table>
+    {% endmodalform %}
+
+    {% modalform id='removeComma' group='datacleanMethod' title='Replace Commas' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <input type="hidden" value="0" id="includeremoveComma" class="include">
+        <table id='removeCommaTable' class="table table-sm">
+            <thead>
+                <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                <th>Column Name</th>
+                <th>Column Type</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    {% endmodalform %}
+
+    {% modalform id='handleInequalities' group='datacleanMethod' title='Handle Inequalities' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <input type="hidden" value="0" id="includehandleInequalities" class="include">
+        <table id='handleInequalitiesTable' class="table table-sm">
+            <thead>
+                <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                <th>Column Name</th>
+                <th>Column Type</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <div class="form-check">
+            <input id="setInequalityTolerance" name="setInequalityTolerance" type="checkbox" class="form-check-input" value="">
+            <label class="form-check-label" for="setInequalityTolerance">
+                Set Inequality Tolerance
+                <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                          title="Sets cells to tolerance value, where cells containing '<0.05' or '>0.05' are left at 0.05. If unchecked, these are left at zero (0)"></span>
+            </label>
+        </div>
+    {% endmodalform %}
+
+    {% modalform id='convertUnits' group='datacleanMethod' title='Convert Units' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <input type="hidden" value="0" id="includeconvertUnits" class="include">
+        <div class="mb-3">
+            <label for="convertUnitsUnit" class="">Unit Type
+                <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="The unit that the Dataset values should be in. Make sure the dataset values are a combination of PPB, PPM or percentage only and with units defined."></span>
+            </label>
+            <select id="convertUnitsUnit" class="custom-select" name="unit">
+                <option value="ppb">Parts Per Billion (PPB)</option>
+                <option value="ppm">Parts Per Million (PPM)</option>
+                <option value="pc">Percent (%)</option>=
+            </select>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input id="updateColumnSuffix" name="updateColumnSuffix" type="checkbox" class="form-check-input" value="">
+                <label class="form-check-label" for="updateColumnSuffix">
+                    Append Unit as Column Suffix
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                              title="Appends the unit name to the column header, e.g., AU becomes AU_ppm if PPM were selected."></span>
+                </label>
+            </div>
+        </div>
+        <table id='convertUnitsTable' class="table table-sm">
+            <thead>
+                <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                <th>Column Name</th>
+                <th>Column Type</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    {% endmodalform %}
+
+    {% modalform id='removeColumns' group='datacleanMethod' title='Remove Columns' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <input type="hidden" value="0" id="includeremoveColumns" class="include">
+        <table id='removeColumnsTable' class="table table-sm">
+            <thead>
+                <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                <th>Column Name</th>
+                <th>Missing Data (%)</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    {% endmodalform %}
+
+    </div>
+
+    {# Data analysis Modals #}
+    <div id="dataAnalysisFormOptions">
+    {% modalform id='simpleDatasetStats' group='dataAnalysisMethod' title='Simple Dataset Statistic' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+        <input type="hidden" value="0" id="includesimpleDatasetStats" class="include">
+        Retrieves number of columns and rows, the number of empty cells per row and column and the size of the dataset in memory.
+       
+    {% endmodalform %}
+    {% modalform id='summariseFloatColumn' group='dataAnalysisMethod' title='Summarize Float Columns' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+    <input type="hidden" value="0" id="includesummariseFloatColumn" class="include">
+        Calculate the number of statistics to do with specific column of numbers. 
+     {% endmodalform %}
+
+        {% modalform id='pca' group='dataAnalysisMethod' title='Principal Component Analysis' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+            <input type="hidden" value="0" id="includepca" class="include">
+            <table id='pcaTable' class="table table-sm">
+                <thead>
+                    <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        {% endmodalform %}
+
+
+        {% modalform id='correlationCoefficients' group='dataAnalysisMethod' title='Correlation Coefficients' btn_type='button' submit_text='Submit' cancel_text='Disable' %}
+            <input type="hidden" value="0" id="includecorrelationCoefficients" class="include">
+    
+            <div class="mb-3">
+                    <label for="subsetXdropDown" class="">Unit Type</label>
+                    <select id="subsetXdropDown" class="custom-select" name="subsetXdropDown">
+                    </select>
+                </div>          
+            
+                <table id='correlationCoefficentsTable' class="table table-sm">
+                    <thead>
+                        <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                        <th>Column Name</th>
+                        <th>Data Type</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+        {% endmodalform %}
+
+        {% modalform id='KMeans' group='dataAnalysisMethod' title='K Means' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+           <input type="hidden" value="0" id="includeKMeans" class="include">
+       
+            <div class="form-check">
+                <input id="setKMeansTrain" name="train" type="checkbox" class="form-check-input" value="">
+                <label class="form-check-label" for="setKMeansTrain">
+                    Train
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="Generates new model trained on current dataset."></span>
+                </label>
+            </div>    
+
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="KValue">Clusters (K)
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="The number of clusters to be formed from the dataset"></span>
+                    <input type="number" name="KValue" class="form-control" value="3" min="2"/>
+                </label>
+            </div> 
+        
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="randomState">Random State
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Pass a number for reproducible output"></span>
+                    <input type="number" name="randomState" class="form-control" value="0" min="0"/>
+                </label>
+            </div> 
+
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="maxIter">Maximum Iterations
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Number of cycles the model should be trained for"></span>
+                    <input type="number" name="maxIter" class="form-control" value="10" min="1"/>
+                </label>
+            </div>     
+
+            <div class="form-check">
+                <input id="setKMeansUpdateModel" name="updateModel" type="checkbox" class="form-check-input" value="">
+                <label class="form-check-label" for="setKMeansUpdateModel">
+                    Update Model
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="Changes the model saved to account for
+                            this new data too."></span>
+                </label>
+            </div>  
+        {% endmodalform %}
+        <!--
+
+        {% modalform id='functionalAnalysis' group='dataAnalysisMethod' title='Functional Analysis' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+            <input type="hidden" value="0" id="includefunctionalAnalysis" class="include">
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="FunctionalAnalysisRandomState">Random State
+                    <input type="number" name="randomState" class="form-control" value="0"/>
+                </label>
+            </div>   
+
+            <div class="form-check">
+                <input id="setfunctionalAnalysisNormaliseData" name="normaliseData" type="checkbox" class="form-check-input" value="">
+                <label class="form-check-label" for="setfunctionalAnalysisNormaliseData">
+                    Normalise Data
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="Whether or not to normalise the data first by rescaling all values to a coresponding value
+                            in the 0 to 1 range."></span>
+                </label>
+            </div>  
+        {% endmodalform %}
+        -->
+        {% modalform id='adaBoost' group='dataAnalysisMethod' title='ADA Boost' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+            <input type="hidden" value="0" id="includeadaBoost" class="include">
+            <div class="mb-3">
+                <label for="adaBoostTargetdropDown" class="">Target Column: </label>
+                <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="The column to predict"></span>
+                <select id="adaBoostTargetdropDown" class="custom-select" name="target">
+                </select>
+            </div>          
+        
+            <table id='adaBoostTable' class="table table-sm">
+                <thead>
+                    <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="adaBoostRandomState">Random State
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Pass a number for reproducible output"></span>
+                    <input type="number" name="randomState" class="form-control" value="0" min="0"/>
+                </label>
+            </div>   
+        {% endmodalform %}
+
+        {% modalform id='xgBoost' group='dataAnalysisMethod' title='XG Boost' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+            <input type="hidden" value="0" id="includexgBoost" class="include">
+            <div class="mb-3">
+                <label for="xgBoostTargetdropDown" class="">Target Column: </label>
+                <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="The column to predict"></span>
+                <select id="xgBoostTargetdropDown" class="custom-select" name="target">
+                </select>
+            </div>          
+        
+            <table id='xgBoostTable' class="table table-sm">
+                <thead>
+                    <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="xgBoostRandomState">Random State
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Pass a number for reproducible output"></span>
+                    <input type="number" name="randomState" class="form-control" value="0" min="0"/>
+                </label>
+            </div>   
+        {% endmodalform %}
+
+        {% modalform id='hierarchicalClustering' group='dataAnalysisMethod' title='Hierarchical Clustering' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+           <input type="hidden" value="0" id="includehierarchicalClustering" class="include">
+            <div class="form-check">
+                <input id="sethierarchicalClusteringTranspose" name="transpose" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="sethierarchicalClusteringTranspose">
+                    Transpose
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="Column Headers and Row Indexes of the dataset change places before creating clusters."></span>
+                </label>
+            </div>    
+    
+        
+            <div class="form-check">
+                <input id="sethierarchicalClusteringNormalise" name="normalise" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="sethierarchicalClusteringNormalise">
+                    Normalise
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="The data is scaled down to numbers between 0 and 1 for better clustering"></span>
+                </label>
+            </div>    
+        
+            <table id='hierarchicalClusteringTable' class="table table-sm">
+                <thead>
+                    <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        {% endmodalform %}
+
+        {% modalform id='randomForest' group='dataAnalysisMethod' title='Random Forest' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+            <input type="hidden" value="0" id="includerandomForest" class="include">
+            <div class="form-check">
+                <input id="setrandomForestTrain" name="train" type="checkbox" class="form-check-input" value="">
+                <label class="form-check-label" for="setrandomForestTrain">
+                    Train
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="Generates new model trained on current dataset."></span>
+                </label>
+            </div>    
+            
+        
+            <div class="mb-3">
+                <label for="randomForestTargetdropDown" class="">Target Column: </label>
+                <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="The column to predict"></span>
+                <select id="randomForestTargetdropDown" class="custom-select" name="target">
+                </select>
+            </div>          
+        
+            <table id='randomForestTable' class="table table-sm">
+                <thead>
+                    <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="randomForestDataSplit">Test Data Split
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Proportion of the dataset to include in the testing data"></span>
+                    <input type="number" name="dataSplit" class="form-control" value="0.4" min="0.1" max="0.9"/>
+                </label>
+            </div>   
+
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="randomForestRandomState">Random State
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Pass a number for reproducible output"></span>
+                    <input type="number" name="randomState" class="form-control" value="0" min="0"/>
+                </label>
+            </div>   
+        {% endmodalform %}
+
+        {% modalform id='neuralNetwork' group='dataAnalysisMethod' title='Neural Network' btn_type='button' submit_text='Enable' cancel_text='Disable' %}
+           <input type="hidden" value="0" id="includeneuralNetwork" class="include">
+            <div class="form-check">
+                <input id="setneuralNetworkTrain" name="train" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="setneuralNetworkTrain">
+                    Train
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                            title="Generates new model trained on current dataset."></span>
+                </label>
+            </div>    
+            
+        
+            <div class="mb-3">
+                <label for="neuralNetworkTargetdropDown" class="">Target Column: </label>
+                <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="The column to predict"></span>
+                <select id="neuralNetworkTargetdropDown" class="custom-select" name="target">
+                </select>
+            </div>          
+        
+            <table id='neuralNetworkTable' class="table table-sm">
+                <thead>
+                    <th><input type="checkbox" data-group="columnsOption" data-action="selectAll"></th>
+                    <th>Column Name</th>
+                    <th>Data Type</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="neuralNetworkDataSplit">Train Data Split
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Proportion of the dataset to include in the training data"></span>
+                    <input type="number" step="0.1" name="dataSplit" class="form-control" value="0.6" min="0.1" max="0.9"/>
+                </label>
+            </div>   
+            
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="neuralNetworkRandomState">Random State
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Pass a number for reproducible output"></span>
+                    <input type="number" name="randomState" class="form-control" value="0" min="0"/>
+                </label>
+            </div>   
+
+            <div class="custom-control custom-radio">
+                <label class="custom-control-label" for="neuralNetworkEpochs">Epochs
+                    <span class="text-ofx-blue fa fa-question-circle" data-bs-toggle="tooltip"
+                    title="Number of cycles the model should be trained for"></span>
+                    <input type="number" name="epochs" class="form-control" value="10" min="1"/>
+                </label>
+            </div>
+        {% endmodalform %}
+    </div>
+
+    {# Error Modals #}
+
+    <div id="error_modal_options">
+        {% modal id='error' title='Error' cancel_text='Cancel' %}
+            <div id="error_modal_text">Error has been thrown</div>
+        {% endmodal %}
+    </div>
+
+
+{% endblock %}
+
+{% block extra_body %}
+    <!-- use version 0.19.1 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js" integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+   
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.19.1/package/dist/xlsx.full.min.js"></script>
+  
+    <script>
+        let get_existing_dataset_url = '{% url 'geochem:get_existing_datasets' %}'
+        console.log("existing data",get_existing_dataset_url)
+       // console.log("process files",process_files)
+        let handle_dataset_upload_url = '{% url 'geochem:handle_dataset_upload' %}'
+    </script>
+
+    <script type="text/javascript" src="{% static 'geochem/js/geochem.js' %}"></script>
+{% endblock %}

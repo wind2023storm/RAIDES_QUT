@@ -1,0 +1,117 @@
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.subtitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.passwordAttribute{
+  margin-bottom: 20px
+}
+.attributeName {
+  display: inline-block;
+  width: 150px;
+}
+.attributeValue {
+  display: inline-block;
+  width: 300px;
+  margin-right: 10px;
+}
+.form-group input[type="text"],
+.form-group input[type="email"] {
+  width: 300px;
+  margin-right: 10px;
+}
+.btn-edit {
+  padding: 5px 10px;
+  background-color: var(--ofx-blue);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.btn-edit:disabled{
+  padding: 5px 10px;
+  background-color: #595f81 !important;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: default;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 20px;
+}
+table th, table td {
+  border: 1px solid black;
+  padding: 5px;
+  text-align: center;
+}
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid black;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.box-item {
+  display: flex;
+  flex-direction: column;
+  margin-right: 30px;
+  margin-bottom: 10px;
+}
+.box-item:last-child {
+  margin-right: 0;
+}
+.label {
+  font-weight: bold;
+}
+.account-input{
+  display: inline-block;
+  width: 300px;
+  margin-right: 10px;
+}
+
+#change-name{
+    display: none;
+}
+#change-email{
+    display: none;
+}
+#change-company{
+    display: none;
+}
+#change-passwd{
+    display:none;
+}
+
+.fa-times{
+  color:red;
+  display:none;
+}
+.fa-check{
+  color:green;
+  display:none;
+}
+
+
+#client-error{
+  color : red;
+  font-size:.70rem;
+  display: none;
+
+}
+
+#email-error, #name-error, #company-error{
+  color : red;
+  font-size:.70rem;
+  display: none;
+}

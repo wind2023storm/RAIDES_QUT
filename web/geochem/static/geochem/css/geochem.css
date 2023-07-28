@@ -1,0 +1,214 @@
+.file-field-invis {
+    opacity: 1;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+/* For disabling a nav-tab navigation without changing colour */
+.disabled-tab {
+    color: var(--ofx-light);
+    pointer-events: none;
+}
+
+/* File Upload box with drag/drop functionality */
+.file-area {
+    width: 100%;
+    position: relative;
+}
+
+.file-area input[type=file] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-area .file-dummy {
+    width: 100%;
+    padding: 50px 20px;
+    border: 2px dashed var(--ofx-gray);
+    background-color: var(--ofx-light);
+    text-align: center;
+    transition: background 0.3s ease-in-out;
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+/* Phase Headers */
+
+.geochem-phase-headers {
+    line-height: 200%;
+}
+
+/* Dataclean div checkboxes */
+
+#dataclean-options input[type=checkbox] {
+    display: none;
+}
+
+.functionIncluded{
+    background-color: var(--ofx-green);  
+   
+}
+.functionNotIncluded{
+    background-color: var(--ofx-blue);  
+  }
+
+.borderfunctionIncluded{
+     border: 1px solid var(--ofx-green) !important; 
+}
+.borderfunctionNotIncluded{
+    border: 1px solid var(--ofx-blue); 
+}
+#dataclean-options input[type=checkbox] + label>.card {
+    border: 1px solid var(--ofx-blue);
+    cursor: pointer;
+    margin: 5px;
+    width: 400px;
+    height: 200px;
+
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+/* ADDED SELECTORS - SHOULD BE REPLACED BY BOOTSTRAP STYLES LATER? */
+
+/* Dataclean and data analyser cards */
+
+.custom-select {
+    display: inline-block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #6e707e;
+    vertical-align: middle;
+    background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%235a5c69' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px;
+    border: 1px solid #d1d3e2;
+    border-radius: 0.35rem;
+    appearance: none;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.custom-control {
+    position: relative;
+    z-index: 1;
+    display: block;
+    min-height: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+  
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #6e707e;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #d1d3e2;
+    border-radius: 0.35rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.custom-control-label {
+    position: relative;
+    margin-bottom: 0;
+    vertical-align: top;
+}
+
+.custom-radio .custom-control-input:checked ~ .custom-control-label::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+/*
+.custom-control-input {
+    position: absolute;
+    left: 0;
+    z-index: -1;
+    width: 1rem;
+    height: 1.25rem;
+    opacity: 0;
+}
+*/
+
+.custom-control-label::after {
+    position: absolute;
+    top: 0.25rem;
+    left: -1.5rem;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    content: "";
+    background: no-repeat 50%/50% 50%;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+input[type=radio], input[type=checkbox] {
+    box-sizing: border-box;
+    padding: 0;
+}
+/*
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 0.5rem;
+    pointer-events: none;
+}
+*/
+
+/* Dataset preview selectors */
+.overflow-x-auto {
+    overflow-x: auto;
+}
+
+#dataset-table .inner{
+    max-height: 200px;
+}

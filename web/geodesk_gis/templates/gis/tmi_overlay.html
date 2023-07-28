@@ -1,0 +1,91 @@
+{% extends "appboard/base.html" %}
+{% block head_title %}
+    GIS -Similarity Comparison
+{% endblock %}
+{% load static %}
+{% load leaflet_tags %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'gis/css/data-processor.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+    <script src="//npmcdn.com/geotiff@0.3.6/dist/geotiff.js"></script>
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    {% leaflet_js plugins="ALL" %}
+    {% leaflet_css %}
+    <style>
+      .leaflet-container { height: 100%; }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div id="flash-message" class="text-sm ms-5">
+    {% if messages %}
+    {% for message in messages %} 
+    {% if message.level == 40 %}
+    <span
+    class="alert alert-danger text-center p-2"> {{ message }}
+    </span>
+    {% endif %} {% endfor %} {% endif %}
+</div>
+<div class="container-fluid content-margin-top-offest w-100 h-100 mb-5" >
+    <div class="container p-0 h-100 mb-5"> 
+    <input id="process_id" type="hidden" class="process_id" name="process_id"/>
+    <div class="modal fade" id="view_task_modal" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+            <div class="modal-content" id="modal-content">
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex content-margin-top-offest px-4">
+        <h4 class="mb-2 text-ofx-blue">GIS -Similarity Comparison&nbsp&nbsp  <i class="fas fa-fw fa-globe"></i></h4>
+        <span class="p-2 options-desc-btn d-block d-sm-none" style="margin-top:-6px" data-bs-trigger="hover"
+                data-bs-content=" Use double click on the map to select two areas of comparison on the Magnetic Map.">
+                <i class="fas fa-info-circle"></i>
+                </span>
+                
+    </div>
+    <div class="d-flex justify-content-between">
+                <div class="d-none d-sm-block mb-1 px-4">
+                    <h6 style="color: darkgrey; max-width: 42vw;">  Use double click on the map to select two areas of comparison on the Magnetic Map.</h6>
+                </div>
+        <div class="similarity-filter d-flex align-items-end justify-content-end mb-2 me-4 ">
+       
+            <div class=" me-3">
+             
+                <select class="sizeSelection form-select col_list_select">
+                    <option value="small" id="small" name="small" selected>   Select Size of Comparison area</option>
+                    <option value="small" id="small" name="small">10km</option>
+                    <option value="medium" id="medium" name="medium">15km</option>
+                    <option value="large" id="large" name="large">20km</option>
+                </select>
+            </div>
+            <div>
+               
+                <button class="submit d-none d-sm-inline-block btn bg-ofx-blue text-white shadow-sm " id="submit" name="submit" type="submit">Submit</button>
+            </div>
+    
+        </div>
+    </div>
+    <div class="map px-4 mb-5 h-75">
+
+    {% leaflet_map "main" %}
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+
+    let csrf_token = "{{ csrf_token }}"
+    var STATIC_URL = "{{ static }}";
+   
+</script>
+<script src="{% static 'gis/js/tmi-overlay.js' %}"></script>
+<script src="{% static 'gis/js/data-processor.js' %}"></script>
+{% endblock %}

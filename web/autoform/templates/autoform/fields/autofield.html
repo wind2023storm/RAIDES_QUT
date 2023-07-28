@@ -1,0 +1,20 @@
+{% spaceless %}
+    {% if type == "image" %}
+        <img
+                data-autofield="{{ field }}"
+                alt="{{ description }}"
+                data-description="{{ description }}"
+                data-type="image"
+                {% if content %}src="{{ content }}"{% endif %}
+                tabindex="1"
+        />
+    {% else %}
+        <span
+                data-autofield="{{ field }}"
+                data-description="{{ description }}"
+                data-type="{{ type }}"
+                {% if class %}class="{{ css }}" {% endif %}
+                {% if style %}style="{{ style }}" {% endif %}
+                tabindex="1">{{ content }}</span>
+    {% endif %}
+{% endspaceless %}

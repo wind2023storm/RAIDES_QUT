@@ -1,0 +1,7 @@
+*What Is This Method?
+XGBoost is a gradient boosting algorithm where the objective is to minimise prediction error by adding models using gradient descent. It makes a lot of innovations that can improve the performance of decision tree algorithms and it usually outperforms the random forest method. This algorithm relies on the intuition that the best possible next model, when combined with previous models, minimizes the overall prediction error.
+Instead of being a completely new kind of algorithm, it instead has a large support for optimisation and trying to squeeze out as much accuracy and efficiency as possible in calculation. It has support for automatic feature selection, some additional random parameters to help prevent overfitting, and the penalisation of trees and leaf nodes helps keep the size of the model under control.
+*What Does It Do Differently?
+XGBoost, short for Extreme Gradient Boosting, is a method that makes predictions generally using a series of decision trees. Uniquely, this algorithm constructs new models to predict the residuals of errors of all the prior models trained to improve the accuracy of the final prediction.
+The final prediction will be a weighted sum of the predictions from all the models constructed.
+

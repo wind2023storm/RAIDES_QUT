@@ -1,0 +1,205 @@
+{% extends "appboard/base.html" %}
+{% load static %}
+{% load leaflet_tags %}
+
+{% block head_title %}
+    GIS -Map Plotter
+{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'gis/css/data-processor.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+    <script src="//npmcdn.com/geotiff@0.3.6/dist/geotiff.js"></script>
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    {% leaflet_js plugins="ALL" %}
+    {% leaflet_css %}
+    <style>
+        .leaflet-container {
+            height: 100%;
+         }
+         .is-invalid{
+            border : 1px solid red
+        }
+        .is-valid{
+            border : 1px solid green
+        }
+      
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <body>
+
+    <div class="modal fade" id="file_uploader_modal" data-keyboard="false" data-backdrop="static" >
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" >
+            <div class="modal-content" id="file_uploader_modal_content">
+                <input id="process_id" type="hidden" class="process_id" name="process_id"/>
+                <div class="modal-header">Upload New Data</div>
+                <div class="modal-body" id="file_uploader_body">
+                    <span class="btn options-desc-btn" title="Function Description"
+                    data-bs-content="Plots given latitute-longitutde coordinates. Compatible with .csv files with defined latitude and 
+                    longitude columns."> <i class="fa fa-question-circle"></i>
+                    </span>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="file_upload_area d-flex bg-grey-3 my-4">
+                                <div class="inner-content m-auto text-center">
+                                    {% if process_file %}
+                                        <div class="text">
+                                            {% if process_file.expected_filename %}
+                                                {{ process_file.expected_filename }}
+                                            {% else %}
+                                                {{ process_file.exact_filename }}
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <div class="icon"><i class="fas fa-upload"></i></div>
+                                        <div class="text">Click Here To Select File</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="form-group my-4" style="min-height: 180px;">
+                                <label for="select_existing_project">Select from existing datasets...</label>
+                                <select class="form-control custom-select" id="select_existing_data">
+                                    <option selected disabled value="">-- Select --</option>
+                                    {% for map in  all_maps %}
+                                        <option value="{{ map.id }}">
+                                            {{ map.expected_filename }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <form class="px-2" id="file_uploader_form" action="{% url 'gis:file_uploader' %}"
+                      method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group d-none">
+                        <input type="file" name="uploaded_file" class="form-control-file max-w-200" accept=".csv">
+                    </div>
+                    <input type="hidden" name="existing_process_file_id">
+                    <div class="form-group d-flex p-2 mb-4">
+                        <input type="number" class="form-control" min="0" name="header_row"
+                            placeholder="Header Row (Start from 0)">
+                        <span class="btn options-desc-btn" title="Header Row"
+                            data-bs-content="A row of your csv/excel, which contains the column names/headings.
+                            If your headings are in first row then enter 0. If your headings are in different row
+                            then enter (row_number - 1). For example your headings are in fifth row then you have to enter 4">
+                            <i class="fa fa-question-circle"></i>
+                        </span>
+                   
+                    </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" id="btnCancel" class="btn btn-sm btn-ofx-blue" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+
+                    <button type="submit" id="btnSubmit" class="btn btn-sm btn-ofx-green">
+                        Load Data
+                    </button>
+
+                </div>
+                
+            </form>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="view_task_modal" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+            <div class="modal-content" id="modal-content">
+            </div>
+        </div>
+    </div>
+    <div class="py-1  text-sm ms-4 " id="flash-message">
+             
+    </div>
+    <div class="container-fluid h-75 content-margin-top-offest">
+        <div class="container h-100">
+                       
+        <div class="d-flex">
+            <h4 class="mb-2 text-ofx-blue">GIS -Map Plotter <i class="ms-2 fas fa-fw fa-globe"></i></h4>
+       
+            <span class="p-2 options-desc-btn d-block d-sm-none" data-bs-trigger="hover"
+            data-bs-content="GIS Plotter provides a visualisation on sdsdsdsds dsdsdsds dsdsdsdsd dsdsdsdsd dsdsdsd sdsdsdsd.">
+            <i class="fas fa-info-circle"></i>
+            </span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+            <div class="d-none d-sm-block">
+                <h6 style="color: darkgrey; max-width: 40vw;">GIS Plotter provides a visualisation of uploaded csv files with latitude and longitude. It also allows for filtering of these plots with given columns once you upload the data.</h6>
+            </div>
+            <div class="d-flex justify-content-end align-items-end">
+                <div class="btn-toolbar justify-content-end" role="toolbar" aria-label="Toolbar with upload buttons and filter buttons">
+                    <button id="upload_button" class="btn btn-ofx-blue mb-2">Upload data <i class="fas fa-upload"></i></button>
+                    <div class="dropdown ms-3 mb-2 ">
+                        <button class="btn btn-ofx-blue dropdown-toggle"  id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" >
+                            Filter
+                        </button>
+                     
+                        <div class="dropdown-menu p-2" style="width: 18vw; min-width: 200px;"  aria-labelledby="dropdownMenuButton1">
+                            <form id="index_column_form_group" class="row g-3 justify-content-evenly" action="">
+                                <div>
+                                    <h6>
+                                        Element Column <span class="p-2 options-desc-btn" data-bs-trigger="hover" title="Index Column"
+                                        data-bs-content="This is the column that will be used to filter the plotted points with a minimum value given.">
+                                        <i class="fa fa-question-circle"></i>
+                                        </span>
+                                    </h6>
+                                    <select id="index_col" class="form-select col_list_select" name="index_col" required>
+                                        <option value="" selected>--None--</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <h6>
+                                        Minimun value <span class="p-2 options-desc-btn" data-bs-trigger="hover" title="Index Column"
+                                        data-bs-content="This is the value that will be used to filter the plotted points.">
+                                        <i class="fa fa-question-circle"></i>
+                                        </span>
+                                    </h6>
+                                    <input type="number" id="minimum" class="form-control" required/>
+                                </div>
+                                <div class="p-2">
+                                    <button class="btn btn-ofx-blue shadow-sm w-100" type="submit" id="filter_button" hover="disabled">Apply Filter</button>
+                                </div>
+                            
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map" >
+        {% leaflet_map "main" %}
+        </div>
+    </div>
+    </div>
+
+    </body>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+    let csrf_token = "{{ csrf_token }}"
+    var STATIC_URL = "{{ static }}";
+  
+</script>
+<script src="{% static 'gis/js/data-processor.js' %}"></script>
+{% endblock %}

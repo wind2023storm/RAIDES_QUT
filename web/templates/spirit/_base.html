@@ -1,0 +1,230 @@
+{% load static %}
+{% load spirit_tags i18n %}
+{% load_settings 'ST_EXTENDED_FONT' %}
+{% load modal_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="shortcut icon" href="{% static 'website/images/favicon.ico' %}">
+
+    <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/date-1.2.0/fc-4.2.1/fh-3.3.1/r-2.4.0/sl-1.5.0/datatables.min.css"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="{% static 'appboard/css/appboard.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'appboard/css/orefox.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'spirit/stylesheets/styles.all.min.css' %}">
+
+    <style>
+      *{
+      font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      }
+      a:hover {
+        color: #FF0000; /* change to desired color */
+      }
+
+      .nav-link-custom:hover {
+        background-color: #ddeeee !important; 
+      }
+      .nav-link-custom{
+        color:#232D67 !important;
+        background-color:white !important;
+      }
+      .menu_list_wrapper ul li a{
+        color:#232D67 !important;
+        background-color:white !important;
+      }
+      .menu_list_wrapper ul li a:hover{
+        background-color: #ddeeee !important; 
+
+      }
+      .menu_list_wrapper ul{
+        border : 1px solid gray;
+        min-width: 100px
+
+      }
+      </style>
+    <script src="{% static 'spirit/scripts/all.min.js' %}"></script>
+
+    <title>{% block head_title %}{% endblock %} Knowledge Management - OreFox</title>
+
+    {% block extra_head %} {% endblock %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/date-1.2.0/fc-4.2.1/fh-3.3.1/r-2.4.0/sl-1.5.0/datatables.min.css"/>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'appboard/css/orefox.css' %}">
+  
+    <title>{% block title %}{% endblock %} - {{ config.site_name }}</title>
+    <meta name="description" content="{{ config.site_description }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+
+  
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        stModules.tab(document.querySelectorAll('.js-tab'));
+        stModules.postify(document.querySelectorAll('.js-post'), {
+          csrfToken: "{{ csrf_token }}"
+        });
+        stModules.messages(document.querySelectorAll('.js-messages'));
+        {% if user.is_authenticated %}
+          stModules.notification(document.querySelectorAll('.js-tab-notification'), {
+            notificationUrl: "{% url "spirit:topic:notification:index-ajax" %}",
+            notificationListUrl: "{% url "spirit:topic:notification:index-unread" %}",
+            mentionTxt: "{% trans "{user} has mention you on {topic}" %}",
+            commentTxt: "{% trans "{user} has commented on {topic}" %}",
+            showAll: "{% trans "Show all" %}",
+            empty: "{% trans "No new notifications, yet" %}",
+            unread: "{% trans "unread" %}"
+          });
+        {% endif %}
+        stModules.clickableArea({
+          areaClass: '.js-clickable-area',
+          targetColor: 'var(--st-text-link-hover)'
+        });
+  
+      });
+    </script>
+  
+    {% if st_settings.ST_EXTENDED_FONT %}
+      <style>
+        @font-face {
+          font-family: 'Ubuntu';
+          font-style: normal;
+          font-weight: 300;
+          src: url("{% static "spirit/stylesheets/vendors/fonts/Ubuntu-all-300.woff2" %}") format('woff2'),
+          url("{% static "spirit/stylesheets/vendors/fonts/Ubuntu-all-300.woff" %}") format('woff');
+        }
+      </style>
+    {% endif %}
+      <style>
+          .spirit .button {
+              display: inline-block;
+              font-weight: 400;
+              text-align: center;
+              vertical-align: middle;
+              user-select: none;
+              border: 1px solid transparent;
+              padding: 0.375rem 0.75rem;
+              font-size: 1rem;
+              line-height: 1.5;
+              border-radius: 0.35rem;
+              transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+              color: #fff;
+              background-color: #273272;
+              border-color: #273272;
+              height: 2.3em;
+          }
+          .spirit .button:hover {
+              color: #fff;
+          }
+        
+
+      </style>
+</head>
+
+<body id="page-top" class="m-0">
+<div id="wrapper">
+    <nav id="sidebar" class="navbar-nav bg-ofx-blue collapse show collapse-horizontal sidebar-expanded">
+      <div class="sticky-top position-sticky navbar-expand" style="z-index:2000">
+            <!-- Sidebar -->
+            {% include 'appboard/sidebar.html' %}
+            <!-- End of Sidebar -->
+        </div>
+    </nav>
+    <main class="d-flex flex-column min-vh-100 flex-grow-1">
+    <div class="bg-white fixed-top shadow" style="height:50px">
+      {% include 'appboard/topbar.html' %}
+    </div>
+    
+
+        <div id="content" class="content container-fluid ">
+        
+        {% if messages %}
+        {% for message in messages %} 
+        {% if message.level == 25 %}
+        <span
+        id="flash-message" class=" text-sm ms-5 mt-2 py-1 px-2 position-absolute alert alert-success "> {{ message }}
+        </span>
+        {% elif message.level == 40 %}
+        <span
+        id="flash-message" class=" text-sm ms-5 mt-2 px-2 py-1 position-absolute alert alert-danger"> {{ message }}
+        </span>
+        {% endif %} {% endfor %} {% endif %}
+        
+          <div class=" container-fluid py-4 px-4 " >
+            <div class="container-fluid mb-5">
+             
+              <div class="container mb-5 content-margin-top-offest">
+                  <h4 class="mb-4 text-ofx-blue">Knowledge Management&nbsp&nbsp          <i class="fas fa-fw fal  fa-envelope"></i>
+                  </h4>
+          
+              <div class="spirit ms-0 mb-5 ">
+                <div class=" ms-0 mb-5">
+                 
+                  {% block content %}{% endblock %}
+               
+                </div>
+              </div>
+          </div>
+        </div>      
+        <footer class="swiper-slide-shadow-bottom bg-light text-dark footer fixed-bottom" >
+          <div class="container my-auto">
+              <div class="copyright text-center my-auto py-2">
+                  <span class="fs-6">Copyright &copy; OreFox 2021</span>
+              </div>
+          </div>
+      </footer>
+    </main>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous" ></script>
+{#<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>#}
+{#<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js" ></script>#}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/date-1.2.0/fc-4.2.1/fh-3.3.1/r-2.4.0/sl-1.5.0/datatables.min.js"></script>
+<script type="text/javascript" src="{% static 'appboard/js/appboard.js' %}"></script>
+
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous" ></script>
+
+{% block extra_body %} {% endblock %}
+
+<button onclick="topFunction()" id="scrollUp"></button>
+
+<script>
+    var popoverTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl);
+    });
+    setTimeout(function () {
+      if( document.getElementById("flash-message") !== null)
+      document.getElementById("flash-message").style.display = "none";
+    }, 3000); 
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+/*=====================================
+=        27. Blog Pages Css           =
+======================================*/
+.lates-single-blog {
+    
+    & .blog-media {
+        & a {
+            display: block;
+            & img {
+                width: 100%;
+            }
+        }
+    }
+    .post-info {
+        &.lates-blog-post-info {
+            padding: 24px;
+            box-shadow: 0px 0px 54px 0px rgba(39, 40, 114, 0.14); 
+            & .post-meta {
+                margin-bottom: 10px;
+            }
+            & .post-excerpt {
+                p {
+                    font-weight: 300;
+                }
+            }
+            & .btn-text {
+                margin-top: 10px;
+                margin-top: 10px;
+            }
+            &-02{
+                padding: 24px;
+                background: #FBFBFB; 
+                & .post-excerpt {
+                    p {
+                        font-weight: 300;
+                    }
+                }
+                & .btn-text {
+                    margin-top: 10px;
+                    margin-top: 10px;
+                }
+            }
+        }
+    }
+}
+
+.personal-post-previous-next {
+    & ul {
+        float: right;
+        & li {
+            display: inline-block;
+            margin-left: 50px;
+            & a {
+                color: #b8b9ba;
+                &:hover {
+                    color: $theme-color--default;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+
+
+.comment-list {
+    margin: 0;
+    padding: 0;
+    margin-top: 70px;
+    @media #{$large-mobile} {
+        margin: 30px 0 0px 0px;
+    }
+    &:first-child {
+        margin-top: 50px;
+    }
+    & .comment {
+        list-style-type: none;
+        padding: 5px 0;
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+    & .comment-author {
+        float: left;
+        border: 5px solid #f1f1f1;
+        border-radius: 50%;
+        box-shadow: 0px 0px 13px 0px rgba(1, 1, 1, 0.33); 
+        & img {
+            border-radius: 50px;
+        }
+        @media #{$large-mobile} {
+            max-width: 80px;
+        }
+    }
+    & .comment-content {
+        position: relative;
+        overflow: hidden;
+        margin-left: 140px;
+        @media #{$large-mobile} {
+            margin-left: 100px;
+        }
+        @media #{$small-mobile} {
+            margin-left: 90px;
+        }
+    }
+    .meta {
+        margin-bottom: 12px;
+        & .fn {
+            font-size: 18px;
+            color: $theme-color--default;
+            display: inline-block;
+            margin-bottom: 0;
+        }
+        & .comment-datetime {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 15px;
+            color: #172540;
+        }
+    }
+    & .comment-actions a {
+        margin-right: 20px;
+        font-weight: 600;
+        color: #333;
+        &:hover {
+            color: $theme-color--default;
+        }
+    }
+    & .children {
+        margin: 70px 0 0px 80px;
+        padding: 0;
+        @media #{$large-mobile} {
+            margin: 30px 0 20px 20px;
+        }
+        @media #{$small-mobile} {
+            margin: 30px 0 20px 0px;
+        }
+    }
+    & .children li + li {
+        margin-top: 35px;
+    }
+    & .comment-actions {
+        margin-top: 5px;
+        color: #ababab;
+        & .comment-datetime {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        & .comment-reply-link {
+            display: inline-block;
+            font-weight: 600;
+        }
+    }
+}
+
+.comment-box-form {
+    margin-top: 25px;
+    position: relative;
+    & .comment-box {
+        & textarea {
+            border: 1px solid #ddd;
+            width: 100%;
+            height: 52px;
+            padding: 10px 55px 10px 15px;
+        }
+    }
+    .relative-btn {
+        position: absolute;
+        top: 0%;
+        right: 0;
+        border: none;
+        background: transparent;
+        font-size: 18px;
+        height: 52px;
+        padding: 10px 28px;
+        &:hover {
+            color: $theme-color--two;
+        }
+    }
+}
+.blog-details-wrap {
+    & .lates-blog-post-info-02 {
+        padding: 35px 35px;
+        background: #fbfbfb;
+    }
+}

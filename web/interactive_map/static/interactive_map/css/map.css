@@ -1,0 +1,313 @@
+.granted:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: green;
+  }
+  .pending:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background-image: linear-gradient(to right, blue, red);
+  }
+  .reaching:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: #FFFF00;
+  }
+  .moratorium:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: pink;
+  }
+  .mdlApplications:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: #000000;
+  }
+  .mdlGranted:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: #A020F0;
+  }
+  .mlApplications:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: #964B00;
+  }
+  .mlGranted:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: #FFA500;
+  }
+  .epcApplications:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: #922B3E;
+  }
+  .epcGranted:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: #0D98BA;
+  }
+  .cadastre:before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    background: #808080;
+  }
+
+  .leaflet-container {
+        height: 800px;
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+  }
+  .leaflet-tooltip.my-labels {
+    background-color: transparent;
+    border: transparent;
+    box-shadow: none;
+  }
+
+
+    .map-tooltip table {
+      margin: auto;
+    }
+    .map-tooltip tr {
+      text-align: left;
+    }
+    .map-tooltip th {
+      padding: 2px;
+      padding-right: 8px;
+    }
+
+
+  #table-panel,
+  #map-header,
+  #map-footer {
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #232d67;
+    border: solid 1px #c3c3c3;
+    width: 100%;
+    bottom: 0;
+  }
+  #table-panel {
+    display: none;
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+    bottom: 0;
+  }
+  .select,
+  .like {
+    margin-right: 10px;
+  }
+
+  .leaflet-container .leaflet-control-mouseposition {
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 5px #bbb;
+    padding: 0 5px;
+    margin: 0;
+    color: #333;
+    font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  }
+  .badge {
+    background-color: #eb8e2b !important;
+  }
+  :root {
+    --ofx-orange: #eb8e2b;
+    --ofx-orange-light: #f89b33;
+    --ofx-blue: #232d67;
+    --ofx-blue-light: #273272;
+    --ofx-dark: #000000;
+    --ofx-light: #ffffff;
+
+    --primary-color: #ffffff;
+
+    --ofx-fs-small: 14pt;
+  }
+
+  /* COLOUR STYLES */
+
+  .text-ofx-light {
+    color: var(--ofx-light);
+  }
+
+  .text-ofx-dark {
+    color: var(--ofx-dark);
+  }
+
+  .bg-ofx-light {
+    color: var(--ofx-light);
+  }
+
+  .bg-ofx-dark {
+    color: var(--ofx-dark);
+  }
+
+  .text-ofx-orange {
+    color: var(--ofx-orange);
+  }
+
+  .text-ofx-orange-light {
+    color: var(--ofx-orange-light);
+  }
+
+  .bg-ofx-orange {
+    background-color: var(--ofx-orange);
+  }
+
+  .bg-ofx-orange-light {
+    background-color: var(--ofx-orange-light);
+  }
+
+  .text-ofx-blue {
+    color: var(--ofx-blue);
+  }
+
+  .text-ofx-blue-light {
+    color: var(--ofx-blue-light);
+  }
+
+  .bg-ofx-blue {
+    background-color: var(--ofx-blue);
+  }
+
+  .bg-ofx-blue-light {
+    background-color: var(--ofx-blue-light);
+  }
+
+  /* BUTTONS */
+
+  .btn-ofx-orange,
+  .btn-ofx-orange:hover:disabled {
+    color: var(--ofx-dark);
+    background-color: var(--ofx-orange);
+    border-color: var(--ofx-orange-light);
+  }
+
+  .btn-ofx-orange:hover:enabled {
+    color: var(--ofx-orange);
+    background-color: var(--ofx-light);
+  }
+
+  .btn-ofx-blue,
+  .btn-ofx-blue:hover:disabled {
+    color: var(--ofx-light);
+    background-color: var(--ofx-blue);
+    border-color: var(--ofx-blue);
+  }
+
+  .btn-ofx-blue:hover:enabled {
+    color: var(--ofx-blue);
+    background-color: var(--ofx-light);
+  }
+
+  .btn-ofx-fa-blue {
+    color: var(--ofx-blue);
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  .btn-ofx-fa-blue:hover:enabled {
+    color: var(--ofx-blue);
+    border-color: var(--ofx-blue);
+  }
+
+  .btn-ofx-fa-light {
+    color: var(--ofx-light);
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  .btn-ofx-fa-light:hover:enabled {
+    color: var(--ofx-light);
+    border-color: var(--ofx-light);
+  }
+
+  /* NAV TABS
+    It seems that on the Geochem analysis page we have some nested modalforms which required a lot of
+    changes to fit the design, for now we make sure that the links are parented by either
+    card-header-tabs or card-header for it to show
+    */
+  .card-header-tabs > .nav-link,
+  .card-header-tabs > a.nav-link:hover,
+  .card-header-tabs > nav-item:hover,
+  .card-header > .nav-link,
+  .card-header > a.nav-link:hover,
+  .card-header > nav-item:hover {
+    font-weight: bold;
+    color: var(--ofx-light);
+  }
+
+  .card-header-tabs > .nav-link.active,
+  .card-header > .nav-link.active {
+    color: var(
+      --ofx-blue
+    ) !important; /* How can I do this without using !important */
+  }
+
+  /* Modal/Card Styles */
+  div.modal-header,
+  .card-header {
+    color: var(--ofx-light);
+    background-color: var(--ofx-blue);
+  }
+  .card-body {
+    color: var(--ofx-blue);
+    background-color: var(--ofx-light);
+  }
+
+  .pagination {
+    color: var(--ofx-blue);
+    background-color: var(--ofx-light);
+  }
+
+  table.dataTable tr th.select-checkbox.selected::after {
+    content: "✔";
+    margin-top: -11px;
+    margin-left: -4px;
+    text-align: center;
+    text-shadow: rgb(176, 190, 217) 1px 1px, rgb(176, 190, 217) -1px -1px, rgb(176, 190, 217) 1px -1px, rgb(176, 190, 217) -1px 1px;
+}
+
+.toolbar {
+  float: left;
+}
+
+div.dt-buttons {
+  float: left;
+}

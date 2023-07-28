@@ -1,0 +1,342 @@
+/*=======================================
+=            07. Sidebar Css           =
+=========================================*/
+
+.left-sidebar {
+    padding-right: 37px;
+    @media #{$desktop-device,$tablet-device,$large-mobile}{
+        padding-right: 0px;
+    }
+}
+.right-sidebar {
+    padding-left: 37px;
+    @media #{$desktop-device,$tablet-device,$large-mobile}{
+        padding-left: 0px;
+    }
+}
+.widget-title {
+    color: $theme-color--default;
+    margin-bottom: 32px;
+}
+
+/* Widget Categories */
+.widget-categories {
+    ul {
+        li {
+            &:not(:last-child) {
+                margin-bottom: 14px;
+            }
+
+            a {
+                overflow: hidden;
+                display: block;
+                font-weight: 300;
+                & .widget-count {
+                    background: #fff;
+                    padding: 0px 3px 0px 18px !important;
+                    float: right;
+                }
+                span {
+                    position: relative;
+                    display: inline-block;
+                    padding-right: 20px;
+
+                    &::after {
+                        content: "";
+                        border-top: 1px solid $theme-color--default;
+                        position: absolute;
+                        left: 100%;
+                        top: 50%;
+                        margin-top: -1px;
+                        height: 1px;
+                        width: 600px;
+                        transition: all 0.3s ease-in-out 0s;
+                    }
+                }
+                &:hover {
+                    color: $theme-color--default;
+                }
+                .widget-count {
+                    background: #f5f6ff;
+                }
+            }
+        }
+    }
+    &.style-two {
+        ul {
+            li {
+                &:not(:last-child) {
+                    margin-bottom: 14px;
+                }
+    
+                a {
+                    overflow: hidden;
+                    display: block;
+                    font-weight: 300;
+                    height: 44px;
+                    line-height: 44px;
+                    background: #fff;
+                    padding-left: 20px;
+                    transition: all 0.3s ease-in-out;
+                    & .widget-count {
+                        background: #dbdeed;
+                        padding: 0px !important;
+                        float: right;
+                        width: 60px;
+                        text-align: center;
+                    }
+                    span {
+                        position: relative;
+                        display: inline-block;
+                        padding-right: 20px;
+                    }
+                    &:hover {
+                        background: $theme-color--default;
+                        color: $white;
+                        & .widget-count {
+                            background: $theme-color--two;
+                            color: $white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.widget-box {
+    background: #f5f6ff;
+    padding: 30px;
+    
+}
+
+/* Service Widget Categories */
+
+.service-widget-title {
+    color: #2b2b2b;
+    margin-bottom: 0px;
+    position: relative;
+    padding-bottom: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    overflow: hidden;
+    padding: 20px 30px;;
+    border-bottom: 1px solid #ddd;
+    & span {
+        position: relative;
+        display: inline-block;
+        padding-right: 20px;
+
+        &::after {
+            content: "";
+            border-top: 1px dashed lighten($theme-color--default, 40%);
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            margin-top: -1px;
+            height: 1px;
+            width: 110px;
+            transition: all 0.3s ease-in-out 0s;
+        }
+    }  
+}
+
+
+/* Widget Search */
+.widget-search {
+    &-form {
+        display: flex;
+        border-radius: 5px;
+        position: relative;
+        input:not([type="submit"]) {
+            color: $theme-color--default;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            box-shadow: none;
+            padding: 0 40px 0 0;
+            width: 100%;
+            height: 45px;
+            font-size: 15px;
+            font-weight: 400;
+            
+        }
+
+        button{
+            background: transparent;
+            border: none;
+            line-height: 43px;
+            height: 45px;
+            padding: 0;
+            color: $theme-color--default;
+            font-size: 20px;
+            position: absolute;
+            right: 0;
+        }
+    }
+}
+
+/* Widget Latestblog */
+.widget-latestblog {
+    position: relative;
+
+    ul {
+        li {
+            position: relative;
+            padding-left: 100px;
+            min-height: 80px;
+
+            &:not(:last-child) {
+                margin-bottom: 40px;
+            }
+
+            .widget-latestblog-image {
+                position: absolute;
+                left: 0;
+                top: 5px;
+                overflow: hidden;
+                width: 100px;
+            }
+
+            span {
+                font-size: 14px;
+                display: inline-block;
+            }
+
+            h5 {
+                margin-bottom: 5px;
+                font-size: 16px;
+
+                a {
+                    color: $theme-color--default;
+
+                    &:hover {
+                        color: $theme-color--default;
+                    }
+                }
+            }
+            p {
+                font-weight: 300;
+            }
+        }
+    }
+
+    @media #{$desktop-device} {
+        ul {
+            li {
+                padding-left: 95px;
+                .widget-latestblog-image {
+                    width: 80px;
+                }
+            }
+        }
+    }
+}
+
+.widget-form-item{
+    select {
+        padding: 3px 0px;
+        height: 46px;
+        max-width: 100%;
+        width: 100%;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid $theme-color--default;
+        border-radius: 0px;
+        // background: transparent url("../images/icons/selector-icon.png") no-repeat center right 5px;
+        background-color: transparent;
+        &:focus {
+            // background: transparent url("../images/icons/selector-icon.png") no-repeat center right 5px !important;
+            border: none;
+            box-shadow: none;
+            border-bottom: 1px solid $theme-color--default;
+        }
+    }
+}
+
+.widget-tag-list {
+    & a {
+        margin-right: 18px;
+        font-weight: 500;
+        margin-bottom: 15px;
+        &:hover {
+            color: $theme-color--two;
+        }
+    }
+}
+
+.widget-banner-box {
+    text-align: center;
+    background: $theme-color--default;
+    padding: 45px 15px 50px;
+    
+    & h3 {
+        font-size: 30px;
+        color: $white;
+        margin-bottom: 25px;
+    }
+    & h4 {
+        color: $white;
+        font-size: 20px;
+        margin-top: 25px;
+        font-weight: 300;
+    }
+    
+}
+
+.ui-widget-content {
+    background: $theme-color--two;
+    border: medium none;
+    border-radius: 0px;
+    height: 6px;
+    margin: 35px 0 25px;
+    & .ui-state-default {
+        background: $theme-color--default;
+        border: 3px solid $theme-color--default;
+        border-radius: 25px;
+        box-shadow: none;
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: normal;
+        height: 15px;
+        width: 15px;
+        &:hover {
+            background: $theme-color--default;
+        }
+    }
+    & .ui-slider-range {
+        background: $theme-color--default;
+    }
+}
+.filter-price-cont {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+          flex-direction: row;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.filter-price-cont { 
+    font-size: 14px;
+    & .input-type {
+        & input {
+            border: medium none;
+            padding: 0 8px 0 0;
+            text-align: center;
+            width: 40px; 
+            background: transparent;
+        }
+        &:last-child {
+            padding-left: 8px;
+        }
+    } 
+    
+}
+
+/*=====  End of Sidebar  ======*/

@@ -1,0 +1,533 @@
+/*=============================================
+=        25. Architecture Pages Css          =
+=============================================*/ 
+
+.architecture-hero {
+    height: 888px;
+    display: flex;
+    align-items: center;
+    @media #{$laptop-device}{
+        height: 700px;
+        & h1 {
+            font-size: 52px;
+        }
+    }
+    @media #{$desktop-device}{
+        height: 600px;
+        & h1 {
+            font-size: 52px;
+        }
+    }
+    @media #{$tablet-device}{
+        height: 490px;
+        & .corporate-hero-text {
+            margin-top: 0px;
+        }
+        & h1 {
+            font-size: 40px;
+        }
+    }
+    @media #{$large-mobile}{
+        height: 480px;
+        & .corporate-hero-text {
+            margin-top: 0px;
+        }
+        & h1 {
+            font-size: 30px;
+        }
+    }
+}
+
+
+.swiper-slide * {
+    -webkit-animation-duration: 0.8s;
+    animation-duration: 0.8s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+.architecture-hero-wrap .swiper-slide-active {
+    .layer-animation-1 {
+        h4 {
+            animation-delay: 0.4s;
+            animation-name: fadeInLeft;
+        }
+        h1 {
+            animation-delay: 0.6s;
+            animation-name: fadeInLeft;
+        }
+        .hero-button {
+            animation-delay: 0.8s;
+            animation-name: fadeInLeft;
+        }
+    }
+    .layer-animation-2 {
+        h4 {
+            animation-delay: 0.4s;
+            animation-name: rollIn;
+        }
+        h1 {
+            animation-delay: 0.6s;
+            animation-name: fadeInLeft;
+        }
+        .hero-button {
+            animation-delay: 0.8s;
+            animation-name: fadeInLeft;
+        }
+    }
+    .layer-animation-3 {
+        h4 {
+            animation-delay: 0.4s;
+            animation-name: fadeInUp;
+        }
+        h1 {
+            animation-delay: 0.6s;
+            animation-name: fadeInUp;
+        }
+        .hero-button {
+            animation-delay: 0.8s;
+            animation-name: fadeInUp;
+        }
+    }
+}
+.architecture-hero-wrap {
+    position: relative;
+    & .hero-swiper-pagination-number {
+        position: absolute;
+        bottom: 50px;
+        z-index: 1;
+        right: 50px;
+        &.swiper-pagination__right {
+            padding-left: 70px;
+            &::after{
+                background: $white;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                content: '';
+                width: 50px;
+                height: 1px;
+            }
+        }
+        @media #{$large-mobile}{
+            bottom: 20px;
+            right: 20px;
+        }
+    }
+
+    .swiper-pagination-bullet {
+        text-align: center;
+        line-height: 24px;
+        font-size: 24px;
+        font-weight: 600;
+        color:#fff;
+        opacity: 1;
+        background: transparent;
+        margin-right: 30px;
+    }
+    
+    .swiper-pagination-bullet-active {
+      color:#686868;
+      background: transparent;
+    }
+}
+
+
+.architecture-hero-text-box {
+    max-width: 770px;
+    margin: auto;
+    background: rgba(218, 221, 228, 0.6);
+    border: 25px solid rgba(191, 195, 204, 0.5);
+    padding: 40px;
+    @media #{$small-mobile}{
+        padding: 30px 10px;
+    }
+}
+
+
+
+.architecture-hero-three {
+    position: relative;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    height: 800px;
+    .hero-text {
+        z-index: 1;
+        position: relative;
+    }
+    @media #{$laptop-device}{
+        height: 700px;
+        & h1 {
+            font-size: 52px;
+        }
+    }
+    @media #{$desktop-device}{
+        height: 600px;
+        & h1 {
+            font-size: 52px;
+        }
+    }
+    @media #{$tablet-device}{
+        height: 490px;
+        & .corporate-hero-text {
+            margin-top: 0px;
+        }
+        & h1 {
+            font-size: 40px;
+        }
+    }
+    @media #{$large-mobile}{
+        height: 480px;
+        & .corporate-hero-text {
+            margin-top: 0px;
+        }
+        & h1 {
+            font-size: 30px;
+        }
+    }
+}
+
+
+.right-hero-slider {
+    position: absolute;
+    top: 0;
+    right: 0;
+    max-width: 1040px;
+    height: 100%;
+    @media #{$laptop-device}{
+        max-width: 840px;
+    }
+    @media #{$desktop-device}{
+        max-width: 640px;
+    }
+    @media #{$tablet-device}{
+        max-width: 440px;
+    }
+    @media #{$large-mobile}{
+        max-width: 100%;
+    }
+}
+
+
+.right-single-hero {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    & p {
+        height: 500px;
+        width: 600px;
+    }
+    &::before {
+        content: '';
+        display: block;
+        padding-top: 81%;
+    }
+}
+.architecture-hero-three-wrap {
+    position: relative;
+    .hero-pagintion-inner {
+        
+    }
+    & .hero-swiper-pagination-number {
+        bottom: 60px;
+        z-index: 1;
+        left: 0px;
+        position: relative;
+        &.swiper-pagination__right {
+            padding-left: 70px;
+            &::after{
+                background: $theme-color--default;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                content: '';
+                width: 50px;
+                height: 1px;
+            }
+        }
+    }
+    .swiper-pagination-bullet {
+        text-align: center;
+        line-height: 24px;
+        font-size: 24px;
+        font-weight: 600;
+        color: $theme-color--default;
+        opacity: 1;
+        background: transparent;
+        margin-right: 30px;
+    }
+    .swiper-pagination-bullet-active {
+        color:$theme-color--two;
+        background: transparent;
+    }
+    
+}
+
+
+
+
+
+
+
+// Architecuure About Area Css
+.dots-image {
+    position: relative;
+    & .dots-inner-images {
+        margin-left: 60px;
+        padding-top: 60px;
+        @media #{$tablet-device, $large-mobile}{
+            margin-left: 30px;
+            padding-top: 30px;
+        }
+        img {
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+    }
+    & .dots {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 75%;
+        height: 85%;
+        // background: url(../images/bg/dots.png) 0 0 repeat;
+    }
+    & .dots-inner-images-2 {
+        margin-left: 0px;
+        padding-bottom: 38px;
+        @media #{$tablet-device, $large-mobile}{
+            margin-left: 30px;
+            padding-top: 30px;
+        }
+        img {
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+    }
+    & .dots-2 {
+        position: absolute;
+        left: -40px;
+        bottom: 0px;
+        width: 85%;
+        height: 65%;
+        // background: url(../images/bg/dots.png) 0 0 repeat;
+    }
+    & .dots-inner-images-3 {
+        margin-left: 0px;
+        position: relative;
+        img {
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+    }
+    & .dots-3 {
+        position: absolute;
+        right: -30px;
+        bottom: -40px;
+        width: 85%;
+        height: 110%;
+        // background: url(../images/bg/dots.png) 0 0 repeat;
+        @media #{$tablet-device, $large-mobile}{
+            right: -0px;
+        }
+    }
+}
+.about-us-offset{
+    padding-left: 50px;
+    @media #{$tablet-device, $large-mobile}{
+        padding-left: 0px;
+    }
+}
+.architecture-process-title {
+    background: #f7f7f7;
+    padding: 35px 25px 20px 35px;
+    max-width: 439px;
+    
+}
+
+.architecture-about-two {
+    max-width: 425px;
+    @media #{$tablet-device, $large-mobile}{
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+    .text-size-lg {
+        font-size: 39px;
+    }
+}
+.team-content-right {
+    padding-left: 15px;
+    @media #{$tablet-device, $large-mobile}{
+        padding-left: 0px;
+    }
+}
+
+
+
+
+.square-flip {
+    -webkit-perspective: 1000;
+    -moz-perspective: 1000;
+    -ms-perspective: 1000;
+    perspective: 1000;
+    -webkit-transform: perspective(1000px);
+    -moz-transform: perspective(1000px);
+    -ms-transform: perspective(1000px);
+    transform: perspective(1000px);
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    position: relative;
+    height: 359px;
+    margin-top: 30px;
+}
+
+.square,
+.square2 {
+    width: 100%;
+    height: 100%;
+}
+
+.square {
+    background-size: cover;
+    background-position: center center;
+    -ms-transition: transform 0.60s cubic-bezier(.5, .3, .3, 1);
+    transition: transform 0.60s cubic-bezier(.5, .3, .3, 1);
+    -webkit-transition: transform 0.60s cubic-bezier(.5, .3, .3, 1);
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+
+
+
+.square-flip {
+
+    &:hover .square {
+        -webkit-transform: rotateY(-180deg);
+        -moz-transform: rotateY(-180deg);
+        -o-transform: rotateY(-180deg);
+        -ms-transform: rotateY(-180deg);
+        transform: rotateY(-180deg);
+        -webkit-transform-style: preserve-3d;
+           -moz-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+    }
+
+    .square2 {
+        -webkit-background-size: cover;
+           -moz-background-size: cover;
+             -o-background-size: cover;
+                background-size: cover;
+        background-position: center center;
+        transition: transform 0.60s cubic-bezier(.5, .3, .3, 1);
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        -webkit-backface-visibility: hidden !important; /* Safari */
+        backface-visibility: hidden;
+    }
+
+    .square2 {
+        -webkit-transform: rotateY(180deg);
+        -moz-transform: rotateY(180deg);
+        -o-transform: rotateY(180deg);
+        -ms-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+        -webkit-transform-style: preserve-3d;
+           -moz-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+        z-index: 1;
+        .flip-overlay {
+            display: block;
+            background: rgba(255, 255, 255, 0.8);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+        }
+    }
+    
+
+
+
+
+
+    &:hover .square2 {
+        -webkit-transform: rotateY(0deg);
+        -moz-transform: rotateY(0deg);
+        -o-transform: rotateY(0deg);
+        -ms-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+        -webkit-transform-style: preserve-3d;
+           -moz-transform-style: preserve-3d;
+                transform-style: preserve-3d;
+        -webkit-box-shadow: 0px 0px 62.9136px 5.0864px rgba(39, 50, 114, 0.33);
+           -moz-box-shadow: 0px 0px 62.9136px 5.0864px rgba(39, 50, 114, 0.33);
+                box-shadow: 0px 0px 62.9136px 5.0864px rgba(39, 50, 114, 0.33);
+    }
+}
+.square-container2 {
+    z-index: 99999;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    padding: 20px 10px;
+    & a {
+        color: $theme-color--two;
+    }
+}
+
+
+
+.architecture-font {
+    font-size: 24px;
+}
+
+.architecture_service-order-list {
+    padding-left: 40px;
+    & li {
+        margin-bottom: 20px;
+        position: relative;
+        padding-left: 30px;
+        &::after {
+            left: 0;
+            top: 8px;
+            content: '';
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            position: absolute;
+            background: $theme-color--default;
+        }
+    }
+}
+
+.architecture_service-info-list {
+    max-width: 550px;
+    background: $theme-color--default;
+    padding: 40px 40px;
+    & li {
+        color: #fff;
+        & span {
+            font-size: 24px;
+            margin-right: 5px;
+            font-weight: 500;
+        }
+    }
+}
+
+
+
+
+
+
+

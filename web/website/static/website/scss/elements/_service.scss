@@ -1,0 +1,345 @@
+/*=============================================
+=            11. Services Css               =
+=============================================*/
+.service-custom-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    @media #{$laptop-device,$desktop-device}{
+        padding-left: 0px
+    }
+    @media #{$tablet-device}{
+        flex-direction: column;
+        max-width: 720px;
+        width: 100%;
+        padding-left: 0px;
+        margin: 0 auto;
+    }
+    @media #{$large-mobile}{
+        flex-direction: column;
+        max-width: 540px;
+        width: 100%;
+        padding-left: 0px;
+        margin: 0 auto;
+    }
+}
+.service-col-01 {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    flex-basis: 22%;
+    display: flex;
+    @media #{$laptop-device,$desktop-device}{
+        flex-basis: 30%;
+    }
+}
+.service-col-02 {
+    max-width: 1000px;
+    flex-grow: 2;
+    flex-basis: 70%;
+    padding-left: 55px;
+    padding-right: 15px;
+    @media #{$laptop-device,$desktop-device}{
+        flex-basis: 70%;
+    }
+    @media #{$desktop-device}{
+        padding-left: 25px;
+    }
+    @media #{$tablet-device,$large-mobile}{
+        padding-left: 15px;
+    }
+}
+.service-col-03 {
+    flex-grow: 3;
+    flex-basis: 8%;
+    align-self: stretch;
+    @media #{$laptop-device,$desktop-device}{
+        display: none;
+    }
+}
+
+.service-area-right-image {
+    height: 100%;
+    width: auto;
+    background-repeat: no-repeat;
+    background-position: right;
+}
+
+.service-area-right-image-two {
+    height: 100%;
+    width: auto;
+    background-repeat: no-repeat;
+    background-position: left;
+    margin-top: 55px;
+}
+
+
+.ht-service-icon {
+    &.style-01 {
+        margin-bottom: 60px;
+        & .service-icon {
+            margin-bottom: 28px;
+
+            & svg > * {
+                stroke: $theme-color--default;
+            }
+            .svg-icon {
+                width: 65px;
+                height: 65px;
+            }
+        }
+        & .service-content {
+            & p {
+                font-weight: 300;
+                max-width: 300px;
+            }
+        }
+    }
+}
+
+.ht-service-box {
+    &.style-2 {
+        padding: 50px 40px;
+        background: #f1f1f1;
+        border-radius: 10px 70px 10px 30px;
+        & p {
+            font-weight: 300;
+        }
+        @media #{$large-mobile}{
+            h3 {
+                & br {
+                    display: none;
+                }
+            }
+        }
+    }
+    
+    &.style-04 {
+        margin-bottom: 30px;
+        background: #fbfbfb;
+        padding: 50px 32px;
+        transition: all 0.3s ease-in-out;
+        & .service-icon {
+            margin-bottom: 28px;
+
+            & svg > * {
+                stroke: $theme-color--default;
+            }
+            .svg-icon {
+                width: 65px;
+                height: 65px;
+            }
+        }
+        & .service-content {
+            & p {
+                font-weight: 300;
+                max-width: 300px;
+                margin: auto;
+                @media #{$large-mobile}{
+                    margin: 0 0;
+                    max-width: 100%;
+                }
+            }
+        }
+        &:hover {
+            box-shadow: 0px 0px 54px 0px rgba(39, 50, 114, 0.14); 
+        }
+    }
+    &.style-05 {
+        margin-bottom: 30px;
+        background: #fff;
+        padding: 45px 15px;
+        transition: all 0.3s ease-in-out;
+        & .service-icon {
+            margin-bottom: 28px;
+        }
+        & .service-content {
+            max-width: 215px;
+            margin: auto;
+            & p {
+                font-weight: 300;
+            }
+        }
+        &.active {
+            background: #f8f5ff;
+            box-shadow: 0px 0px 54px 0px rgba(39, 50, 114, 0.14); 
+        }
+        &:hover {
+            background: #f8f5ff;
+            box-shadow: 0px 0px 54px 0px rgba(39, 50, 114, 0.14); 
+        }
+    }
+    &.style-06 {
+        margin-bottom: 30px;
+        background: #fff;
+        transition: all 0.3s ease-in-out;
+        display: flex;
+        & .service-icon {
+            background: #f4effe;
+            min-height: 150px;
+            min-width: 150px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 150px;
+            margin: auto;
+            z-index: 1;
+            & img {
+                width: 90px;
+                height: 90px;
+            }
+            @media #{$laptop-device,$tablet-device,$small-mobile}{
+                min-height: 130px;
+                min-width: 130px;
+                line-height: 130px;
+            }
+        }
+        & .service-content {
+            background: #f8f5ff;
+            padding: 45px 35px 45px 120px;
+            max-width: 415px;
+            margin-left: -100px;
+            & p {
+                font-weight: 300;
+            }
+            @media #{$laptop-device,$tablet-device,$small-mobile}{
+                padding: 35px 25px 35px 110px;
+            }
+        }
+    }
+}
+
+.services-hight-450 {
+    height: 450px;
+}
+.service-content-inner-bottom {
+    margin-top: -180px;
+    @media #{$desktop-device}{
+        margin-top: -200px;
+    }
+    @media #{$tablet-device}{
+        margin-top: -260px;
+    }
+    @media #{$large-mobile}{
+        margin-top: -300px;
+    }
+}
+
+.ht-box-images {
+    &.style-03 {
+        box-shadow: 0 0 41px rgba(0,0,0,.03);
+        background: #fff;
+        padding: 50px 30px 50px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        
+        & .image-box-wrap {
+            max-width: 360px;
+            margin: 0 auto;
+            & .box-image {
+                margin-bottom: 20px;
+                transition: $transition--default;
+            }
+            
+            & .content {
+                & .heading {
+                    font-weight: 500;
+                    line-height: 1.67;
+                    margin-bottom: 0;
+                }
+                & .text{
+                    color: $body-text-color;
+                }
+            }
+        }
+        &:hover {
+            & .box-image {
+                transform: translateY(-5px);
+            }
+            & .content {
+                & .heading {
+                    color: $theme-color--three;
+                }
+            }
+        }
+    }
+    
+    &.style-04 {
+        margin-bottom: 60px;
+        display: block;
+        
+        @media #{$desktop-device}{
+            margin-bottom: 30px;
+            h4 {
+                font-size: 22px;
+            }
+        }
+        @media #{$tablet-device,$large-mobile}{
+            margin-bottom: 0px;
+            margin-top: 40px;
+        }
+        & .image-box-wrap {
+            max-width: 360px;
+            margin: 0 auto;
+            & .box-image {
+                margin-bottom: 20px;
+                transition: $transition--default;
+            }
+            
+            & .content {
+                & .heading {
+                    font-weight: 500;
+                    line-height: 1.67;
+                    margin-bottom: 0;
+                }
+                & .text{
+                    color: $body-text-color;
+                }
+            }
+        }
+        &:hover {
+            & .box-image {
+                transform: translateY(-5px);
+            }
+            & .content {
+                & .heading {
+                    color: $theme-color--three;
+                }
+            }
+        }
+    } 
+}
+
+.ht-box-images {
+    &.style-07 {
+        transition: $transition--default;
+        & .image-box-wrap {
+            padding: 30px 35px 31px;
+            border-radius: 4px;
+            margin-top: 10px;
+            & .box-image {
+                text-align: center;
+                margin-bottom: 24px;
+            }
+            & .content {
+                text-align: center;
+                & .heading {
+                    font-weight: 500;
+                    line-height: 1.25;
+                    margin-bottom: 12px;
+                }
+                & .text{
+                    color: $body-text-color;
+                }
+                
+            }
+        }
+        &:hover {
+            transform: translateY(-5px);
+            background: #fff;
+            box-shadow: 0 18px 40px rgba(51,51,51,.1);
+            
+        }
+    }
+    
+}

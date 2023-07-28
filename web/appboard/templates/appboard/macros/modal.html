@@ -1,0 +1,21 @@
+
+
+<div class="modal fade" id="{{ id }}Modal" name="{{ id }}">
+    <div class="modal-dialog modal-{{ size }}">
+        <div class="modal-content">
+            <div class="modal-header">
+                {{ title }}
+            </div>
+            <div class="modal-body">
+                {{ content }}
+            </div>
+        </div>
+        <div class="modal-footer">
+            {% if cancel_text %}
+            <button type="button" id="btnCancel" class="btn btn-sm btn-ofx-blue" data-dismiss="modal">
+                {{ cancel_text }}
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>

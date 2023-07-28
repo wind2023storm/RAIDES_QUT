@@ -1,0 +1,255 @@
+.kanban-container {
+  position: relative;
+  box-sizing: border-box;
+  width: auto;
+  overflow-x: auto;
+  min-width: 100%;
+
+  margin: 0 0px 0 0;
+  border-radius: 3px;
+  min-height: 100px;
+  background-color: transparent;
+
+}
+
+.kanban-container * {
+  box-sizing: border-box;
+}
+
+.kanban-container:after {
+  clear: both;
+  display: block;
+  content: "";
+}
+
+/* Board */
+
+.kanban-board {
+  position: relative;
+  float: left;
+  /* background: transparent; */
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  margin: 0 20px 0 0;
+  border-radius: 3px;
+  width: 200px;
+  min-height: 40px;
+  height: 100%;
+
+  box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.15);
+  background-color: #f9f9f9;
+}
+
+.kanban-board.disabled-board {
+  opacity: 0.3;
+}
+
+/* .kanban-board.is-moving.gu-mirror {
+  transform: rotate(3deg);
+}
+
+.kanban-board.is-moving.gu-mirror .kanban-drag {
+  overflow: hidden;
+  padding-right: 50px;
+} */
+
+.kanban-board header {
+  position: relative;
+  font-weight: bold;
+  font-size: 20px;
+  color: black;
+  background-color: transparent;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 3px 3px 0 0;
+}
+
+.kanban-board header .kanban-title-board {
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+
+.kanban-board header .kanban-title-button {
+  float: right;
+}
+
+.kanban-board .kanban-drag {
+  min-height: 200px;
+  padding: 10px 15px;
+  background-color: transparent !important;
+}
+
+.kanban-board:after {
+  clear: both;
+  display: block;
+  content: "";
+}
+
+.kanban-board:not(:last-child) {
+  margin-right: 10px;
+}
+
+.kanban-board.disabled-board {
+  opacity: 0.3;
+}
+
+.kanban-board:hover {
+  box-shadow: 0 1px 3px 0 rgba(9,30,66,.25);
+}
+
+.kanban-board .kanban-item:last-child {
+  margin-bottom: 0;
+}
+
+.kanban-board .kanban-item:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+
+.kanban-board .card-add {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #5e6c84;
+  text-align: center;
+  border-top: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.kanban-board .card-add:hover {
+  background-color: #cdd2d4;
+}
+
+.kanban-board .card-add i {
+  margin-right: 5px;
+}
+
+.kanban-board .card-add input[type="text"] {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  margin-left: 5px;
+  width: 70%;
+}
+
+.kanban-board .card-add input[type="text"]::placeholder {
+  color: #5e6c84;
+}
+
+.kanban-board .card-add button[type="submit"] {
+  display: none;
+}
+
+.kanban-board .card-add .fa-times {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.kanban-board .card-add .fa-times:hover {
+  color: #b04632;
+}
+
+
+/* Kanban Item */
+
+.kanban-item {
+  position: relative;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  animation: append-animate 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  border-radius: 3px;
+
+  /* will-change: transform;
+  transform: translate3d(0, 0, 0); */
+  overflow: hidden;
+  word-break: break-word;
+
+  border: none;
+  background-color: white;
+  box-shadow: 0 1px 0 rgba(66, 56, 9, 0.25);
+  transition: background-color 0.2s ease;
+}
+
+@keyframes append-animate {
+	from {
+		transform: translateY(-20px);
+	}
+	to {
+		transform: translateY(0px);
+	}
+}
+
+.kanban-item:last-child {
+  margin: 0;
+}
+
+.kanban-item:hover,
+.kanban-item:focus {
+  background-color: #f4f5f7;
+}
+
+.kanban-item .card-header {
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #dfe3e6;
+}
+
+.kanban-item .card-description {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #5e6c84;
+}
+
+.kanban-item .card-footer {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #5e6c84;
+  background-color: #f4f5f7;
+  border-top: 1px solid #ccc;
+}
+
+.kanban-item .card-footer a {
+  color: #5e6c84;
+  text-decoration: none;
+}
+
+.kanban-item .card-footer a:hover {
+  text-decoration: underline;
+}
+
+.kanban-item .card-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+
+
+
+/* Dragula CSS  */
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 999999 !important;
+  transform-origin: 0 0 !important;
+  pointer-events: none;
+}
+
+/* .gu-hide {
+  display: none !important;
+} */
+
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.gu-transit {
+  opacity: 0.2 !important;
+  transform: rotate(0deg) !important;
+}
+

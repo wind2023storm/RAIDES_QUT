@@ -1,0 +1,82 @@
+/*======================================
+=         13. Counters Css             =
+=======================================*/
+
+.fun-fact-style-one {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    & .single-fun-fact {
+        padding: 0 15px;
+        margin-bottom: 30px;
+    }
+    @media #{$large-mobile}{
+        justify-content: flex-start;
+        & .single-fun-fact {
+            width: 33.33%;
+        }
+    }
+    @media #{$small-mobile}{
+        justify-content: center;
+        text-align: center;
+        & .single-fun-fact {
+            width: 100%;
+        }
+    }
+}
+
+.fun-fact-style-two {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    & .single-fun-fact {
+        padding: 0 15px;
+        margin-bottom: 30px;
+    }
+    @media #{$tablet-device}{
+        justify-content: center;
+        & .single-fun-fact {
+            width: 50%;
+        }
+    }
+    @media #{$large-mobile}{
+        justify-content: center;
+        & .single-fun-fact {
+            width: 50%;
+        }
+    }
+    @media #{$small-mobile}{
+        justify-content: center;
+        text-align: center;
+        & .single-fun-fact {
+            width: 100%;
+        }
+    }
+}
+
+
+.fun-fact {
+    &--one {
+        & .fun-fact__count {
+            color: $theme-color--default;
+        }
+        & .fun-fact__text {
+            font-size: 15px;
+            font-weight: 600;
+            color: $theme-color--default;
+        }
+    }
+    &--two {
+        margin-top: 40px;
+        & .fun-fact__count {
+            line-height: 1;
+            font-size: 32px;
+            color: $theme-color--default;
+        }
+        & .fun-fact__text {
+            font-size: 15px;
+            font-weight: 600;
+            color: $theme-color--default;
+        }
+    }
+}

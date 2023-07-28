@@ -1,0 +1,69 @@
+
+
+
+
+
+
+
+
+.ht-social-networks  {
+    .item {
+        display: inline-block;
+        color: #fff;
+        margin-right: 35px;
+        font-size: 18px;
+        &:last-child {
+            margin-right: 0;
+        }
+        &:hover {
+            color: $white;
+        }
+    }
+    &.default-color {
+        .item {
+            display: inline-block;
+            color: $theme-color--three;
+            margin-right: 35px;
+            font-size: 18px;
+            &:last-child {
+                margin-right: 0;
+            }
+            &:hover {
+                color: $white;
+            }
+        }
+    }
+    
+    & .social-link {
+        &::before {
+            color: #ccc;
+        }
+    }
+    &.style-two-icon {
+        .item {
+            display: inline-block;
+            color: $theme-color--default;
+            margin-right: 15px;
+            font-size: 18px;
+            &:last-child {
+                margin-right: 0;
+            }
+            
+            &:hover {
+                color: $white;
+            }
+            & .social-link {
+                border-radius: 50%;
+                height: 36px;
+                width: 36px;
+                line-height: 36px;
+                text-align: center;
+                &:hover {
+                    background: $theme-color--default;
+                    color: $white;
+                }
+            }
+        }
+    }
+    
+}

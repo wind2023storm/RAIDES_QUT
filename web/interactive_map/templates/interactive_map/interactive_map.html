@@ -1,0 +1,563 @@
+{% extends 'appboard/base.html' %}
+
+{% load static %}
+
+{% block head_title %}
+    Interactive Map
+{% endblock %}
+
+{% block extra_head %}
+  <!--Map-->
+    {% comment %} <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
+    /> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'interactive_map/css/map.css' %}" />
+    <!--Search Map-->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.7/dist/leaflet-search.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.7/dist/leaflet-search.min.css"
+    />
+    <!--Draw on Map-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css"
+    />
+    
+    <!--Find overlapping polygons-->
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <!--Convert Circle to Polygon-->
+    <script src="https://cdn.jsdelivr.net/npm/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+
+    <!--MiniMap-->
+    <link
+      rel="stylesheet"
+      href="{% static 'interactive_map/css/Control.MiniMap.css' %}"
+    />
+    <script
+      src="{% static 'interactive_map/js/Control.MiniMap.js' %}"
+      type="text/javascript"
+    ></script>
+
+    <!--Fullscreen-->
+    <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css"
+      rel="stylesheet"
+    />
+
+    <!--Legend-->
+    <link
+      rel="stylesheet"
+      href="{% static 'interactive_map/css/legend.css' %}"
+    />
+    <script src="{% static 'interactive_map/js/legend.js' %}"></script>
+<style>
+  thead {
+    color: black !important;
+  }
+  tbody {
+    color: gray !important;
+  }
+    .cards tbody tr {
+        float: left;
+        width: 100%;
+        margin: 0.5rem;
+        border: 0.0625rem solid rgba(0, 0, 0, .125);
+        border-radius: .25rem;
+        box-shadow: 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
+     }
+     
+     .cards tbody td {
+        display: block;
+     }
+     
+     .cards thead {
+        display: none;
+        color: #8080 ;
+     }
+     
+     .cards td:before {
+        content: attr(data-label);
+        position: relative;
+        float: left;
+        color: #808080;
+        min-width: 4rem;
+        margin-left: 0;
+        margin-right: 1rem;
+        text-align: left;   
+     }
+     
+     tr.selected td:before {
+        color: #CCC;
+     }
+     
+     .table .avatar {
+        width: 50px;
+     }
+     
+     .cards .avatar {
+        width: 150px;
+        height: 150px;
+        margin: 15px;
+     }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid content-margin-top-offest mb-5">
+  <div class="container "> 
+
+    <h4 class="text-ofx-blue pb-4">Queensland Tenure Monitoring Map<i class="ms-2 fas fa-fw fal fa-map"></i></h4>
+  <!--Button to disaply table-->
+  <div id="map-header">Select tenement(s) displayed using the toolbar to see their details</div>
+  <!--Display Map-->
+  <div id="map"></div>
+  <!-- Dropdown Table Panel-->
+  <div id="map-footer">Results are displayed here</div>
+  <div id="table-panel">
+    <!--Display Table-->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card shadow mb-2">
+            <!-- Tabs on the panel-->
+            <div class="card-header">
+              <div
+                class="nav nav-tabs card-header-tabs"
+                id="nav-tab"
+                role="tablist"
+              >
+              <!--EPM-->
+                <a
+                  class="nav-link"
+                  id="nav-epm-grant-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-epm-grant"
+                  role="tab"
+                  aria-controls="nav-epm-grant"
+                  aria-selected="true"
+                >EPM Grants <span class="badge rounded-pill"></span></a>
+                <a
+                  class="nav-link"
+                  id="nav-epm-applications-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-epm-applications"
+                  role="tab"
+                  aria-controls="nav-epm-applications"
+                  aria-selected="false"
+                >EPM Applications <span class="badge rounded-pill"></span></a>
+                <!--MDL-->
+                <a
+                  class="nav-link"
+                  id="nav-mdl-grant-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-mdl-grant"
+                  role="tab"
+                  aria-controls="nav-mdl-grant"
+                  aria-selected="true"
+                >MDL Permit Grants <span class="badge rounded-pill"></span></a>
+                <a
+                  class="nav-link"
+                  id="nav-mdl-applications-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-mdl-applications"
+                  role="tab"
+                  aria-controls="nav-mdl-applications"
+                  aria-selected="false"
+                >MDL Permit Applications <span class="badge rounded-pill"></span></a>
+                <!--ML-->
+                <a
+                  class="nav-link"
+                  id="nav-ml-grant-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-ml-grant"
+                  role="tab"
+                  aria-controls="nav-ml-grant"
+                  aria-selected="true"
+                >ML Permit Grants <span class="badge rounded-pill"></span></a>
+                <a
+                  class="nav-link"
+                  id="nav-ml-applications-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-ml-applications"
+                  role="tab"
+                  aria-controls="nav-ml-applications"
+                  aria-selected="false"
+                >ML Permit Applications <span class="badge rounded-pill"></span></a>
+                <!--EPC-->
+                <a
+                  class="nav-link"
+                  id="nav-epc-grant-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-epc-grant"
+                  role="tab"
+                  aria-controls="nav-epc-grant"
+                  aria-selected="true"
+                >EPC Permit Grants <span class="badge rounded-pill"></span></a>
+                <a
+                  class="nav-link"
+                  id="nav-epc-applications-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-epc-applications"
+                  role="tab"
+                  aria-controls="nav-epc-applications"
+                  aria-selected="false"
+                >EPC Permit Applications <span class="badge rounded-pill"></span></a>
+                <!--CADASTRE-->
+                <a
+                  class="nav-link"
+                  id="nav-cadastre-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#nav-cadastre"
+                  role="tab"
+                  aria-controls="nav-cadastre"
+                  aria-selected="false"
+                >Cadastre <span class="badge rounded-pill"></span></a>
+              </div>
+            </div>
+
+            <div
+              class="card-body tab-content overflow-auto"
+              id="nav-tabContent"
+            >
+            <!-- EPM -->
+              <!-- Grant Tab-->
+              <div
+                class="tab-pane"
+                id="nav-epm-grant"
+                role="tabpanel"
+                aria-labelledby="nav-epm-grant-tab"
+              >
+                <!--Grant Table-->
+                <table id="epm-grant-table" class="table table-sm dt-responsive table-hover" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th>Permit Number</th>
+                      <th>Permit Type</th>
+                      <th>Permit Status</th>
+                      <th>Permit sub-status</th>
+                      <th>Lodge Date</th>
+                      <th>Grant Date</th>
+                      <th>Expiry Date</th>
+                      <th>Authorised Holder Name</th>
+                      <th>Native Title Category</th>
+                      <th>Mineral</th>
+                      <th>Purpose</th>
+                      <th>Sub-Block Count</th>
+                      <th>Permit Name</th>
+                      <th>Permit Number Other</th>
+                      <th>Permit Type Abbreviation</th>
+                      <th>Permit ID</th>
+                      <th>MDL</th>
+                      <th>ML</th>
+                      <th>EPC</th>
+                      <th>Lot / Plan Number</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  </tbody>
+
+                </table>
+              </div>
+
+              <!-- Application Tab-->
+              <div
+                class="tab-pane"
+                id="nav-epm-applications"
+                role="tabpanel"
+                aria-labelledby="nav-epm-applications-tab"
+              >
+                <!--Table-->
+                <table id="epm-applications-table" class="table table-sm dt-responsive table-hover" style="width: 100%">
+                  <thead>
+                    <tr>
+                        <th>Permit Number</th>
+                        <th>Permit Type</th>
+                        <th>Permit Status</th>
+                        <th>Permit sub-status</th>
+                        <th>Lodge Date</th>
+                        <th>Authorised Holder Name</th>
+                        <th>Native Title Category</th>
+                        <th>Mineral</th>
+                        <th>Purpose</th>
+                        <th>Sub-Block Count</th>
+                        <th>Permit Name</th>
+                        <th>Permit Number Other</th>
+                        <th>Permit Type Abbreviation</th>
+                        <th>Permit ID</th>
+                        <th>MDL</th>
+                        <th>ML</th>
+                        <th>EPC</th>
+                        <th>Lot / Plan Number</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- MDL -->
+              <!-- Grant Tab-->
+              <div
+                class="tab-pane"
+                id="nav-mdl-grant"
+                role="tabpanel"
+                aria-labelledby="nav-mdl-grant-tab"
+              >
+                <!--Grant Table-->
+                <table id="mdl-grant-table" class="table table-sm dt-responsive table-hover" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th>Permit Number</th>
+                      <th>Permit Type</th>
+                      <th>Permit Status</th>
+                      <th>Permit sub-status</th>
+                      <th>Lodge Date</th>
+                      <th>Grant Date</th>
+                      <th>Expiry Date</th>
+                      <th>Authorised Holder Name</th>
+                      <th>Native Title Category</th>
+                      <th>Mineral</th>
+                      <th>Purpose</th>
+                      <th>Area(ha)</th>
+                      <th>Permit Name</th>
+                      <th>Permit Number Other</th>
+                      <th>Permit Type Abbreviation</th>
+                      <th>Permit ID</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  </tbody>
+
+                </table>
+              </div>
+
+              <!-- Application Tab-->
+              <div
+                class="tab-pane"
+                id="nav-mdl-applications"
+                role="tabpanel"
+                aria-labelledby="nav-mdl-applications-tab"
+              >
+                <!--Table-->
+                <table id="mdl-applications-table" class="table table-sm dt-responsive table-hover" style="width: 100%">
+                  <thead>
+                    <tr>
+                        <th>Permit Number</th>
+                        <th>Permit Type</th>
+                        <th>Permit Status</th>
+                        <th>Permit sub-status</th>
+                        <th>Lodge Date</th>
+                        <th>Authorised Holder Name</th>
+                        <th>Native Title Category</th>
+                        <th>Mineral</th>
+                        <th>Purpose</th>
+                        <th>Area(ha)</th>
+                        <th>Permit Name</th>
+                        <th>Permit Number Other</th>
+                        <th>Permit Type Abbreviation</th>
+                        <th>Permit ID</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- ML -->
+              <!-- Grant Tab-->
+              <div
+                class="tab-pane"
+                id="nav-ml-grant"
+                role="tabpanel"
+                aria-labelledby="nav-ml-grant-tab"
+              >
+                <!--Grant Table-->
+                <table id="ml-grant-table" class="table table-sm dt-responsive table-hover" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th>Permit Number</th>
+                      <th>Permit Type</th>
+                      <th>Permit Status</th>
+                      <th>Permit sub-status</th>
+                      <th>Lodge Date</th>
+                      <th>Grant Date</th>
+                      <th>Expiry Date</th>
+                      <th>Authorised Holder Name</th>
+                      <th>Native Title Category</th>
+                      <th>Mineral</th>
+                      <th>Purpose</th>
+                      <th>Area(ha)</th>
+                      <th>Permit Name</th>
+                      <th>Permit Number Other</th>
+                      <th>Permit Type Abbreviation</th>
+                      <th>Permit ID</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  </tbody>
+
+                </table>
+              </div>
+
+              <!-- Application Tab-->
+              <div
+                class="tab-pane"
+                id="nav-ml-applications"
+                role="tabpanel"
+                aria-labelledby="nav-ml-applications-tab"
+              >
+                <!--Table-->
+                <table id="ml-applications-table" class="table table-sm dt-responsive table-hover" style="width: 100%">
+                  <thead>
+                    <tr>
+                        <th>Permit Number</th>
+                        <th>Permit Type</th>
+                        <th>Permit Status</th>
+                        <th>Permit sub-status</th>
+                        <th>Lodge Date</th>
+                        <th>Authorised Holder Name</th>
+                        <th>Native Title Category</th>
+                        <th>Mineral</th>
+                        <th>Purpose</th>
+                        <th>Area(ha)</th>
+                        <th>Permit Name</th>
+                        <th>Permit Number Other</th>
+                        <th>Permit Type Abbreviation</th>
+                        <th>Permit ID</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- EPC -->
+              <!-- Grant Tab-->
+              <div
+                class="tab-pane"
+                id="nav-epc-grant"
+                role="tabpanel"
+                aria-labelledby="nav-epc-grant-tab"
+              >
+                <!--Grant Table-->
+                <table id="epc-grant-table" class="table table-sm dt-responsive table-hover" style="width: 100%">
+                  <thead>
+                    <tr>
+                      <th>Permit Number</th>
+                      <th>Permit Type</th>
+                      <th>Permit Status</th>
+                      <th>Permit sub-status</th>
+                      <th>Lodge Date</th>
+                      <th>Grant Date</th>
+                      <th>Expiry Date</th>
+                      <th>Authorised Holder Name</th>
+                      <th>Native Title Category</th>
+                      <th>Mineral</th>
+                      <th>Purpose</th>
+                      <th>Area(ha)</th>
+                      <th>Permit Name</th>
+                      <th>Permit Number Other</th>
+                      <th>Permit Type Abbreviation</th>
+                      <th>Permit ID</th>
+                  </tr>
+                  </thead>
+
+                  <tbody>
+                  </tbody>
+
+                </table>
+              </div>
+
+              <!-- Application Tab-->
+              <div
+                class="tab-pane"
+                id="nav-epc-applications"
+                role="tabpanel"
+                aria-labelledby="nav-epc-applications-tab"
+              >
+                <!--Table-->
+                <table id="epc-applications-table" class="table table-sm dt-responsive table-hover" style="width: 100%">
+                  <thead>
+                    <tr>
+                        <th>Permit Number</th>
+                        <th>Permit Type</th>
+                        <th>Permit Status</th>
+                        <th>Permit sub-status</th>
+                        <th>Lodge Date</th>
+                        <th>Authorised Holder Name</th>
+                        <th>Native Title Category</th>
+                        <th>Mineral</th>
+                        <th>Purpose</th>
+                        <th>Area(ha)</th>
+                        <th>Permit Name</th>
+                        <th>Permit Number Other</th>
+                        <th>Permit Type Abbreviation</th>
+                        <th>Permit ID</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- cadastre Tab-->
+              <div
+                class="tab-pane"
+                id="nav-cadastre"
+                role="tabpanel"
+                aria-labelledby="nav-cadastre-tab"
+              >
+                <!--Table-->
+                <table id="cadastre-table" class="table table-sm dt-responsive" style="width: 100%">
+                  <thead>
+                    <tr>
+                        <th>LOT</th>
+                        <th>PLAN</th>
+                        <th>ACC_CODE</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Tab Content Ends-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script src="{% static 'interactive_map/js/get_interactive_map.js' %}"></script>
+<!--Table-->
+<script type="text/javascript" src="https://cdn.datatables.net/select/1.1.2/js/dataTables.select.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.1.2/css/select.dataTables.min.css">
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
+
+{% comment %} <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css"> {% endcomment %}
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.colVis.min.js"></script>
+
+{% endblock %}

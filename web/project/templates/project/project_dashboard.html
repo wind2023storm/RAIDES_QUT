@@ -1,0 +1,1010 @@
+{% extends 'appboard/base.html' %}
+{% load modal_tags %}
+{% load project_tags %}
+{% load static %}
+{% load humanize %}
+
+{% block head_title %}
+    {{ project.name }}
+{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+{% endblock %}
+
+
+{% block breadcrumb %}
+    <a class="nav-link" href="{% url 'project:index' %}">Project Index</a> /
+    <a class="nav-link" href="#">{{ project.name }}</a>
+{% endblock %}
+
+{% block content %}
+<div
+  id="flash-message" class="text-sm ms-4 mt-2">
+{% if messages %}
+{% for message in messages %} 
+{% if message.level == 25 %}
+<span
+  class="alert alert-success text-center p-2"> {{ message }}
+</span>
+{% endif %} {% endfor %} {% endif %}
+</div>
+    <button class="ms-2 btn btn-sm btn-ofx-blue position-absolute"
+            onclick='window.location.href="{% url 'project:index' %}";'>
+        <&nbsp Back
+    </button>
+    <div class="container-fluid">
+
+        <div class="row text-center mb-2 text-ofx-blue content-margin-top-offest">
+            <h4 class="mb-4 text-ofx-blue">Project Dashboard<i class="fa fa-chalkboard ms-2"></i></h4>
+       
+          </div>
+
+        {# Project Info #}
+        <div class="row mb-4">
+            <div class="col-12 mb-4 mb-xl-0">
+                
+                <table class="table table-sm table-borderless dataTable" id="project_info">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Owner</th>
+                        <th>Credits</th>
+                        <th>Created</th>
+                        <th>Disk Space Usage</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.owner.full_name }}</td>
+                        <td>{{ project.credits|intcomma }}</td>
+                        <td>{{ project.created_at }}</td>
+                        <td>{{ project.disk_space_usage_str }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+
+        {# Project Dashboard Menu Items Start #}
+        <div class="row mb-2">
+            <div class="col-sm-12 col-xl-8 mb-4 mb-xl-0">
+                {# MAIN NAV #}
+                <div class="card shadow mb-2">
+                    {# Nav Header #}
+                    <div class="card-header">
+                        <div class="nav nav-tabs card-header-tabs p-dash-nav" id="nav-tab" role="tablist">
+                            <a class="nav-link active" id="nav-tenements-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-tenements" aria-controls="nav-tenements" aria-selected="true">
+                                Tenements
+                            </a>
+                            <a class="nav-link" id="nav-targets-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-targets" aria-controls="nav-targets" aria-selected="false">
+                                Prospects
+                            </a>
+                            <a class="nav-link" id="nav-members-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-members" aria-controls="nav-members" aria-selected="false">
+                                Members
+                            </a>
+                            <a class="nav-link" id="nav-datasets-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-datasets" aria-controls="nav-datasets" aria-selected="false">
+                                Datasets
+                            </a>
+                            <a class="nav-link" id="nav-models-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-models" aria-controls="nav-models" aria-selected="false">
+                                Models
+                            </a>
+                            <a class="nav-link" id="nav-reports-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-reports" aria-controls="nav-reports" aria-selected="false">
+                                Reports
+                            </a>
+                            {% if project|is_admin:member %}
+                                <a class="nav-link" id="nav-settings-tab" data-bs-toggle="tab"
+                                   data-bs-target="#nav-settings" aria-controls="nav-settings" aria-selected="false">
+                                    Settings
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {# Nav Content #}
+                    <div class="card-body tab-content overflow-auto" id="nav-tabContent">
+                        {# Tenements Tab #}
+                        <div class="tab-pane active" id="nav-tenements" role="tabpanel"
+                             aria-labelledby="nav-tenements-tab">
+                            <table id="tenement-table" class=" table table-sm dt-responsive w-100" >
+                                <thead>
+                                <tr>
+                                    <th>Permit ID</th>
+                                    <th>Permit Status</th>
+                                    <th>Grant Date</th>
+                                    <th>Tags</th>
+                                    <th>
+                                        {% if project|is_admin:member %}
+                                            <span data-bs-toggle="modal" data-bs-target="#addTenementModal">
+                                            <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                    title="Add Tenement">
+                                                <span class="fa fa-plus"></span>
+                                            </button>
+                                        </span>
+                                        {% endif %}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <a href="{% url 'spirit:category:detail' slug=project.slug %}">
+                                <button class="btn btn-ofx-blue">                                                
+                                    KMS Tenements
+                                </button>
+                            </a>
+                        </div>
+                        {# Targets Tab#}
+                        <div class="tab-pane" id="nav-targets" role="tabpanel" aria-labelledby="nav-targets-tab">
+                            <table id="target-table" class=" table table-sm dt-responsive w-100">
+                                <thead>
+                                <tr>
+                                    <th>Permit ID</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Location (Lat/Long)</th>
+                                    <th>
+                                        {% if project|is_admin:member %}
+                                            <span data-bs-toggle="modal" data-bs-target="#addEditTargetModal">
+                                            <button id = "addTargetButton" class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                    data-bs-toggle="tooltip" data-bs-placement="left" title="Add Prospect" >
+                                                <span class="fa fa-plus"></span>
+                                            </button>
+                                        </span>
+                                        {% endif %}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        {# Members Tab #}
+                        <div class="tab-pane" id="nav-members" role="tabpanel" aria-labelledby="nav-members-tab">
+                            <table id="member-table" class=" table table-sm dt-responsive w-100">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Permission</th>
+                                    <th>Join Date</th>
+                                    <th>
+                                        {% if project|is_admin:member %}
+                                            <span data-bs-toggle="modal" data-bs-target="#inviteUserModal">
+                                            <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                    title="Invite Member">
+                                                <span class="fa fa-plus"></span>
+                                            </button>
+                                        </span>
+                                        {% endif %}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        {# Datasets Tab#}
+                        <div class="tab-pane" id="nav-datasets" role="tabpanel" aria-labelledby="nav-datasets-tab">
+                            <table id="dataset-table" class=" table table-sm w-100">
+                                <thead>
+                                <tr>
+                                    <th>Dataset</th>
+                                    <th>File Size</th>
+                                    <th>Date Created</th>
+                                    <th>
+                                        {% if project|is_write:member %}
+                                            <span data-bs-toggle="modal" data-bs-target="#addDatasetModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                data-bs-toggle="tooltip" data-bs-placement="left" title="Add Dataset">
+                                            <span class="fa fa-plus"></span>
+                                        </button>
+                                    </span>
+                                        {% endif %}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        {# Models Tab#}
+                        <div class="tab-pane" id="nav-models" role="tabpanel" aria-labelledby="nav-models-tab">
+                            <table id="model-table" class=" table table-sm dt-responsive w-100">
+                                <thead>
+                                <tr>
+                                    <th>Model</th>
+                                    <th>File Size</th>
+                                    <th>Date Created</th>
+                                    <th>
+                                        {% if project|is_write:member %}
+                                            <span data-bs-toggle="modal" data-bs-target="#addModelModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                data-bs-toggle="tooltip" data-bs-placement="left" title="Add Model">
+                                            <span class="fa fa-plus"></span>
+                                        </button>
+                                    </span>
+                                        {% endif %}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        {# Reports Tab#}
+                        <div class="tab-pane" id="nav-reports" role="tabpanel" aria-labelledby="nav-reports-tab">
+                            <table id="report-table" class=" table table-sm dt-responsive w-100">
+                                <thead>
+                                <tr>
+                                    <th>Dataset</th>
+                                    <th>Cleaner Report</th>
+                                    <th>Analysis Report</th>
+                                    <th>Type</th>
+                                    <th><!-- Are actions necessary here? --></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        {# Settings Tab (What goes here?) #}
+                        {% if project|is_admin:member %}
+                            <div class="tab-pane" id="nav-settings" role="tabpanel" aria-labelledby="nav-settings-tab">
+                                Coming Soon
+                            </div>
+                        {% endif %}
+                    </div>
+                    {# End Nav Content #}
+                </div>
+
+                {# UTILITY BAR #}
+                <div class="float-end">
+                        {# TODO: Primary key for project isnt the same as the one in the KMS, something to do with a topic PK, how do i get this #}
+                        <button class="btn btn-sm btn-ofx-blue" type="button"
+                                onclick='window.location.href="{% url 'project:index' %}";'>
+                            Project Index <i class="fa fa-diagram-project"></i>
+                        </button>
+                        {# TODO: Reinclude Spirit #}
+                        {#                <button class="btn btn-sm btn-ofx-blue" type="button"#}
+                        {#                        onclick='window.location.href="{% url 'spirit:category:detail' slug=project.name|slugify %}";'>#}
+                        {#                    KMS <span class="fa fa-comment"></span> #}
+                        {#                </button>#}
+                        <button class="btn btn-sm btn-ofx-blue" type="button"
+                        onclick='window.location.href="{% url 'interactive_map:home' %}";'>
+                            Map <span class="fa fa-map-marker-alt"></span>
+                        </button>
+                        {% if project|is_owner:member %}
+                            <span data-bs-toggle="modal" data-bs-target="#deleteProjectModal">
+                            <button class="btn btn-sm btn-ofx-red" title="Delete Project">
+                                Delete <span class="fa fa-trash"></span>
+                            </button>
+                        </span>
+                        {% endif %}
+                    </div>
+          </div>
+            {# Project Map Box #}
+            <div class="col-sm-12 col-xl-4 mb-4 mb-xl-0" id='project_map_box' style="height:200px">
+            </div>
+        </div>
+        <div class="row">
+            {# Tasks / Map Row #}
+            <div class="col-sm-12 col-xl-8">
+                {# Pending Tenement Tasks Card #}
+                <div class="card shadow mb-2">
+                    <div class="card-header">
+                        <span class="font-weight-bold">Tasks</span>
+                    </div>
+                    <div class="card-body">
+                        {# Tenement Tasks Table #}
+                        <table id="task-table" class="table table-sm dt-responsive w-100">
+                            <thead>
+                            <tr>
+                                <th>Permit ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Authority</th>
+                                <th>Due Date</th>
+                                <th>Attachment</th>
+                                <th>
+                                    {% if project|is_write:member %}
+                                        <span data-bs-toggle="modal" data-bs-target="#createTaskModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="left" title="Create Task">
+                                            <span class="fa fa-plus"></span>
+                                        </button>
+                                    </span>
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+           
+        </div>
+    </div>
+
+    {% modalform id='messageUser' title='Message User' dynamic='true' %}
+        {% csrf_token %}
+        {{ messageUserForm.as_p }}
+        {# TODO: Message User form #}
+        <p>Coming Soon.</p>
+    {% endmodalform %}
+
+    {# MODALFORM SETUP #}
+    {% if project|is_write:member %}
+
+        {% modalform id='createTask' title='Create Task' submit_text='Create' %}
+            {% csrf_token %}
+            {{ createTaskForm.as_p }}
+        {% endmodalform %}
+
+        {% modalform id='addDataset' title='Add Dataset' submit_text='Upload' %}
+            {% csrf_token %}
+            {{ createDatasetForm.as_p }}
+        {% endmodalform %}
+
+        {% modalform id='addModel' title='Add Model' submit_text='Upload' %}
+            {% csrf_token %}
+            {{ createModelForm.as_p }}
+        {% endmodalform %}
+
+    {% endif %}
+
+    {% if project|is_admin:member %}
+        {# TENEMENT MODALS #}
+        {% modalform id='addTenement' title='Add Tenement' submit_text='Add'  %}
+            {% csrf_token %} 
+            {{addTenementForm.as_p}}    
+        {% endmodalform %}
+
+        {# TASK MODALS #}
+        {% modalform id='archiveTenementTask' title='Archive Task' submit_text='Archive' submit_class='btn-ofx-gray' dynamic='true' %}
+            {% csrf_token %}
+            <p>Archive the <b id="name"></b> task?</p>
+        {% endmodalform %}
+
+        {% modalform id='deleteTask' title='Delete Task' submit_text='Remove' submit_class='btn-ofx-red' dynamic='true' %}
+            {% csrf_token %}
+            <p>Remove <b id="name"></b> from the tenement?</p>
+        {% endmodalform %}
+
+        {# TARGET MODALS #}
+        {% modalform id='addEditTarget' title='Add Prospect' submit_text='Add' dynamic='true' %}
+            {% csrf_token %}
+            {{ createTargetForm.as_p }}
+            <input type="hidden" id="id_target_id" name="target_id">
+        {% endmodalform %}
+
+        {% modalform id='deleteTarget' title='Remove Prospect' submit_text='Remove' submit_class='btn-ofx-red' dynamic='true' %}
+            {% csrf_token %}
+            <p>Remove <b id="name"></b> from the project?</p>
+        {% endmodalform %}
+
+        {# USER MODALS #}
+        {% modalform id='inviteUser' title='Invite User' submit_text='Send Invite' %}
+            {% csrf_token %}
+            <p><i>Inviting non-registered users coming soon.</i></p>
+            {{ inviteUserForm.as_p }}
+        {% endmodalform %}
+
+        {% modalform id='modifyMember' title='Modify Member' submit_text='Save' submit_class='btn-ofx-gray' %}
+            {% csrf_token %}
+            {# TODO: Modify Member form #}
+            <p>Coming Soon.</p>
+        {% endmodalform %}
+
+        {% modalform id='deleteMember' title='Remove Member' submit_text='Remove' submit_class='btn-ofx-red' dynamic='true' %}
+            {% csrf_token %}
+            <p>Remove <b id="email"></b> from the project?</p>
+        {% endmodalform %}
+
+        {% modalform id='deleteTenement' title='Relinquish Tenement' submit_class='Relinquish' submit_class='btn-ofx-red' dynamic='true' %}
+            {% csrf_token %}
+            {{ deleteTenementForm.as_p }}
+            <p>Relinquish ownership of <b id="permit[type]"></b><b id="permit[number]"></b> from
+                this project?
+            </p>
+            <p>This action will <strong class="text-ofx-red">permanently</strong> delete the following:</p>
+            <ul>
+                <li>All Tasks and associated files.</li>
+                <li>All Targets within the Tenement.</li>
+            </ul>
+        {% endmodalform %}
+
+        {% modalform id='deleteDataset' title='Delete Dataset' submit_text='Delete' submit_class='btn-ofx-red' dynamic='true' %}
+            {% csrf_token %}
+            {{ deleteDatasetForm.as_p }}
+            <p>Delete dataset <b id="file[filename]"></b> from this project?
+            </p>
+            <p>This action will <strong class="text-ofx-red">permanently</strong> delete the following:</p>
+            <ul>
+                <li>All associated Dataclean reports.</li>
+                <li>All associated Analysis reports.</li>
+            </ul>
+        {% endmodalform %}
+
+        {% modalform id='deleteReport' title='Delete Report' submit_text='Delete' submit_class='btn-ofx-red' dynamic='true' %}
+            {% csrf_token %}
+            {{ deleteReportForm.as_p }}
+            <p>Delete report <b id="file[filename]"></b> from this
+                project?
+            </p>
+            <p>This action will <strong class="text-ofx-blue">not</strong> delete any of the following:</p>
+            <ul>
+                <li>Parent Dataset.</li>
+                <li>Any associated Cleaner reports.</li>
+            </ul>
+        {% endmodalform %}
+
+        {% modalform id='deleteModel' title='Delete Model' submit_text='Delete' submit_class='btn-ofx-red' dynamic='true' %}
+            {% csrf_token %}
+            {{ deleteModelForm.as_p }}
+            <p>Delete the model <b id="file[filename]"></b> from this
+                project?
+            </p>
+        {% endmodalform %}
+    {% endif %}
+
+    {% if project|is_owner:member %}
+
+        {% modalform id='deleteProject' title='Delete Project' submit_text='Delete' submit_class='btn-ofx-red' %}
+            {% csrf_token %}
+            {{ deleteProjectForm.as_p }}
+            <p>Permanently delete <b id="name">{{ project.name }}</b>
+            </p>
+            <p>This action will <strong class="text-ofx-red">permanently</strong> delete the following:</p>
+            <ul>
+                <li>The Project will be permanently deleted.</li>
+                <li>All Tenements assigned to the project will be unclaimed.</li>
+                <li>All Tasks and associated files.</li>
+                <li>All Targets and associated files.</li>
+                <li>All Datasets and associated files.</li>
+                <li>All Models and associated files.</li>
+                <li>All Reports and associated files.</li>
+            </ul>
+        {% endmodalform %}
+
+    {% endif %}
+
+    {# END MODALFORMS #}
+
+
+{% endblock %}
+
+{% block extra_body %}
+    <script type="text/javascript" src="{% static 'interactive_map/js/get_project_map.js' %}"></script>
+    <script type="text/javascript" src="{% static 'project/js/project_dashboard.js' %}"></script>
+    <script type="text/javascript" src="{% static 'interactive_map/js/get_target_map.js' %}"></script>
+
+    <script>
+        setTimeout(function () {
+            if( document.getElementById("flash-message") !== null)
+            document.getElementById("flash-message").style.display = "none";
+          }, 3000); 
+
+      
+          $('button[type="submit"]').on('click', function (event) {
+                formId = event.target.form.id;
+                const form = document.getElementById(formId);
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    form.classList.add('was-validated');
+                }      
+                 
+          });  
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            {% if project|is_admin:member %}
+
+            var location_input = document.getElementById("id_location_input");
+           
+            var previousValue = location_input.value;
+            location_input.addEventListener("input", function(event) {
+                if (location_input.value != previousValue) {
+                    location_input.value = previousValue;
+                }
+            });
+            location_input.addEventListener("change", function(event) {
+                if (location_input.value != previousValue) {
+                    location_input.value = previousValue;
+                }
+            });
+
+            {% endif %}
+            
+            let scrollYHeight = '300px'          
+            let tenementTable = $('#tenement-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+                columnDefs: [
+                { targets: [4], className: 'noowrap' }
+                 ],
+                columns: [
+                    {
+                        data: 'permit', bSortable: true,
+                        mRender(permit) {
+                            return `<a href="${permit['slug']}">${permit['display']}</a>`
+                        }
+                    },
+                    {data: 'status', bSortable: true},
+                    {data: 'date_granted', bSortable: true},
+                    {data: 'tags', bSortable: false},
+                    {
+                        data: 'actions', bSortable: false,
+                        
+                          mRender: function (permission) {
+                            "{% if project|is_admin:member %}"
+                                return ` 
+                                <div class="float-end">
+                                        <span data-bs-toggle="modal" data-bs-target="#deleteTenementModal">
+                                            <button class="btn btn-sm btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                                    title="Relinquish Tenement">
+                                                <span class="fa fa-trash"/>
+                                            </button>
+                                        </span></div>`;
+                                
+                            "{% endif %}"
+                            return null;}
+                    }
+
+                ],
+                ajax: {
+                    url: "{% url 'project:get_project_tenements' slug=project.slug %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data: function (response) {
+                        return response.data;
+                    },
+                }
+            });
+
+            let targetsTable = $('#target-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+                columnDefs: [
+                { targets: [4], className: 'noowrap' }
+                 ],
+                columns: [
+                    {
+                        data: 'permit', bSortable: true,
+                        mRender(data) {
+                            if(data.slug){
+                                return `<a href=` + data.slug + `>` + data.type + ' ' + data.number + `</a>`
+                            }
+                            return `<a> None </a>`
+                        }
+                    },
+                    {data: 'name', bSortable: true},
+                    {data: 'description', bSortable: false},
+                    {data: 'location', bSortable: true},
+                    {
+                        data: 'actions', bSortable: false,
+                       
+                            render: function (data, type, row) {
+                               " {% if project|is_admin:member %}"
+                                return `<div class="float-end">
+                                    <span data-bs-toggle="modal" data-bs-target="#addEditTargetModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-fa-gray" data-bs-toggle="tooltip" data-bs-placement="left" title="Edit Prospect">
+                                            <span class="fa-sharp fa-solid fa-pen"/>
+                                        </button>
+                                    </span>
+                                    <span data-bs-toggle="modal" data-bs-target="#deleteTargetModal">
+                                        <button class="btn btn-sm btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                                title="Delete Prospect">
+                                            <span class="fa fa-trash"/>
+                                        </button>
+                                    </span></div>`;
+                                "   {% endif %}"
+                            }
+                     
+                    }
+                ],
+                ajax: {
+                    url: "{% url 'project:get_targets' slug=project.slug %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    dataSrc: function (response) {
+                        for (let i=0; i < response.data.length; i++){
+                            var coordinates = response.data[i].location.split(" ")
+                            var marker = L.marker(coordinates)
+                            var intersected_tenement = get_intersected_tenements(response.project_tenements, marker.toGeoJSON(), L.geoJson(response.tenement_data))
+                            if (Object.keys(intersected_tenement).length !== 0){
+                                response.data[i].permit.slug = intersected_tenement.slug
+                                response.data[i].permit.type = intersected_tenement.type
+                                response.data[i].permit.number = intersected_tenement.number
+                            }
+                            response.data[i].location = "[ " + coordinates[0] +", " + coordinates[1] + " ]"
+                        }
+                        return response.data;
+                    },
+                }
+            });
+
+            let membersTable = $('#member-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+                columnDefs: [
+                { targets: [4], className: 'noowrap' }
+                 ],
+                columns: [
+                    {data: 'name', bSortable: true},
+                    {data: 'email', bSortable: true},
+                    {
+                        data: 'permission', bSortable: true,
+                        render: function (data, type, row) {
+                            switch (data) {
+                                case 'Owner':
+                                    return `<span class='text-ofx-orange'>Owner</span>`;
+                                case 'Admin':
+                                    return `<span class='text-ofx-red'>Admin</span>`;
+                                default:
+                                    return data;
+                            }
+                        }
+                    },
+                    {data: 'join_date', bSortable: true},
+                    {
+                        data: 'actions', bSortable: false,
+                        render: function (data, type, row) {
+                            let actions = "";
+
+                            if (data.indexOf('message') >= 0) {
+                                actions += `
+                                    <span data-bs-toggle="modal" data-bs-target="#messageUserModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-fa-blue" data-bs-toggle="tooltip" data-bs-placement="left" title="Send Message">
+                                            <span class="fa fa-comment"/>
+                                        </button>
+                                    </span>`;
+                            }
+                            if (data.indexOf('remove') >= 0) {
+                                actions += `
+                                    <span data-bs-toggle="modal" data-bs-target="#deleteMemberModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left" title="Remove Member">
+                                            <span class="fa fa-user-alt-slash"/>
+                                        </button>
+                                    </span>`;
+                            }
+                            if (data.indexOf('modify') >= 0) {
+                                actions += `
+                                <span data-bs-toggle="modal" data-bs-target="#modifyMemberModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-gray" data-bs-toggle="tooltip" data-bs-placement="left" title="Modify Member">
+                                        <span class="fa fa-cog"/>
+                                    </button>
+                                </span>`
+                            }
+                            return `<div class="float-end">${actions}</div>`;
+                        }
+                    }
+                ],
+                ajax: {
+                    url: "{% url 'project:get_members' slug=project.slug %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    data: function (response) {
+                        return response.data;
+                    },
+                }
+            });
+
+            let taskTable = $('#task-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+                order: [[4, "asc"]],
+                columnDefs: [
+                { targets: [6], className: 'noowrap' }
+                 ],
+                columns: [
+                    {
+                        data: 'permit', bSortable: true,
+                        mRender(data) {
+                            return `<a href="${data['url']}">${data['type']} ${data['number']}</a>`
+                        }
+                    },
+                    {data: 'name', bSortable: true},
+                    {data: 'description', bSortable: true},
+                    {data: 'authority', bSortable: true},
+                    {data: 'due_date', bSortable: true},
+                    {
+                        data: 'attachments', bSortable: false,
+                        render: function (data, type, row) {
+                            let files = data['files'];
+                            let options = '';
+
+                            $.each(files, function (i, file) {
+                                options += `
+                                    <span class="dropdown-item">
+                                        <a href="${file['url']}" download>${file['filename']}</a>
+                                        <span class="text-sm text-ofx-gray">${file['size']}</span>
+                                    </span>`
+                            });
+
+                            return options ? `
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-ofx-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        ${files.length} Files (<span class="text-sm text-ofx-dark">${data['size']}</span>)
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        ${options}
+                                    </div>
+                                </div>` : ''
+                        }
+                    },
+                    {
+                        data: 'actions', bSortable: false,
+                       
+                            mRender: function () {
+                                " {% if project|is_admin:member %}"
+                                return `
+                                <div class="float-end">
+                                    <span data-bs-toggle="modal" data-bs-target="#deleteTaskModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                                title="Delete Task">
+                                            <span class="fa fa-trash"/>
+                                        </button>
+                                    </span>
+                                </div>`
+                               
+                                "   {% endif %}"
+                            }
+                     
+                    }
+                ],
+                createdRow: function (row, data) {
+                    $(row).attr('id', data.id);
+                    $(row).attr('name', data.name);
+                },
+                ajax: {
+                    url: "{% url 'project:get_tasks' slug=project.slug %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    data: function (response) {
+                        return response.data;
+                    },
+                }
+            });
+
+            let datasetTable = $('#dataset-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+                "retrieve": true,
+                columnDefs: [
+                { targets: [3], className: 'noowrap' }
+                 ],
+                columns: [
+                    {
+                        data: 'file', bSortable: true, width: "20%",
+                        mRender(data) {
+                            return `<a href=` + data.url + `>` + data.filename + `</a>`
+                        }
+                    },
+                    {data: 'size', bSortable: false},
+                    {data: 'dateCreated', bSortable: true},
+                    {
+                        data: 'actions', bSortable: false,
+
+                            mRender() {
+                                "{% if project|is_admin:member %}"
+                                return `<div class="float-end">
+                                <span data-bs-toggle="modal" data-bs-target="#deleteDatasetModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                            title="Delete Dataset">
+                                        <span class="fa fa-trash"/>
+                                    </button>
+                                </span></div>`;
+                                "  {% endif %}"
+                                return null;
+                            }
+                      
+                    }
+                ],
+                ajax: {
+                    url: "{% url 'project:get_datasets' slug=project.slug %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    data: function (response) {
+                        return response.data;
+                    },
+                }
+            });
+            let modelTable = $('#model-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+                columnDefs: [
+                { targets: [3], className: 'noowrap' }
+                 ],
+                columns: [
+                    {
+                        data: 'file', bSortable: true, width: "20%",
+                        mRender(data) {
+                            return `<a href=` + data.url + `>` + data.filename + `</a>`
+                        }
+                    },
+                    {data: 'size', bSortable: false},
+                    {data: 'dateCreated', bSortable: true},
+                    {
+                        data: 'actions', bSortable: false,
+
+                       
+                            mRender() {
+                                " {% if project|is_admin:member %}"
+                                return `<div class="float-end">
+                                <span data-bs-toggle="modal" data-bs-target="#deleteModelModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                            title="Delete Model">
+                                        <span class="fa fa-trash"/>
+                                    </button>
+                                </span></div>`;
+                                "    {% endif %}"
+                            }
+                    
+                    }
+                ],
+                ajax: {
+                    url: "{% url 'project:get_models' slug=project.slug %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data: function (response) {
+                        return response.data;
+                    },
+                }
+            });
+            let reportTable = $('#report-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+              
+                columns: [
+                    {
+                        data: 'dataset', bSortable: true,
+                        render: function (data, type, row) {
+                            return `<a href=` + data.url + `>` + data.filename + `</a>`
+                        }
+                    },
+                    {
+                        data: 'cleaner', bSortable: true,
+                        render: function (data, type, row) {
+                            return (data) ? `<a href=` + data.url + `>` + data.filename + `</a>` : "";
+                        }
+                    },
+                    {
+                        data: 'report', bSortable: true,
+                        render: function (data, type, row) {
+                            return (data) ? `<a href=` + data.url + `>` + data.filename + `</a>` : "";
+                        }
+                    },
+                    {
+                        data: 'type', bSortable: true,
+                        render: function (data, type, row) {
+                            let format_data = data.replace(/\b\w/g, c => c.toUpperCase());
+                            switch (data) {
+                                case 'cleaner':
+                                    return '<span class="text-ofx-red">' + format_data + '</span>'
+                                case 'analysis':
+                                    return '<span class="text-ofx-blue">' + format_data + '</span>'
+                                default:
+                                    return format_data
+                            }
+                        }
+                    },
+                    {
+                        data: 'actions', bSortable: false,
+                       
+                            mRender(permission) {
+                                " {% if project|is_admin:member %}"
+                                return `<div class="float-end">
+                                <span data-bs-toggle="modal" data-bs-target="#deleteReportModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                            title="Delete Report">
+                                        <span class="fa fa-trash"/>
+                                    </button>
+                                </span></div>`;
+                                "  {% endif %}"
+                            }
+                      
+                    }
+                ],
+                /* TODO: Re-enable reports request once Geochem is done
+                    ajax: {
+                        url: "{% url 'project:get_reports' slug=project.slug %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data: function(response) {
+                        return response.data;
+                    },
+                }
+                */
+            });
+            $('#project_map_box').load("{% url 'project:get_project_map' slug=project.slug %}");
+          
+            //$('#addTargetButton').on('click',function (e) {
+            //    setTimeout(function(){ target_map.invalidateSize()}, 200);
+            //});
+        });
+    </script>
+    {% endblock %}
+
+
+
+
+
+
+
+{# Accordion Menu Begin #}
+{#    <div class="row">#}
+{#        <div class="col-12">#}
+{#            <div id="accordion">#}
+{#     Accordion Item 1 #}
+{#                <div class="card shadow">#}
+{#                    <div class="card-header">#}
+{#                        <a class="card-link" data-bs-toggle="collapse" href="#collapseOne">#}
+{#                            <span class="font-weight-bold">Accordion Item 1</span>#}
+{#                        </a>#}
+{#                    </div>#}
+{#                    <div class="collapse show" id="collapseOne" data-parent="#accordion">#}
+{#                        <div class="card-body">#}
+{#                            Stuff here...#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#     Accordion Item 2 #}
+{#                <div class="card shadow">#}
+{#                    <div class="card-header">#}
+{#                        <a class="collapsed card-link" data-bs-toggle="collapse" href="#collapseTwo">#}
+{#                            <span class="font-weight-bold">Accordion Item 2</span>#}
+{#                        </a>#}
+{#                    </div>#}
+{#                    <div class="collapse" id="collapseTwo" data-parent="#accordion">#}
+{#                        <div class="card-body">#}
+{#                            More Stuff here...#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#     Accordion Item 3 #}
+{#                <div class="card shadow">#}
+{#                    <div class="card-header">#}
+{#                        <a class="collapsed card-link" data-bs-toggle="collapse" href="#collapseThree">#}
+{#                            <span class="font-weight-bold">Accordion Item 3</span>#}
+{#                        </a>#}
+{#                    </div>#}
+{#                    <div class="collapse" id="collapseThree" data-parent="#accordion">#}
+{#                        <div class="card-body">#}
+{#                            Even More Stuff here...#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#            </div>#}
+{##}
+{#        </div>#}
+{#    </div>#}
+{# Accordion Menu End #}

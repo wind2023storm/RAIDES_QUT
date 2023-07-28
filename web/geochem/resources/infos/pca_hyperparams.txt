@@ -1,0 +1,7 @@
+*Brief Explanation of Hyperparameters
+The number of features: The number of dimensions the PCA space should have as an integer or proportion.
+Random state: The random seed used to produce results. Setting this makes results consistent.
+SVD Solver: The singular value decomposition solver to use. 'auto' will select a policy based on the shape of the data and the number of components to be in the final space. It will use the randomized method if the data is greater than 500x500 and the number of components is lower than 80% of the smallest dimension. 'full' will run an exact SVD and postprocess the components. 'randomized' is a more efficient method of calulating the SVD. 'arpack' used the ARPACK solver for sparse data.
+Tolerance: The tolerance for singular values for the 'arpark' solver.
+Number of iterations with randomised solver: The number of iterations for the power method when using the 'randomized' SVD solver.
+Whiten: If True, vectors are multiplied by the square root of the number of samples and divided by the singular values. This removes some information in the transformed space but can somtimes increase predictive accuracy.

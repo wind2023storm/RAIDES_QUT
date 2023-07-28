@@ -1,0 +1,26 @@
+Simple dataset stats - Retrieves number of columns and rows, the number of empty cells per row and column and the size of the dataset in memory.
+
+K Means - A clustering algorithm that tries to classify all data points into one of k clusters.
+k - The number of clusters to assign the data to. 
+
+Random Forest Regression - Performs a regression on a numerical dataset by creating a number of decision trees.
+Target Column - The column that the model should try to predict.
+Columns to Use (subset_X) - If you only want to check this on a subset of the columns in the dataset, specify them here.
+Train/Test Dataset Split Proportion (data_split) - This determines what proportion of the dataset will be sued to train the model. The remaining data will be used to test the model, comparing its predictions with the actual recorded value.
+
+Principal Component Analysis - Performs a change of basis on the dataset, which can be used to reduce the dimensionality of the dataset.
+Columns to Use (subset_X) - If you only want to check this on a subset of the columns in the dataset, specify them here.
+Normalise Data - Selecting this option will first normalise the data column wise.
+Number of components (n_components) - The number of dimensions the dataset should be transformed into. If this is set to be a number between 0 and 1, this will keep the necessary number of principal components as to ensure this proportion of the variability of the dataset is explained.
+Target Column - If this is selected, this column will not be included in the PCA.
+
+
+Hierarchical Clustering Analysis - Performs a clustering of the dataset where clusters are are in a hierarchy.
+Columns to Use (subset_X) - If you only want to check this on a subset of the columns in the dataset, specify them here.
+Transpose Data - If selected this will transpose the data so the columns will be clustered instead.
+Normalise Data - If selected, the data will be normalised first.
+Method - The method to use in linking clusters together.
+Metric - The distance metric to use to determine how close certain points are.
+
+Correlation Coefficients - Computes the Pearson, Kendall and Spearman correlation coefficients for each pair of columns in the datasets.
+Columns to Use (subset_X) - If you only want to check this on a subset of the columns in the dataset, specify them here.

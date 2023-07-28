@@ -1,0 +1,43 @@
+/*======================================
+=            14. Listing Css           =
+=======================================*/
+.choose-us-content {
+    padding-left: 30px;
+    @media #{$desktop-device,$tablet-device,$large-mobile}{
+        padding-left: 0;
+    }
+    &_left {
+       padding-right: 30px;
+        @media #{$desktop-device,$tablet-device,$large-mobile}{
+            padding-right: 0;
+        } 
+    }
+}
+.choose-itme-wrap {
+    max-width: 458px;
+}
+.single-choose-item {
+    display: flex;
+    margin-top: 27px;
+    & .choose-item-images {
+       width: 80px;
+    }
+    & .choose-icon-small {
+       width: 40px;
+    }
+    & .choose-item-text {
+        padding-left: 12px;
+        & h4 {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        & p {
+            font-weight: 300;
+        }
+    }
+}
+.service-details-choose-itme-wrap {
+    & .choose-item-text {
+        max-width: 310px;
+    }
+}

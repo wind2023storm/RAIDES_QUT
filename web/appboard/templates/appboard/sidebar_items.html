@@ -1,0 +1,67 @@
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'appboard:home' %}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span class="ms-1 side-item">Dashboard</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'project:new_project' %}">
+        <i class="fas fa-fw fal fa-folder-plus "></i>
+        <span class="ms-1 side-item">New Project Workspace</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'project:index' %}">
+        <i class="fas fa-fw fal fa-project-diagram"></i>
+        <span class="ms-1 side-item">Project Index</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'interactive_map:home' %}">
+        <i class="fas fa-fw fal fa-map"></i>
+        <span class="ms-1 side-item">Interactive Map</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'geochem:geochem_home' %}">
+        <i class="fas fa-fw fal fa-chart-line"></i>
+        <span class="ms-1 side-item">Geochemical Analysis</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'gis:plotter' %}">
+        <i class="fas fa-fw fa-globe"></i>
+        <span class="ms-1 side-item">GIS - Map Plotter</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'gis:tmi' %}">
+        <i class="fas fa-fw fa-globe"></i>
+        <span class="ms-1 side-item">GIS - Similarity Comparison</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'spirit:index' %}">
+        <i class="fas fa-fw fal fa-envelope"></i>
+        <span class="ms-1 side-item">Knowledge Management System</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'project_management:kanban' %}">
+        <i class="fas fa-fw fal fa-envelope"></i>
+        <span class="ms-1 side-item">Task Management</span>
+    </a>
+</li>
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-fw fal fa-cogs"></i>
+        <span class="ms-1 side-item">Tools</span>
+    </a>
+    <ul class="dropdown-menu tools-link">
+        <a class="dropdown-item" href="{% url 'autoform:home' %}">
+            <i class="fas fa-fw fal fa-envelope"></i>
+            <span class="ms-1 side-item">Queensland Exploration Permit Application Template</span>
+        </a>
+    </ul>
+</li>

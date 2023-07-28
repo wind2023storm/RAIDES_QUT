@@ -1,0 +1,380 @@
+:root {
+    --ofx-orange: #EB8E2B;
+    --ofx-orange-light: #F89B33;
+    --ofx-blue: #232D67;
+    --ofx-blue-light: #49517c;
+    --ofx-dark: #000000;
+    --ofx-light: #FFFFFF;
+    --ofx-red: #a6310e;
+    --ofx-red-light: #FF0000;
+    --ofx-green: #9ccf41;
+    --ofx-green-light: #87d452;
+    --ofx-gray: #AAAAAA;
+    --ofx-gray-light: #DEE2E6;
+
+    --primary-color: #FFFFFF;
+
+    --ofx-fs-small: 14pt;
+
+    --header-height: 50px;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+.text-sm {
+    font-size: 0.75rem;
+}
+
+.text-sm {
+    font-size: 0.75rem;
+}
+
+/* COLOUR STYLES */
+.text-ofx-light {
+    color: var(--ofx-light);
+}
+
+.bd-ofx-light {
+    border-style: solid;
+    border-color: var(--ofx-light);
+}
+
+.bg-ofx-light {
+    color: var(--ofx-light);
+}
+
+.text-ofx-dark {
+    color: var(--ofx-dark);
+}
+
+.bg-ofx-dark {
+    color: var(--ofx-dark);
+}
+
+.bd-ofx-dark {
+    border-style: solid;
+    border-color: var(--ofx-dark);
+}
+
+.text-ofx-gray {
+    color: var(--ofx-gray);
+}
+
+.bd-ofx-gray {
+    border-style: solid;
+    border-color: var(--ofx-gray);
+}
+
+.bg-ofx-gray {
+    background-color: var(--ofx-gray);
+}
+
+.text-ofx-orange {
+    color: var(--ofx-orange);
+}
+
+.bg-ofx-orange {
+    background-color: var(--ofx-orange);
+}
+
+.bd-ofx-orange {
+    border-style: solid;
+    border-color: var(--ofx-orange);
+}
+
+.text-ofx-orange-light {
+    color: var(--ofx-orange-light);
+}
+
+.bg-ofx-orange-light {
+    background-color: var(--ofx-orange-light);
+}
+
+.bd-ofx-orange-light {
+    border-style: solid;
+    border-color: var(--ofx-orange-light);
+}
+
+.text-ofx-blue {
+    color: var(--ofx-blue);
+}
+
+.bg-ofx-blue {
+    background-color: var(--ofx-blue) !important;
+}
+
+.bd-ofx-blue {
+    border-style: solid;
+    border-color: var(--ofx-blue);
+}
+
+.text-ofx-blue-light {
+    color: var(--ofx-blue-light);
+}
+
+.bg-ofx-blue-light {
+    background-color: var(--ofx-blue-light);
+}
+
+.bd-ofx-blue-light {
+    border-style: solid;
+    border-color: var(--ofx-blue-light);
+}
+
+.text-ofx-red {
+    color: var(--ofx-red);
+}
+
+.bg-ofx-red {
+    background-color: var(--ofx-red);
+}
+
+.bd-ofx-red {
+    border-style: solid;
+    border-color: var(--ofx-red);
+}
+
+.text-ofx-red-light {
+    color: var(--ofx-red-light);
+}
+
+.bg-ofx-red-light {
+    background-color: var(--ofx-red-light);
+}
+
+.bd-ofx-red-light {
+    border-style: solid;
+    border-color: var(--ofx-red-light);
+}
+
+.text-ofx-green {
+    color: var(--ofx-green);
+}
+
+.bg-ofx-green {
+    background-color: var(--ofx-green);
+}
+
+.bd-ofx-green {
+    border-style: solid;
+    border-color: var(--ofx-green);
+}
+
+.text-ofx-green-light {
+    color: var(--ofx-green-light)
+}
+
+.bg-ofx-green-light {
+    background-color: var(--ofx-green-light)
+}
+
+.bd-ofx-green-light {
+    border-style: solid;
+    border-color: var(--ofx-green-light)
+}
+
+/* Buttons */
+.btn-ofx-orange, .btn-ofx-orange:hover:disabled {
+    color: var(--ofx-dark);
+    background-color: var(--ofx-orange);
+    border-color: var(--ofx-orange-light);
+}
+
+.btn-ofx-orange:hover:enabled {
+    color: var(--ofx-orange);
+    background-color: var(--ofx-light);
+}
+
+.btn-ofx-blue, .btn-ofx-blue:hover:disabled {
+    color: var(--ofx-light);
+    background-color: var(--ofx-blue);
+    border-color: var(--ofx-blue);
+}
+
+.btn-ofx-blue:hover:enabled {
+    color: var(--ofx-blue);
+    background-color: var(--ofx-light);
+}
+
+.btn-ofx-red, .btn-ofx-red:hover:disabled {
+    color: var(--ofx-light);
+    background-color: var(--ofx-red);
+    border-color: var(--ofx-red);
+}
+
+.btn-ofx-red:hover:enabled {
+    color: var(--ofx-red);
+    background-color: var(--ofx-light);
+}
+
+.btn-ofx-green, .btn-ofx-green:hover:disabled {
+    color: var(--ofx-light);
+    background-color: var(--ofx-green);
+    border-color: var(--ofx-green);
+}
+
+.btn-ofx-green:hover:enabled {
+    color: var(--ofx-green);
+    background-color: var(--ofx-light);
+}
+
+.btn-ofx-gray, .btn-ofx-gray:hover:disabled {
+    color: var(--ofx-light);
+    background-color: var(--ofx-gray);
+    border-color: var(--ofx-gray);
+}
+
+.btn-ofx-gray:hover:enabled {
+    color: var(--ofx-gray);
+    background-color: var(--ofx-light);
+}
+
+/* FontAwesome Buttons */
+.btn-ofx-fa {
+    padding: 4px;
+    font-size: .875rem;
+    text-align: center;
+    border-radius: 25%;
+    width: 30px;
+    height: 30px;
+}
+
+.btn-ofx-fa>.fa {
+    display: inline-block;
+    line-height: inherit;
+}
+
+.btn-ofx-fa-red {
+    color: var(--ofx-red);
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.btn-ofx-fa-red:hover:enabled {
+    color: var(--ofx-red);
+    border-color: var(--ofx-red);
+}
+
+.btn-ofx-fa-blue {
+    color: var(--ofx-blue);
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.btn-ofx-fa-blue:hover:enabled {
+    color: var(--ofx-blue);
+    border-color: var(--ofx-blue);
+}
+
+.btn-ofx-fa-green {
+    color: var(--ofx-green);
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.btn-ofx-fa-green:hover:enabled {
+    color: var(--ofx-green);
+    border-color: var(--ofx-green);
+}
+
+.btn-ofx-fa-gray {
+    color: var(--ofx-gray);
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.btn-ofx-fa-gray:hover:enabled {
+    color: var(--ofx-gray);
+    border-color: var(--ofx-gray);
+}
+
+.btn-ofx-fa-light {
+    color: var(--ofx-light);
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.btn-ofx-fa-light:hover:enabled {
+    color: var(--ofx-light);
+    border-color: var(--ofx-light);
+}
+
+/* Nav Tabs, Cards and Modals */
+/*.card-header-tabs>.nav-link, .card-header-tabs>a.nav-link:hover, .card-header-tabs>nav-item:hover,*/
+/*.card-header>.nav-link, .card-header>a.nav-link:hover, .card-header>nav-item:hover {*/
+/*    font-weight: bold;*/
+/*    color: var(--ofx-light);*/
+/*}*/
+
+/*.card-header-tabs>.nav-link.active,*/
+/*.card-header>.nav-link.active {*/
+/*    color: var(--ofx-blue) !important; !* How can I do this without using !important *!*/
+/*}*/
+
+/* Modal/Card Styles */
+div.modal-header, .card-header, .nav {
+    color: var(--ofx-light);
+    background-color: var(--ofx-blue);
+}
+
+.nav > .nav-link {
+    padding: 0.25rem 1rem;
+    color: var(--ofx-light);
+    cursor: default;
+}
+
+.nav > .nav-link:active {
+    color: var(--ofx-light);
+}
+
+.dataTable tr a {
+    color: var(--ofx-blue);
+    text-decoration: none;
+}
+
+body{
+    margin: 0;
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #000000;
+    text-align: left;
+    background-color: #fff;
+}
+
+div.card.shadow {
+    box-shadow: 0 .1rem .8rem rgba(0,0,0,.1) !important;
+}
+/* Base Page Display */
+#wrapper {
+    display: flex;
+}
+
+#wrapper main {
+    background-color: var(--ofx-light);
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#wrapper main #content {
+    flex: 1 0 auto;
+}
+
+#sidebar {
+    min-height: 100vh;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    height: var(--header-height);
+    width: 100%;
+    z-index: 1000;
+}
+
+#content {
+    margin-top: var(--header-height);
+}

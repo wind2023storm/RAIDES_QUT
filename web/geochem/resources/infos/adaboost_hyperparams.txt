@@ -1,0 +1,6 @@
+*Brief Explanation of Hyperparameters
+Base estimator: The base estimator to build the boosted ensemble from. If None, the base estimator is a decision tree regressor with max depth of three.
+Learning rate: The weight applied to each classifier at each boosting iteration.
+Loss function: The loss function to use, options of 'linear', 'square' and 'exponential', which will use that function as the loss.
+Number of estimators: The maximum number of estimators where boosting will be terminated.
+Random state: The random seed used to produce results. Setting this makes results consistent.

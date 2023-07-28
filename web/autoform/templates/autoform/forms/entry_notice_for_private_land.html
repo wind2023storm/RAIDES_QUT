@@ -1,0 +1,295 @@
+{% extends "autoform/form.html" %}
+{% load autoform_tags %}
+{% load static %}
+
+{% block pdf_name %}
+    Entry notice for private land
+{% endblock %}
+
+{% block pdf_content %}
+    <h4 class="text-center">Entry notice for private land</h4>
+    <hr>
+    <p class="text-center" style="font-size: 8pt;">
+        This template is produced by the Queensland Department of Natural Resources, Mines and Energy to assist resource
+        authority holders with a standard
+        notice that is required prior to entry on land to undertake activities on the resource authority. This is a
+        template form and is not an approved form.
+        The resource authority holder is required to provide an appropriate notice prior to entry and comply with the
+        requirements of Chapter 3 (Land Access) of the
+        <i>Mineral and Energy Resources (Common Provisions) Act 2014</i>
+    </p>
+    </br>
+{# RESOURCE AUTHORITY #}
+    <b><u>Part A</u></b>
+    <table style="width: 100%">
+        <tr>
+            <th>Resource authority Details:</th>
+            <td class="pdf-input">{% auto_field "tenement.permit_id" %}</td>
+        </tr>
+    </table>
+    </br>
+{# REGISTERED HOLDER OF AUTHORITY TABLE #}
+    <b>Registered holders of authority:</b>
+    <table style="width: 100%; border: 1px black solid">
+        {% for i in 0|from_to:8 %}
+            <tr style="border: 1px black solid">
+                {% join 'tenement.holders' i 'name' sep='.' as holder %}
+                <td>{% auto_field holder css="width: 100%" %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    </br>
+{# CONTACT DETAILS SECTION #}
+    <b>
+        <u>Additional contact details:</u>
+        For further details regarding this notice, please contact this person via the
+        details provided below
+    </b>
+    <table class="pdf-table-spacing" style="width: 100%;">
+        <thead>
+        <tr>
+            <td style="width: 15%"></td>
+            <td style="width: 30%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 20%"></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Name:</td>
+            <td colspan="5" pdf-input>{% auto_field 'contact.name' style="width: 100%" %}</td>
+        </tr>
+        <tr>
+            <td>Company:</td>
+            <td colspan="5" pdf-input>{% auto_field 'company.name' style="width: 100%" %}</td>
+        </tr>
+        <tr>
+            <td>Address:</td>
+            <td colspan="5" pdf-input>{% auto_field 'contact.address' style="width: 100%" %}</td>
+        </tr>
+        <tr>
+            <td>Name:</td>
+            <td pdf-input>{% auto_field 'contact.city' description="Town/City" style="width: 100%" %}</td>
+            <td>State:</td>
+            <td pdf-input>{% auto_field 'contact.state' description="State" %}</td>
+            <td>Postcode:</td>
+            <td pdf-input>{% auto_field 'contact.postcode' description="Postcode" %}</td>
+        </tr>
+        <tr>
+            <td>Country:</td>
+            <td pdf-input>{% auto_field 'contact.country' description="Country" css="width: 100%" %}</td>
+            <td>Phone no.:</td>
+            <td colspan="3" pdf-input>{% auto_field 'contact.phone' description="Phone" %}</td>
+        </tr>
+        <tr>
+            <td>Mobile no.:</td>
+            <td pdf-input>{% auto_field 'contact.mobile' description="Mobile" css="width: 100%" %}</td>
+            <td>Fax no.:</td>
+            <td colspan="3" pdf-input>{% auto_field 'contact.fax' description="Fax" %}</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td colspan="5" class="pdf-input">{% auto_field 'contact.email' css="width: 100%" %}</td>
+        </tr>
+        </tbody>
+    </table>
+    </br>
+{# LAND OWNER/OCCUPIER INFORMATION#}
+    <table style="width: 100%;">
+        <thead>
+        <tr>
+            <td style="width: 40%"></td>
+            <td style="width: 20%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>Name of landowner or occupier of land:</th>
+            <td colspan="5" class="pdf-input">{% auto_field 'landowner.name' css="width: 100%" %}</td>
+        </tr>
+        <tr>
+            <td>Address:</td>
+            <td colspan="5" class="pdf-input">{% auto_field 'landowner.address' css="width: 100%" %}</td>
+        </tr>
+        <tr>
+            <td>Name:</td>
+            <td class="pdf-input">{% auto_field 'landowner.city' description="Town/City" css="width: 100%" %}</td>
+            <td>State:</td>
+            <td class="pdf-input">{% auto_field 'landowner.state' description="State" %}</td>
+            <td>Postcode:</td>
+            <td class="pdf-input">{% auto_field 'landowner.postcode' description="Postcode" %}</td>
+        </tr>
+        </tbody>
+    </table>
+{# LAND PARCEL LOT NUMBERS #}
+    <div class="page-break"></div>
+    <b>Land parcels proposed to be entered:</b>
+    <table class="pdf-table-bordered" style="width: 100%">
+        <thead>
+        <tr>
+            <th>Lot/plan</th>
+            <th>Lot/plan</th>
+            <th>Lot/plan</th>
+        </tr>
+        </thead>
+        <tbody>
+        {# Yes I know this is disgusting, but it's a pretty decent way to make a table #}
+        {% for i in 0|from_to:6 %}
+            <tr style="border: 1px black solid">
+                {% for j in 0|from_to:3 %}
+                    {% calc "a * 3 + b" a=i b=j as position %}
+                    {% join 'tenement.lot' position|int sep="." as lot %}
+                    {% join 'Lot' position|int sep=" " as description %}
+                    <td>{% auto_field lot description=description css="width: 100%" %}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </br>
+{# PERIOD OF ENTRY #}
+    <p>
+        <b>Period of Entry:</b>{% auto_field "period.from" type="input" %} to {% auto_field "period.to" type="input" %}
+    </p>
+{# LAND COURT STUFF TODO: Figure out what exactly this stuff is. #}
+    <table>
+        <thead>
+
+        </thead>
+        <tbody>
+        <tr>
+            <td>Land Court file number:</td>
+            <td pdf-input>{% auto_field "land_court_file_number" %}</td>
+        </tr>
+        <tr>
+            <td>Conduct and compensation agreement date:</td>
+            <td pdf-input>{% auto_field "conduct_and_compensation_agreement_date" %}</td>
+        </tr>
+        <tr>
+            <td>Deferral agreement date:</td>
+            <td pdf-input>{% auto_field "deferral_agreement_date" %}</td>
+        </tr>
+        </tbody>
+    </table>
+    <table style="width: 100%">
+        <thead>
+        <tr>
+            <th style="width: 70%;">The following documents are attached:</th>
+            <th style="text-align: center; width: 15%;">Attached</th>
+            <th style="text-align: center; width: 15%;">Previously provided</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>A copy of land access code</td>
+            <td style="text-align: center;"><input type="checkbox"></td>
+            <td style="text-align: center;"><input type="checkbox"></td>
+        </tr>
+        <tr>
+            <td>A copy of relevant environmental authority</td>
+            <td style="text-align: center;"><input type="checkbox"></td>
+            <td style="text-align: center;"><input type="checkbox"></td>
+        </tr>
+        <tr>
+            <td>A copy of the resource authority</td>
+            <td style="text-align: center;"><input type="checkbox"></td>
+            <td style="text-align: center;"><input type="checkbox"></td>
+        </tr>
+        <tr>
+            <td>A copy of any code or code of practice made under a Resource Act that applies to authorised activities
+                for the resource authority
+            </td>
+            <td style="text-align: center;"><input type="checkbox"></td>
+            <td style="text-align: center;"><input type="checkbox"></td>
+        </tr>
+        </tbody>
+    </table>
+    </br>
+{# SIGNATURE OF HOLDER/AUTHORISED PERSONS #}
+    <b>Signature of holder or authorised person:</b>
+    <table style="width: 100%">
+        <tr>
+            <td>Full Name</td>
+            <td pdf-input>{% auto_field "tenement.ahr_name" description="Name" %}</td>
+            <td>Signature</td>
+            <td pdf-input>{% auto_field "tenement.ahr_signature" type="image" description="Signature" %}</td>
+            <td>Date</td>
+            <td pdf-input>{% auto_field "current_date" description="Date" %}</td>
+        </tr>
+    </table>
+
+    </br>
+    <hr>
+    </br>
+
+    <b><u>Part B</u> (Owner or occupier endorsement (if applicable))</b>
+    <p>I/we being the owner or occupier of the land, hereby:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <td style="width: 20%"></td>
+            <td style="width: 5%"></td>
+            <td style="width: auto"></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td rowspan="2">Signature of Owner or Occupier</td>
+            <td><input type="checkbox"></td>
+            <td>Consent a shorter period for this entry notice to be served up me/us.</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox"></td>
+            <td>Consent to a longer period than 6 or 12 months for the entry period.</td>
+        </tr>
+        </tbody>
+    </table>
+    <table style="width: 100%">
+        <tr>
+            <td>Full Name</td>
+            <td pdf-input>{% auto_field "occupier.name" description="Name" %}</td>
+            <td>Signature</td>
+            <td pdf-input>{% auto_field "occupier.signature" type="image" description="Signature" %}</td>
+            <td>Date</td>
+            <td pdf-input>{% auto_field "occupier.date_signed" description="Date" %}</td>
+        </tr>
+    </table>
+{# PROPOSED ACTIVITES/WORK PROGRAM #}
+    <div class="page-break"></div>
+    <b>Proposed Activities:</b>
+    <table class="pdf-table-bordered" style="width: 100%;">
+        <thead>
+        <tr>
+            <td style="width: 2ch;"></td>
+            <th style="width: auto">Activity</th>
+            <th style="width: 20%">When</th>
+            <th style="width: 20%">Where</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for program in 0|from_to:4 %}
+            {% join "tenement.work_program" forloop.counter0 "activity" sep="." as program_activity %}
+            {% join "tenement.work_program" forloop.counter0 "when" sep="." as program_when %}
+            {% join "tenement.work_program" forloop.counter0 "where" sep="." as program_where %}
+            <tr>
+                <td style="text-align: center;">{{ forloop.counter }}</td>
+                <td>{% auto_field program_activity type="textarea" description="Activity "|append:forloop.counter %}</td>
+                <td>{% auto_field program_when type="textarea" description="When "|append:forloop.counter %}</td>
+                <td>{% auto_field program_where type="textarea" description="Where "|append:forloop.counter %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block page_footer %}
+    Mines-01 Version 4- September 2020
+{% endblock %}

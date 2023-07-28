@@ -1,0 +1,311 @@
+{% extends 'tms/forms/form_renderer.html' %}
+
+{% block form_title %}
+    Entry notice for private land
+{% endblock %}
+
+{% block form_body %}
+    <div class="page">
+        <div class="row text-center">
+            <p id="formHeader">Entry notice for private land</p>
+            <hr class="mt-4"/>
+            <p id="formSubtitle">
+                This template is produced by the Queensland Department of Natural Resources, Mines and Energy to assist
+                resource authority holders with a standard
+                notice that is required prior to entry on land to undertake activities on the resource authority. This
+                is a template form and is not an approved form.
+                The resource authority holder is required to provide an appropriate notice prior to entry and comply
+                with the requirements of Chapter 3 (Land Access) of the
+                Mineral and Energy Resources (Common Provisions) Act 2014
+            </p>
+        </div>
+        {# RESOURCE AUTHORITY SECTION #}
+        <div id="resourceAuthority">
+            <p class="sectionHeader underline">Part A</p>
+            <table class="w-100">
+                <thead>
+                <td style="width: 35%"></td>
+                <td style="width: 65%"></td>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>Resource authority Details:</th>
+                    <td><input id="resourceAuthorityDetails" class="w-50" placeholder="Authority Details"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        {# HOLDERS SECTION #}
+        <div id="registeredHolders">
+            <p class="sectionHeader">Registered holders of authority:</p>
+            <table class="w-100">
+                <thead>
+                <td style="width: 100%"></td>
+                </thead>
+                <tbody>
+                {% for holder in tenement.holders %}
+                    <tr>
+                        <td>{{ holder.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        {# CONTACT DETAILS SECTION #}
+        <div class="contactDetails">
+            <p class="sectionHeader">
+                <span class="underline"> Additional contact details:</span>
+                For further details regarding this notice, please contact this person via the details provided below
+            </p>
+            <table class="w-100">
+                <thead>
+                <th style="width: 15%"></th>
+                <th style="width: 85%"></th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" class="w-100" placeholder="Contact Name"></td>
+                </tr>
+                <tr>
+                    <td>Company:</td>
+                    <td><input type="text" class="w-100" placeholder="Company Name"></td>
+                </tr>
+                <tr>
+                    <td>Address:</td>
+                    <td><textarea type="text" class="w-100" placeholder="Contact Address"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Town/City:</td>
+                    <td style="padding-left: 0; padding-right: 0;">
+                        <table style="width: 100%">
+                            <tr>
+                                <td style="width: 50%">
+                                    <input id="town" type="text" class="w-100" placeholder="Town/City">
+                                </td>
+                                <td style="width: 25%; white-space: nowrap;">
+                                    <label for="state">State:</label>
+                                    <input id="state" type="text" placeholder="State">
+                                </td>
+                                <td style="width: 30%;  white-space: nowrap;">
+                                    <label for="postcode">Postcode:</label>
+                                    <input id="postcode" type="text" placeholder="Post Code">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Country:</td>
+                    <td style="padding-left: 0; padding-right: 0;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 50%">
+                                    <input id="country" type="text" class="w-100" placeholder="Country">
+                                </td>
+                                <td style="width: 50%; white-space: nowrap;">
+                                    <label for="phone" style="width: 25%">Phone no.:</label>
+                                    {# TODO: Make me fill remaining space #}
+                                    <input id="phone" type="text" placeholder="Phone No.">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Mobile no.:</td>
+                    <td style="padding-left: 0; padding-right: 0;">
+                        <table style="width: 100%">
+                            <tr>
+                                <td style="width: 50%">
+                                    <input id="mobile" type="text" class="w-100" placeholder="Mobile no.">
+                                </td>
+                                <td style="width: 50%; white-space: nowrap;">
+                                    <label for="fax" style="width: 25%">Fax no.:</label>
+                                    {# TODO: Make me fill remaining space #}
+                                    <input id="fax" type="text" placeholder="Fax No.">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td><input type="text" class="w-100" placeholder="Email"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        {# LAND OWNER SECTION #}
+        <div id="landOwner">
+            <table class="w-100">
+                <thead>
+                <th style="width: 25%"></th>
+                <th style="width: 75%"></th>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>Name of landowner or occupier of land:</th>
+                    <td><input id="landowner" class="w-100" type="text" placeholder="Land Owner"></td>
+                </tr>
+                <tr>
+                    <td>Address:</td>
+                    <td><textarea id="address" class="w-100" type="text" placeholder="Address"></textarea></td>
+                </tr>
+                <tr>
+                    <td>Town/City:</td>
+                    <td style="padding: 0; margin: 0">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 70%">
+                                    <input id="town" type="text" class="w-100" placeholder="Town/City">
+                                </td>
+                                <td style="width: 15%; white-space: nowrap;">
+                                    <label for="state">State:</label>
+                                    <input id="state" type="text" placeholder="State">
+                                </td>
+                                <td style="width: 15%;  white-space: nowrap;">
+                                    <label for="postcode">Postcode:</label>
+                                    <input id="postcode" type="text" placeholder="Post Code">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        {# LOT PLAN SECTION #}
+        <div id="lotPlan">
+            <p class="sectionHeader underline">Land parcels proposed to be entered:</p>
+            <table class="w-100 table-bordered" style="margin-left: 10px; margin-right: 10px;">
+                <thead>
+                <th><i>Lot/plan</i></th>
+                <th><i>Lot/plan</i></th>
+                <th><i>Lot/plan</i></th>
+                </thead>
+                <tbody>
+                {% for plan in lotPlans %}
+                    {# TODO: Issue here is that the lot plans are spread across 3 columns, need to have flex business here #}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        {# PERIOD OF ENTRY SECTION #}
+        <div id="periodOfEntry">
+            <label for="from" class="sectionHeader">Period of Entry:</label>
+            <input id="from">
+            <span>to</span>
+            <input id="to">
+        </div>
+        <br/>
+        {# LAND COURT STUFF #}
+        <div id="landCourt">
+            <table class="w-100">
+                <thead>
+                <th style="width: 45%"></th>
+                <th style="width: 55%"></th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Land Court file number:</td>
+                    <td><input id="landCourtFileNumber" type="text" class="w-100" placeholder="Land Court file Number">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Conduct and compensation agreement date:</td>
+                    <td><input id="conductCompensationDate" type="text" class="w-100"
+                               placeholder="Conduct and compensation agreement date"></td>
+                </tr>
+                <tr>
+                    <td>Deferral Agreement date:</td>
+                    <td><input id="deferralAgreementDate" type="text" class="w-100"
+                               placeholder="Deferral Agreement date"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        <div id="authorisedPersonSignature">
+            <p class="sectionHeader">Signature of holder or authorised person:</p>
+            <table class="w-100">
+                <tbody>
+                <tr>
+                    <td style="width: 33%; white-space: nowrap">
+                        <label for="fullName" class="sectionHeader" style="width: 30%">Full Name</label>
+                        <input type="text" style="width: 70%" placeholder="Full Name">
+                    </td>
+                    <td style="width: 33%; white-space: nowrap">
+                        <label for="signature" class="sectionHeader" style="width: 30%">Signature</label>
+                        <input type="text" style="width: 70%" placeholder="Signature">
+                    </td>
+                    <td style="width: 33%; white-space: nowrap">
+                        <label for="date" class="sectionHeader" style="width: 30%">Date</label>
+                        <input type="text" style="width: 70%" placeholder="Date">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr class="mt-4"/>
+        <div id="resourceAuthority">
+            <p class="sectionHeader">
+                <span class="underline">Part B</span>
+                (Owner or occupier endorsement (if applicable))</p>
+            <p>
+                I/we being the owner or occupier of the land, hereby:
+            </p>
+        </div>
+        <br/>
+        <div id="ownerSignature">
+
+            <table class="w-100">
+                <thead>
+                    <th style="width: 30%"></th>
+                    <th style="width: 10%"></th>
+                    <th style="width: 60%"></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><p class="sectionHeader">Signature of Owner or Occupier:</p></td>
+                        <td><input type="checkbox"></td>
+                        <td>Consent a shorter period for this entry notice to be served upon me/us.</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="checkbox"></td>
+                        <td>Consent to a longer period than 6 or 12 months for the entry period.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+            <table class="w-100">
+                <tbody>
+                <tr>
+                    <td style="width: 33%; white-space: nowrap">
+                        <label for="fullName" class="sectionHeader" style="width: 30%">Full Name</label>
+                        <input type="text" style="width: 70%" placeholder="Full Name">
+                    </td>
+                    <td style="width: 33%; white-space: nowrap">
+                        <label for="signature" class="sectionHeader" style="width: 30%">Signature</label>
+                        <input type="text" style="width: 70%" placeholder="Signature">
+                    </td>
+                    <td style="width: 33%; white-space: nowrap">
+                        <label for="date" class="sectionHeader" style="width: 30%">Date</label>
+                        <input type="text" style="width: 70%" placeholder="Date">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_footer %}
+    Mines-01 Version 4- September 2020
+{% endblock %}

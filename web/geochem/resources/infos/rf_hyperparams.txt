@@ -1,0 +1,15 @@
+*Brief Explanation of Hyperparameters
+Number of estimators: The number of trees in the resulting forest.
+Max features: The maximum number of features to consider when looking for the best split. If this is an integer, then that number of features will be the maximum at each split. If it is a float (generally a real number that is not an integer), it will consider that proportion of features. The 'auto' and None options will use the number of features as the maximum. 'sqrt' will use the square root of the number of features as the maximum. 'log2' will use a logarithm with a base of two as the maximum.
+Criterion: The metric used to measure the quality of a split. Options are mean squared error (mse) and mean absolute error (mae).
+Max depth: The maximum depth of a tree. If None, they are expanded until they are pure or contain less samples than the minimum set.
+Bootstrap: Whether or not bootstrap samples are used in training the model. False will mean the whole dataset is used.
+Min samples before split: The minimum number of samples required to split an internal node. If it is a value between zero and one it will use that proportion of samples as the minimum.
+Min samples before leaf: The minimum samples required to be at any leaf node. If it is a float it is that proportion of samples.
+Max leaf nodes: The maxmimum number of leaf nodes a tree can have. This will make it such that the trees are made in a best-first fashion, which is defined in terms of the criterion.
+Max samples: If bootstrap is true, this defines the number of samples to draw from the predictor subset of the dataset (for each base estimator).
+Random state: The random seed used to produce results. Setting this makes results consistent.
+CCP alpha: The complexity parameter for the pruning done to the forest. The pruning done is Minimal Cost-Complexity Pruning. This is only done if it is non-zero.
+Min impurity decrease: A node will split if it will make the decrease in impurity greater than or equal to this value.
+Min weight fraction leaf node: The minimum weighted fraction of the sum total of weights required to be at a leaf node.
+OOB score: Whether or not to use out of bag samples for the generalisation score. Only used when bootstrap samples are used.

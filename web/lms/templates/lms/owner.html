@@ -1,0 +1,171 @@
+{% load project_tags %}
+{% if not items %}
+    <i>None</i>
+{% else %}
+    {% for owner in items %}
+        <li data-type="owner" data-id="{{ owner.id }}">
+            <table>
+                <tbody>
+                <tr>
+                    <th>Full Name:</th>
+                    <td>
+                        <span data-field="first_name"
+                              data-value="{{ owner.first_name }}">{{ owner.first_name }}</span>
+                        <span data-field="last_name" data-value="{{ owner.last_name }}">{{ owner.last_name }}</span>
+
+                        {% if project|is_admin:member %}
+                        <button data-bs-toggle="modal" data-bs-target="#deleteOwnerModal" data-action="delete"
+                                data-url="{% url 'lms:handle_owner' slug=project.slug action="delete" %}">Delete
+                        </button>
+                        {% endif %}
+                        <button data-bs-toggle="modal" data-bs-target="#modifyOwnerModal" data-action="modify"
+                                data-url="{% url 'lms:handle_owner' slug=project.slug action="modify" %}">Modify
+                        </button>
+                    </td>
+                </tr>
+                {% if owner.preferred_name %}
+                    <tr>
+                        <th>Preferred Name:</th>
+                        <td data-field="preferred_name"
+                            data-value="{{ owner.preferred_name }}">{{ owner.preferred_name }}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <th>Bulk Mail Target:</th>
+                    <td data-field="bulk_mail_target" data-value="{% if owner.bulk_mail_target %}checked{% endif %}"
+                    >{{ owner.bulk_mail_target }}</td>
+                </tr>
+                <tr>
+                    <th>Gender:</th>
+                    <td data-field="gender" data-value="{{ owner.gender }}">{{ owner.get_gender_display }}</td>
+                </tr>
+                <tr>
+                    <th>DOB:</th>
+                    <td data-field="date_birth"
+                            {% if owner.date_birth %} data-value="{{ owner.date_birth|date:'Y-m-d' }}"{% endif %}
+                    >{{ owner.date_birth }}</td>
+                </tr>
+                <tr>
+                    <th>Street Address:</th>
+                    <td data-field="address_street"
+                            {% if owner.address_street %} data-value="{{ owner.address_street }}"{% endif %}
+                    >{{ owner.address_street }}</td>
+                </tr>
+                <tr>
+                    <th>Postal Address:</th>
+                    <td data-field="address_postal"
+                            {% if owner.address_postal %} data-value="{{ owner.address_postal }}"{% endif %}
+                    >{{ owner.address_postal }}</td>
+                </tr>
+                <tr>
+                    <th>Email Address:</th>
+                    <td data-field="contact_email"
+                            {% if owner.contact_email %} data-value="{{ owner.contact_email }}"{% endif %}
+                    >{{ owner.contact_email }}</td>
+                </tr>
+                <tr>
+                    <th>Phone No:</th>
+                    <td data-field="contact_phone"
+                            {% if owner.contact_phone %} data-value="{{ owner.contact_phone }}"{% endif %}
+                    >{{ owner.contact_phone }}</td>
+                </tr>
+                <tr>
+                    <th>Mobile No:</th>
+                    <td data-field="contact_mobile"
+                            {% if owner.contact_mobile %} data-value="{{ owner.contact_mobile }}"{% endif %}
+                    >{{ owner.contact_mobile }}</td>
+                </tr>
+                <tr>
+                    <th>Fax No:</th>
+                    <td data-field="contact_fax"
+                            {% if owner.contact_fax %} data-value="{{ owner.contact_fax }}"{% endif %}
+                    >{{ owner.contact_fax }}</td>
+                </tr>
+                <tr>
+                    <th>Ownership Duration:</th>
+                    {# READONLY #}
+                    <td>
+                        <span data-field="date_ownership_start"
+                              data-value="{{ owner.date_ownership_start|date:'Y-m-d' }}">
+                            {% if owner.date_ownership_start %}
+                                {{ owner.date_ownership_start }}{% else %}N/A{% endif %}
+                        </span> <i>til</i>
+                        <span data-field="date_ownership_ceased"
+                              data-value="{{ owner.date_ownership_ceased|date:'Y-m-d' }}">
+                                                    {% if owner.date_ownership_ceased %}
+                                                        {{ owner.date_ownership_ceased }}{% else %}N/A{% endif %}
+                                                </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Date Created:</th>
+                    {# READONLY #}
+                    <td>{{ owner.date_created }} by {{ owner.user_created }}</td>
+                </tr>
+                <tr>
+                    <th>Last Modified:</th>
+                    {# READONLY #}
+                    <td>{{ owner.date_updated }} by {{ owner.user_updated }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <input type="checkbox" data-category="note"
+                   data-url="{% url "lms:handle_note" slug=project.slug action="get" %}">
+            <label for="note">
+                <b>Notes</b>
+                <button data-bs-toggle="modal" data-bs-target="#newNoteModal" data-action="new"
+                        data-url="{% url "lms:handle_note" slug=project.slug action="new" %}">New +
+                </button>
+            </label>
+            <ol data-category="note">
+                {# OWNER NOTES #}
+            </ol>
+
+            <input type="checkbox" data-category="correspondence"
+                   data-url="{% url "lms:handle_correspondence" slug=project.slug action="get" %}">
+            <label for="correspondence">
+                <b>Correspondence</b>
+                <button data-bs-toggle="modal" data-bs-target="#newCorrespondenceModal" data-action="new"
+                        data-url="{% url "lms:handle_correspondence" slug=project.slug action="new" %}">New +
+                </button>
+            </label>
+            <ol data-category="correspondence">
+                {# OWNER CORRESPONDENCE #}
+            </ol>
+
+            <input type="checkbox" data-category="task"
+                   data-url="{% url "lms:handle_task" slug=project.slug action="get" %}">
+            <label for="task">
+                <b>Tasks</b>
+                <button data-bs-toggle="modal" data-bs-target="#newTaskModal" data-action="new"
+                        data-url="{% url "lms:handle_task" slug=project.slug action="new" %}">New +
+                </button>
+            </label>
+            <ol data-category="task">
+                {# OWNER TASKS #}
+            </ol>
+
+            <input type="checkbox" data-category="reminder"
+                   data-url="{% url "lms:handle_reminder" slug=project.slug action="get" %}">
+            <label for="reminder">
+                <b>Reminders</b>
+                <button data-bs-toggle="modal" data-bs-target="#newReminderModal" data-action="new"
+                        data-url="{% url "lms:handle_reminder" slug=project.slug action="new" %}">New +
+                </button>
+            </label>
+            <ol data-category="reminder">
+                {# OWNER REMINDERS #}
+            </ol>
+
+            <input type="checkbox" data-category="history"
+                   data-url="{% url "lms:handle_history" slug=project.slug model="owner" action="get" %}">
+            <label for="history">
+                <b>History</b>
+            </label>
+            <ol data-category="history">
+                {# LAND PARCEL HISTORY CONTENT HERE #}
+            </ol>
+        </li>
+    {% endfor %}
+{% endif %}

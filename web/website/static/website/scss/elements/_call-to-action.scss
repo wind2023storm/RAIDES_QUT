@@ -1,0 +1,19 @@
+/*=============================================
+=           15. Call To Action Css             =
+=============================================*/
+
+.cta-bg-image_one {
+    // background: url(../images/bg/call-to-action-01.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+.cta-image-box {
+    padding: 40px 60px;
+    @media #{$small-mobile}{
+        padding: 40px 10px;
+        & br {
+            display: none;
+        }
+    }
+}

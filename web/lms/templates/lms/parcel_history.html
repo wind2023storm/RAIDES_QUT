@@ -1,0 +1,69 @@
+{% load project_tags %}
+{% if not items %}
+    <div><i>None</i></div>
+{% else %}
+    {% for history in items %}
+        <li data-type="history" data-id="{{ history.id }}">
+
+            {% comment %}
+            We have to decide how we're going to display the history here. Which is dependant on the history
+            modified_json field.
+            {% endcomment %}
+            {% if history.modified_json|length < 1 %}
+                {# If summary is empty, our object was probably just created so display that instead. #}
+                Created
+            {% elif history.modified_json|length < 4 %}
+                {# If we have only a few fields changed, show a short string of which fields have been changed #}
+                <b>
+                    {% for field in history.modified_json %}
+                        {{ field.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </b> updated
+            {% else %}
+                {# Otherwise just show a count of how many fields were changed. #}
+                <b>{{ history.modified_json|length }} Fields</b> updated
+            {% endif %}
+
+            by <i>{{ history.user }}</i> on <i>{{ history.date_created }}</i>
+
+            {% comment %}
+            Let the user click a checkbox or + sign to grant them access to a more verbose changelog
+            {% endcomment %}
+            {% if history.modified_json|length %}
+                <input type="checkbox">
+                <table style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>From</th>
+                            <th>To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for field in history.modified_json %}
+                            <tr>
+                                <td>{{ field.name }}</td>
+                                <td>{{ field.from }}</td>
+                                <td>{{ field.to }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            {# END SUMMARY #}
+
+            {% comment %}
+            As a history object is representative of what changes were made, it makes no sense to let a user roll-back
+            to the position the database is already at. So don't show a button for firt loop.
+            Change this if pagination is implemented for the history.
+            {% endcomment %}
+            {% if project|is_admin:member %}
+                {% if not forloop.first %}
+                    <button data-bs-toggle="modal" data-bs-target="#revertHistoryModal"
+                            data-url="{% url 'lms:handle_history' slug=project.slug model=history.model_type action='revert' %}">Rollback Here
+                    </button>
+                {% endif %}
+            {% endif %}
+        </li>
+    {% endfor %}
+{% endif %}

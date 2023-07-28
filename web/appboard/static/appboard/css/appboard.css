@@ -1,0 +1,287 @@
+/* Base Page Display */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-expanded {
+    width: 15.5rem;
+    font-size: 0.95rem;
+}
+
+.sidebar-collapsed {
+    width: 7rem;
+    text-align: center;
+}
+
+@media only screen and (max-width: 768px) {
+    .sidetoggle {
+        display: none;
+    }
+
+    .sidebar-expanded {
+        width: 6.75rem;
+        text-align: center;
+    }
+
+    .side-orefox {
+        display: none;
+    }
+
+    .side-item {
+        display: grid;
+        font-size: x-small;
+    }
+
+    .collapse-align {
+        align-items: center;
+    }
+}
+
+@media only screen and (max-width: 479px) {
+    #sidebar {
+        display: none;
+    }
+}
+
+header {
+    position: fixed;
+    top: 0;
+    height: var(--header-height);
+    z-index: 1000;
+    width: 100%;
+}
+
+/* remove the below if you don't want smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+.sidetoggle {
+    height: 2.75rem;
+    width: 2.75rem;
+    background-color: rgba(170, 170, 170, 0.2);
+}
+
+.sidetoggle:hover {
+    background-color: rgba(170, 170, 170, 0.4);
+}
+
+#sidebar ul > li > a {
+    opacity: 0.75;
+    color: var(--ofx-light);
+}
+
+#sidebar ul > li > a > i {
+    opacity: 0.4;
+}
+
+#sidebar ul > li > a:hover {
+    opacity: 1;
+    color: var(--ofx-light);
+}
+
+#sidebar ul > li > a:hover .fas {
+    opacity: 1;
+    color: var(--ofx-light);
+}
+
+/*Current side bar option appears white*/
+#sidebar ul > li.active > a {
+    color: var(--ofx-light);
+    font-weight: 700;
+    font-size: 1rem;
+    opacity: 1;
+}
+
+#sidebar ul > li.active > a .fas {
+    color: var(--ofx-light);
+    font-weight: 700;
+    font-size: 1rem;
+    opacity: 1;
+}
+
+.collapse-item {
+    display: grid;
+    font-size: 0.7rem;
+}
+
+#scrollUp {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    right: 10px;
+    z-index: 2100;
+    border: none;
+    outline: none;
+    background-color: #555;
+    color: white;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 5px;
+}
+
+#scrollUp:hover {
+    background-color: var(--ofx-blue)
+}
+
+#scrollUp:before {
+    content: "";
+    position: absolute;
+    inset: 40%;
+    transform: translateY(20%) rotate(-45deg);
+    border-top: 3px solid #fff;
+    border-right: 3px solid #fff;
+}
+
+.side-orefox {
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 750;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    z-index: 1;
+}
+
+table.dataTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+table.dataTable thead th {
+    background-color: #c8ddfc;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+    text-align: center;
+    font-size: .85rem;
+}
+
+table.dataTable tbody td {
+    padding: 0.2rem;
+    text-align: center;
+    font-size: .80rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.p-dash-table {
+    font-size: .85rem;
+}
+
+/* Styling for alternate rows */
+table.dataTable tbody tr:nth-child(even) {
+    background-color: #c8ddfc;
+}
+
+/* Styling for selected row */
+table.dataTable tbody tr.selected {
+    background-color: #fcf8e3;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #ddd
+}
+
+table.dataTable .noowrap {
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Pagination styling */
+.dataTables_paginate {
+    text-align: center;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.sidebar-icons {
+
+    animation: blink 1s infinite;
+}
+
+.tools-link:hover, .tools-link a:hover {
+    background-color: var(--ofx-orange);
+}
+
+.dataTables_paginate .paginate_button {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: #f7f7f7;
+    border-color: #ddd;
+}
+
+.p-dash-table tbody tr:nth-child(odd) {
+    background-color: #c8ddfc;
+}
+
+/* Styling for selected row */
+.p-dash-table tbody tr.selected {
+    background-color: #fcf8e3;
+}
+
+.p-dash-table tbody tr:hover {
+    background-color: #f3f3f3
+
+}
+
+.p-dash-nav {
+    font-size: .95rem;
+    padding-left: 0rem;
+    padding-right: .2rem;
+}
+
+.swiper-slide-shadow-bottom {
+    background-color: #fdefde;
+
+}
+
+.content-margin-top-offest {
+    margin-top: 30px;
+}
+
+#flash-message {
+    position: absolute;
+    margin-top: -10px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    z-index: 9999; /* make sure the overlay appears on top of everything else */
+    cursor: wait; /* show the wait cursor */
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+    z-index: 3000
+}

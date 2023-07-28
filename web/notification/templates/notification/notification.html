@@ -1,0 +1,20 @@
+{% comment %}
+Render all of the notifications as a series of list items which will be inside our UL.
+The content is wrapped in a div for convenience for use with jQuery selectors.
+{% endcomment %}
+<div>
+{% for status in notifications %}
+    {% with status.notification as notification %}
+    <li class="notification-container{% if not status.is_read %} notification-unread{% endif %}" data-id="{{ status.id }}" data-url="{{ notification.url }}">
+        <div class="notification-content">
+            <p class="notification-text">
+                {{ notification.summary|safe }}
+            </p>
+            <span class="notification-timestamp">
+                {{ notification.timestamp }}
+            </span>
+        </div>
+    </li>
+    {% endwith %}
+{% endfor %}
+</div>

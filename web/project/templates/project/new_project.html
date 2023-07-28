@@ -1,0 +1,77 @@
+{% extends 'appboard/base.html' %}
+{% load modal_tags %}
+
+{% load static %}
+{% load humanize %}
+
+{% block head_title %}
+    Start New Project
+{% endblock %}
+
+{% block content %}
+
+  <div id="flash-message" class="text-sm ms-4">
+    {% if messages %}
+    {% for message in messages %} 
+    {% if message.level == 25 %}
+    <span
+      class="alert alert-success text-center p-2"> {{ message }}
+    </span>
+    {% endif %} {% endfor %} {% endif %}
+  </div>
+  {% if form.errors %}
+          <div
+            class="alert alert-danger py-1 ms-4 text-sm"
+            id="server-error"
+            style="position: absolute; margin-top:-10px"
+          >
+            {% for field, errors in form.errors.items %} 
+            {% for error in errors %}
+            <span  > {{ error }}<br /></span>
+            {% endfor %} {% endfor %}
+          </div>
+          {% endif %}
+
+    <h4 class="pb-4 text-ofx-blue content-margin-top-offest px-4 mb-0">Start A New Project Workspace<i
+            class=" ms-2 fas fa-fw fal fa-folder-plus"></i></h4>
+    <div class="card shadow mx-4 my-2">
+        <div class="card-header" style="height:40px">
+    
+        </div>
+        <div class="my-2 mx-4">
+          <div class="mb-4 mt-2">
+            <form method="post" id="createProject">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="form-group mb-3">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+              {% endfor %}
+           
+        </div>
+            <button class="btn bg-ofx-blue text-white" type="button" id="btnCancel">Reset</button>
+            <button class="btn bg-ofx-green text-white" type="submit">Create</button>
+        </div>
+    </div>
+</form>
+<script>
+  $(document).ready(function() {
+    $('#btnCancel').click(function() {
+      $('#id_name').val("");
+      $('#id_state').val("QLD")
+      $('#id_objective').val("")
+      $('#id_locality').val("")
+    });
+  });
+    setTimeout(function () {
+        if( document.getElementById("flash-message") !== null)
+        document.getElementById("flash-message").style.display = "none";
+      }, 3000); //  "3000" the number of milliseconds to display the flash message
+      setTimeout(function () {
+        if( document.getElementById("server-error") !== null)
+        document.getElementById("server-error").style.display = "none";
+      }, 3000);
+</script>
+    
+{% endblock %}

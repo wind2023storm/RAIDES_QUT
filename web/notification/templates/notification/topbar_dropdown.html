@@ -1,0 +1,29 @@
+<li class="nav-item dropdown">
+    <a id="notificationDropdownLink" class="nav-link dropdown-toggle" href="#" role="button"
+       data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-regular fa-bell">
+            <span id="notificationNumber" class="notification-circle notification-number" style="display: none;"></span>
+        </i>
+    </a>
+    <ul id="notificationDropdown" class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdownLink">
+        <li class="text-sm text-center">
+            <a id="notificationShowMore" class="dropdown-item" href="#" style="display: none;">
+                Show More
+            </a>
+        </li>
+        <li id="notificationEmptyDisplay" class="text-center" style="display: none;">
+            No New Notifications
+        </li>
+        <div id="notificationArea">
+            {# NOTIFICATIONS GO HERE #}
+        </div>
+        <li><hr class="dropdown-divider"></li>
+        <div id="notificationActions" class="text-sm text-center">
+            <li>
+                <a id="clearNotifications" class="dropdown-item" href="#">
+                    <i class="fa-regular fa-bell-slash"></i> Clear Notifications
+                </a>
+            </li>
+        </div>
+    </ul>
+</li>

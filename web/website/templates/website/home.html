@@ -1,0 +1,647 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+
+
+<!--============ Hero Start ============-->
+<div id="home" class="personal-hero bg-img section-space--ptb_120 bg-cover-center" 
+    data-bg="{% static 'website/images/bg/26.jpg' %}">
+    <div class="container-fluid container-fluid--cp-150">
+        <div class="row align-items-center">
+            <!--baseline-->
+            <div class="col-lg-6 order-lg-1 order-2">
+                <div class="hero-text small-mt__60 tablet-mt__60 text-center text-md-left wow move-up">
+                    <h4 class="sub-title mb-10" data-aos="fade-down" data-aos-delay="200">G’day!</h4>
+                    <h1 class="font-weight--bold section-title" data-aos="fade-up" data-aos-delay="400">We’re <span class="theme-color-secondary">OreFox</span></h1>
+                    <h3 class="font-weight--reguler mb-15 h4" data-aos="fade-up" data-aos-delay="700">
+                        <span>
+                        We provide artificial intelligence-based geological data analytics to mining and exploration companies
+                        </span>
+                    </h3>
+                    <div class="hero-button mt-30" data-aos="fade-right" data-aos-delay="900">
+                        <a href="{% url 'appboard:home' %}" class="ht-btn ht-btn-sm font-weight--bold">Start Using Today</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-1">
+                <div class="preview-inner-img small-mb__30 tablet-mb__30" data-aos="fade-up" data-aos-delay="900">
+                    <img class="img-fluid min-img" src="{% static 'website/images/preview/hero-inner.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="social-personal-box">
+        <div class="social-share style-01">
+            <ul class="list ht-social-networks style-two-icon">
+                <li class="item">
+                    <a href="https://www.facebook.com/" target="_blank" class="social-link"> <i class="fa fa-facebook-f social-link-icon"></i></a>
+                </li>
+                <li class="item">
+                    <a href="https://dribbble.com/" target="_blank" class="social-link"> <i class="fa fa-dribbble social-link-icon"></i> </a>
+                </li>
+                <li class="item">
+                    <a href="https://www.behance.net/" target="_blank" class="social-link"> <i class="fa fa-behance social-link-icon"></i> </a>
+                </li>
+                <li class="item">
+                    <a href="https://twitter.com/" target="_blank" class="social-link"> <i class="fa fa-twitter social-link-icon"></i> </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<!--============ Hero End ============-->
+
+
+<!--============ Featured Services Area Start ============-->
+<div class="start-up-service-area section-space--pt_120 section-space--pb_90">
+    <div class="container-fluid container-fluid container--1450">
+        <div class="row row--35">
+            <!-- service-area Start -->
+            <div class="col-xl-4 col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="ht-service-box style-06">
+                    <div class="service-icon shadow" data-aos="zoom-in-left" data-aos-delay="600">
+                        <img src="{% static 'website/images/icons/startup-service-icon-04.png' %}" alt="">
+                    </div>
+                    <div class="service-content shadow">
+                        <h4 class="section-title mb-10">Inteligent Solutions</h4>
+                        <p>OreFox uses Data Science to provide an intelligent and robust solution for you
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- service-area End -->
+            <!-- service-area Start -->
+            <div class="col-xl-4 col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="ht-service-box style-06">
+                    <div class="service-icon shadow" data-aos="zoom-in-left" data-aos-delay="900">
+                        <img src="{% static 'website/images/icons/startup-service-icon-03.png' %}" alt="">
+                    </div>
+                    <div class="service-content shadow">
+                        <h4 class="section-title mb-10">More Accuracy</h4>
+                        <p>It's using Machine Learning, Artificial intelligence to provide you more accuracy
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- service-area End -->
+            <!-- service-area Start -->
+            <div class="col-xl-4 col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="800">
+                <div class="ht-service-box style-06">
+                    <div class="service-icon shadow"  data-aos="zoom-in-left" data-aos-delay="1200">
+                        <img src="{% static 'website/images/icons/startup-service-icon-02.png' %}" alt="">
+                    </div> 
+                    <div class="service-content shadow">
+                        <h4 class="section-title mb-10">Competitive Price</h4>
+                        <p>OreFox providing more intelligent & robust solution at lower prices than others
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- service-area End -->
+            
+        </div>
+    </div>
+</div>
+<!--============ Featured Service Area End ============-->
+
+
+<!--============ About Area Start ============-->
+<div id="about" class="about-wrapper section-space--pb_120 section-space--pt_90">
+    <div class="container">
+        <div class="row align-items-center">
+
+            <div class="col-lg-6 dots-offset">
+                <div class="about-image" data-aos="fade-right">
+                    <div class="inner-images">
+                        <img class="about-img img-fluid" src="{% static 'website/images/features/mining.png' %}" alt="About Image">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-us-content about-us-offset-right position-relative x-index-1 small-mt__40 tablet-mt__40"
+                    data-aos="fade-left">
+                    <div class="section-title-wrap">
+                        <h6 class="section-sub-title">OreFox - Modern, Inteligent & Professional</h6>
+                        <h3 class="mb-20 section-title">Are you getting the most from your geological data?</h3>
+                            <h4 class="mb-20 font-weight--light"><span class="text-size-lg font-weight-bold text-color-secondary">AI Driven </span> solution is ready for you</h4>
+                            <p class="mb-20 font-weight--light">We provide artificial intelligence-based geological data analytics to mining and exploration companies</p>
+                            <p class="mb-15 font-weight--normal font-italic">Our mission is to put our clients at the centre of geological data science innovation, allowing them to make significant mineral deposit discoveries faster and mine more efficiently</p>
+                            <br>
+                            <br>
+                            <p class="mb-40 font-weight--light">So, why are you waiting for?</p>
+
+                            <div class="about-us-btn-box">
+                                <a href="#" class="ht-btn ht-btn-sm">Let’s start now</a>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============ About Area End ============-->
+
+
+<!--============ Our Work Process Area Start ============-->
+<div id="process" class="our-work-process-area section-space--pb_90 section-space--pt_70">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5 order-lg-2 order-1">
+                <div class="section-title-wrap architecture-process-title text-left" data-aos="fade-left">
+                    <h6 class="section-sub-title">Working process</h6>
+                    <h3 class="section-title">Simply in three steps</h3>
+                </div>
+            </div>
+            <div class="col-lg-6  order-lg-1 order-2">
+                <div class="section-wrap small-mt__30 tablet-mt__30 text-lg-right" data-aos="fade-right">
+                    
+                    <h6 class="section-sub-title">Using OreFox can be as easy as a three step process!</h6>
+                    <ul>
+                        <li>
+                            - Upload your data
+                        </li>
+                        <li>
+                            - Select the processes you want
+                        </li>
+                        <li>
+                            - Press run!
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ht-gradation style-01 section-space--pt_80">
+                    <!-- Single item gradation Start -->
+                    <div class="item item-1" data-aos="fade-up" data-aos-delay="300">
+                        <div class="circle-wrap">
+                            <div class="circle">
+                                <div class="box-image">
+                                    <div class="default-image">
+                                        <img class="img-fulid" src="{% static 'website/images/icons/work-proces-02.png' %}" alt="">
+                                    </div>
+                                    <div class="hover-images">
+                                        <img class="img-fulid" src="{% static 'website/images/icons/work-proces-hover-02.png' %}" alt="">
+                                    </div>
+                                </div>
+                                <h4 class="heading">Upload Data</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="item item-1" data-aos="fade-up" data-aos-delay="400">
+                        <div class="line"><img class="img-fluid" src="{% static 'website/images/icons/architecture-work-proces.png' %}" alt=""></div>
+                    </div>
+                    <!-- Single item gradation End -->
+                    <!-- Single item gradation Start -->
+                    <div class="item item-1" data-aos="fade-up" data-aos-delay="500">
+                        <div class="circle-wrap">
+                            <div class="circle">
+                                <div class="box-image">
+                                    <div class="default-image">
+                                        <img class="img-fulid" src="{% static 'website/images/icons/work-proces-03.png' %}" alt="">
+                                    </div>
+                                    <div class="hover-images">
+                                        <img class="img-fulid" src="{% static 'website/images/icons/work-proces-hover-03.png' %}" alt="">
+                                    </div>
+
+                                </div>
+                                <h4 class="heading">Select Process</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="item item-1" data-aos="fade-up" data-aos-delay="600">
+                        <div class="line"><img class="img-fluid" src="{% static 'website/images/icons/architecture-work-proces.png' %}" alt=""></div>
+                    </div>
+                    <!-- Single item gradation End -->
+                    <!-- Single item gradation Start -->
+                    <div class="item item-1"  data-aos="fade-up" data-aos-delay="700">
+                        <div class="circle-wrap">
+                            <div class="circle">
+                                <div class="box-image">
+                                    <div class="default-image">
+                                        <img class="img-fulid" src="{% static 'website/images/icons/work-proces-01.png' %}" alt="">
+                                    </div>
+                                    <div class="hover-images">
+                                        <img class="img-fulid" src="{% static 'website/images/icons/work-proces-hover-01.png' %}" alt="">
+                                    </div>
+                                    
+                                </div>
+                                <h4 class="heading">Run Analyser</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="item item-1"  data-aos="fade-up" data-aos-delay="800">
+                        <div class="line"><img class="img-fluid" style="visibility:hidden;" src="{% static 'website/images/icons/architecture-work-proces.png' %}" alt=""></div>
+                    </div>
+                    <!-- Single item gradation End -->
+                    <!-- Single item gradation Start -->
+                    <a href="https://youtu.be/BDlsz-GjyoU" target="_blank">
+                        <div class="item item-1" data-aos="fade-up" data-aos-delay="900">
+                            <div class="circle-wrap">
+                                <div class="circle">
+                                    <div class="box-image">
+                                        <div class="default-image">
+                                            <img class="img-fulid" src="{% static 'website/images/icons/work-proces-04.png' %}" alt="">
+                                        </div>
+                                        <div class="hover-images">
+                                            <img class="img-fulid" src="{% static 'website/images/icons/work-proces-hover-04.png' %}" alt="">
+                                        </div>
+                                    </div>
+                                    <h4 class="heading">Watch a Video Tutorial</h4>
+                                </div>
+                            </div>
+
+                        </div>
+                    </a>
+                    <!-- Single item gradation End -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============ Our Work Process Area End ============-->
+
+
+
+<!--============ Solutions Area Start ============-->
+<div id="solutions" class="services-wrapper bg-img bg-cover-center white-bg--overlay-6" 
+    data-bg="{% static 'website/images/bg/1.jpg' %}">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="service-custom-row">
+                <div class="service-col-01 small-mt__60 tablet-mt__60">
+                    <div class="section-title-wrap"  data-aos="fade-right">
+                        <h6 class="section-sub-title">Our Solutions</h6>
+                        <h3 class="mb-20 section-title">We have Best Solutions for your Business</h3>
+                        <p class="mb-30">We are using Data Science, Machine Learning, Artificial intelligence, Data Analysis to make robust solution for you. Here is our most common process...</p>
+
+                        <div class="service-btn-box">
+                            <a href="#" class="ht-btn ht-btn-sm">Learn More</a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="service-col-02">
+                    <div class="section-section-wrap section-space--pt_100 section-space--pb_60 small-pb__0 tablet-pb__20">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <!-- Single Service Box Start -->
+                                <div class="ht-service-icon style-01 single-svg-icon-box" data-aos="fade-up">
+                                    <div class="service-content">
+                                        <h4 class="section-title mb-20">OreFox Multi Element analysis for gold</h4>
+                                        <p> 
+                                            Compares your assay data with 2500 gold deposits
+                                            around the word for deposit type
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Single Service Box End -->
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <!-- Single Service Box Start -->
+                                <div class="ht-service-icon style-01 single-svg-icon-box" data-aos="fade-up" data-aos-delay="300">
+                                    
+                                    <div class="service-content">
+                                        <h4 class="section-title mb-20">Multi Element workflow by Russell Birrell</h4>
+                                        <p> 
+                                            General multi element analysis and workflow 
+                                            as developed by world leading geochemist Russell Burrell
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Single Service Box End -->
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <!-- Single Service Box Start -->
+                                <div class="ht-service-icon style-01 single-svg-icon-box" data-aos="fade-up" data-aos-delay="500">
+                                    
+                                    <div class="service-content">
+                                        <h4 class="section-title mb-20">OreFox ME data exploration</h4>
+                                        <p> Generate accurate results in a fraction of the time,
+                                            using a wide range of visual analytics and advanced 
+                                            quantitative tools for greater insight into your data
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Single Service Box End -->
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <!-- Single Service Box Start -->
+                                <div class="ht-service-icon style-01 single-svg-icon-box" data-aos="fade-up">
+                                    
+                                    <div class="service-content">
+                                        <h4 class="section-title mb-20">Validate data using the Data Bot tool</h4>
+                                        <p> Clean and prepare and validate your data
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Single Service Box End -->
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <!-- Single Service Box Start -->
+                                <div class="ht-service-icon style-01 single-svg-icon-box" data-aos="fade-up" data-aos-delay="300">
+                                    <div class="service-content">
+                                        <h4 class="section-title mb-20">OreFox Reference Libraries</h4>
+                                        <p> Calculations: CIPW norms, exploration indices,
+                                            hydrothermal alternation, molar and petrogenetic
+                                            ratios, REE and regolith
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Single Service Box End -->
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <!-- Single Service Box Start -->
+                                <div class="ht-service-icon style-01 single-svg-icon-box" data-aos="fade-up" data-aos-delay="500">
+                                   
+                                    <div class="service-content">
+                                        <h4 class="section-title mb-20">OreFox Quantitative Techniques</h4>
+                                        <p> Principal components analysis,
+                                            Mahalanobis distance calculations,
+                                            Discriminant projection analysis,
+                                            Auto domain classification
+
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Single Service Box End -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--============ Solutions Area End ============-->
+
+
+<!--================= Roundbox Counter Area Start ====================-->
+<div id="testimonial" class="roundbox-counter-area section-space--ptb_140">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="heroslider-roundbox roundbox text-center" data-aos="fade-right"
+                    data-bg="{% static 'website/images/logo/dark-logo.png' %}">
+
+                    <div class="roundbox-block">
+                        <div class="roundbox-box">
+                            <div class="single-fun-fact">
+                                <div class="fun-fact--two">
+                                    <h3 class="fun-fact__count"><span class="counter">50</span>+</h3>
+                                    <span class="fun-fact__text">Processes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="roundbox-block">
+                        <div class="roundbox-box">
+                            <div class="single-fun-fact">
+                                <div class="fun-fact--two">
+                                    <h3 class="fun-fact__count"><span class="counter">250</span>+</h3>
+                                    <span class="fun-fact__text">Companies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="roundbox-block">
+                        <div class="roundbox-box">
+                            <div class="single-fun-fact">
+                                <div class="fun-fact--two">
+                                    <h3 class="fun-fact__count"><span class="counter">300</span>+</h3>
+                                    <span class="fun-fact__text">Customers</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="roundbox-block">
+                        <div class="roundbox-box">
+                            <div class="single-fun-fact">
+                                <div class="fun-fact--two">
+                                    <h3 class="fun-fact__count"><span class="counter">2300</span>+</h3>
+                                    <span class="fun-fact__text">Files Uploaded</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="testimonials-content-right-box tablet-mt__60 small-mt__60" data-aos="fade-left">
+                    <div class="section-title-wrap section-space--mb_60">
+                        <h6 class="section-sub-title">Testimonials</h6>
+                        <h3 class="mb-20 section-title">Our Happy Client’s <br> say about us</h3>
+                            <h4 class="mb-20 font-weight--light">You can select us for a better data driven solution</h4>
+                    </div>
+
+                    <!--====================  Testimonial Section Start ====================-->
+                    <div class="testimonial-slider-area">
+                        <div class="testimonial-slider">
+                            <div class="swiper-container testimonial-slider__container-two">
+                                <div class="swiper-wrapper testimonial-slider__wrapper">
+                                    <div class="swiper-slide">
+                                        <div class="testimonial-slider__single wow move-up">
+                                            <div class="testimonial-slider--box">
+                                                <div class="testimonial-slider__text"><span class="start-block">“</span>Most popular typesetting, remaining are essentially
+                                                    was popularised in the 1960s with the release of uncov
+                                                    sites still in their nfancy. Various versions have <span class="end-block">”</span></div>
+                                                <div class="author-info">
+                                                    <div class="testimonial-slider__author">
+                                                        <h6 class="name">David Morgan - <span class="designation">CEO</span></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="testimonial-slider__single wow move-up">
+
+                                            <div class="testimonial-slider--box">
+                                                <div class="testimonial-slider__text"><span class="start-block">“</span> electronic typesetting, remaining
+                                                    essenti ally was popularised in
+                                                    1960s with the release
+                                                    <span class="end-block">”</span></div>
+                                                <div class="author-info">
+                                                    <div class="testimonial-slider__author">
+                                                        <h6 class="name">David Morgan - <span class="designation">CEO</span></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="testimonial-slider__single wow move-up">
+
+                                            <div class="testimonial-slider--box">
+                                                <div class="testimonial-slider__text"><span class="start-block">“</span> electronic typesetting, remaining
+                                                    essenti ally was popularised in
+                                                    1960s with the release Various versions have
+                                                    <span class="end-block">”</span></div>
+                                                <div class="author-info">
+                                                    <div class="testimonial-slider__author">
+                                                        <h6 class="name">David Morgan - <span class="designation">CEO</span></h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Add Arrows -->
+                                <div class="swiper-nav-button swiper-button-next"><img src="{% static 'website/images/icons/testimonials-left-arrow.png' %}" alt=""></div>
+                                <div class="swiper-nav-button swiper-button-prev"><img src="{% static 'website/images/icons/testimonials-right-arrow.png' %}" alt=""></div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--==================== Testimonial Section End  ====================-->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--================= Roundbox Counter Area End ====================-->
+
+
+
+<!--============ Personal Contact Us Area Start ============-->
+<div id="contact" class="personal-contact-us-area section-space--pt_120 section-space--pb_60">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="contact-us-info section-space--mb_40 text-lg-right" data-aos="fade-up">
+                    <div class="section-title-wrap">
+                        <h6 class="section-sub-title">Contact</h6>
+                        <h4 class="mb-20 theme-color-default">Hello, what’s on your mind?</h4>
+                        <p class="mb-15 font-weight--light">If you have any special requirements or queries, 
+                            feel free to send us a message.</p>
+                    </div>
+
+                    <div class="contact-widget__wrap section-space--mt_50">
+                        <div class="single-footer-widger mb-30">
+                            <h5 class="mb-10">Address</h5>
+                            <p>Brisbane, Queensland 4000, AU</p>
+                        </div>
+                        <div class="single-footer-widger mb-30">
+                            <h5 class="mb-10">Phone</h5>
+                            <p>01254 879 658, 65987 456 987 <br> 01256 879 857, 0123456789</p>
+                        </div>
+                        <div class="single-footer-widger mb-30">
+                            <h5 class="mb-10">Web</h5>
+                            <p>
+                                <a href="#">info@example.com</a> <br>
+                                <a href="#">www.orefox.com</a>
+                            </p>
+                        </div>
+
+                        <div class="social-share">
+                            <h5 class="mb-10 personal-share-title">Also find us here</h5>
+                            <ul class="list ht-social-networks default-color">
+
+                                <li class="item">
+                                    <a href="https://www.facebook.com/orefoxAI" target="_blank">
+                                        <i class="fa fa-facebook-f link-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="item">
+                                    <a href="https://twitter.com/Orefox_AI" target="_blank">
+                                        <i class="fa fa-twitter link-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="item">
+                                    <a href="https://www.linkedin.com/company/orefoxai/" target="_blank">
+                                        <i class="fa fa-linkedin link-icon"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="contact-us-form section-space--mb_40" data-aos="fade-up" data-aos-delay="300">
+                    <form  action="{% url 'website:contact_message' %}" method="POST"> <!--id="contact-form"-->
+                        {% csrf_token %}
+                        <div class="contact-form__one ml-lg-5">
+
+                            <div class="contact-title section-space--mb_30">
+                                <h4 class="text-white">Send us a message</h4>
+                            </div>
+
+                            <div class="contact-input input-row">
+                                <div class="contact-inner input-col-5">
+                                    <input name="name" type="text" placeholder="Name *" required>
+                                </div>
+                                <div class="contact-inner input-col-5">
+                                    <input name="email" type="email" placeholder="Email *" required>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-input">
+                                <div class="contact-inner">
+                                    <input name="subject" type="text" placeholder="Subject *" required>
+                                </div>
+                            </div>
+                            <div class="contact-inner contact-message">
+                                <textarea name="body" placeholder="Message Body*" required></textarea>
+                            </div>
+                            <div class="comment-submit-btn text-right">
+                                <button class="ht-btn ht-btn-sm personal-contact-btn" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============ Personal Contact Us Area End ============-->
+
+
+
+<!--============= Brand Area Start ===============-->
+<div class="brand-area section-space--pb_60 section-space--pt_60">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 brand-box-wrap">
+                <div class="single-brand-box">
+                    <a href="#"><img style="height: 50px;" src="{% static 'website/images/brand/esri-logo.jpg' %}" alt=""></a>
+                </div>
+                <div class="single-brand-box">
+                    <a href="#"><img style="height: 50px;" src="{% static 'website/images/brand/unearthed-logo-300.png' %}" alt=""></a>
+                </div>
+                <div class="single-brand-box">
+                    <a href="#"><img style="height: 50px;" src="{% static 'website/images/brand/QUT-logo.png' %}" alt=""></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============= Brand Area End ===============-->
+
+
+
+
+
+{% endblock %}

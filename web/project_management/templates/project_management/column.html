@@ -1,0 +1,705 @@
+{% extends 'appboard/base.html' %}
+{% load static %}
+
+{% block head_title%}
+{{board.name}}
+{% endblock %}
+
+{% block content %}
+    <head>
+        <link rel="stylesheet" href="{% static 'project_management/css/kanban.css' %}"/>
+        <link rel="stylesheet" href="{% static 'project_management/css/orefox-jkanban.css' %}"/>
+        <link rel="stylesheet" href="{% static 'project_management/css/chosen.css' %}"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="{% static '/project_management/js/chosen.jquery.js' %}" type="text/javascript"></script>
+       
+    </head>
+    <body>
+    <div class="content-margin-top-offest px-4">
+        <div class= "d-flex" style="overflow-x: hidden">
+    <h4 class="text-ofx-blue">{{ board.name }}</h4>
+    <div class="btn-group border d-flex" style="position:fixed;right:5%;z-index:2000">
+        <button type="button" class="btn dropdown-toggle btn-ofx-blue" data-bs-toggle="dropdown" aria-expanded="false">
+          Manage Board <i class="ms-2 fa fa-ellipsis-v"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" style="z-index: 1750;">
+          <li><h6 class="dropdown-header">Manage columns</h6></li>
+          <li><button id="addColumnBtn" class="dropdown-item btn" type="button">Add column</button></li>
+          <li><button id="deleteColumnBtn" class="dropdown-item btn" type="button">Delete column</button></li>
+          <hr>
+          <li><button id="view_users" class="dropdown-item btn" type="button">View users</button></li>
+        </ul>
+    </div>
+</div>
+<hr>
+    <br/>
+    <div id="myKanban" class="mt-2 px-0"></div>
+
+    <!--    <button id="addToDo">Add element in "To Do" Board</button>-->
+    <!--    <br />-->
+    <!--    <button id="addToDoAtPosition">Add element in "To Do" Board at position 2</button>-->
+    <!--    <br />-->
+    <!--    <button id="removeBoard">Remove "Done" Board</button>-->
+    <!--    <br />-->
+    <!--    <button id="removeElement">Remove "My Task Test"</button>-->
+
+
+    <!--  Delete Column modal  -->
+    <div class="modal fade" tabindex="-1" id="deleteModal">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete column</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="delete_column_form"
+                          method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group d-flex p-2">
+                            <select class="form-control custom-select" id="deleteColumn" name="deleteColumn">
+                                {% for column in columnSet %}
+                                    <option value={{ column.pk }}>{{ column.fields.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <div class="max-w-200 mx-auto">
+                                <button type="submit" name="delete_column_btn"
+                                        class="max-w-200 btn btn-ofx-blue btn-sm rounded-1">
+                                    Delete Column
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Create task modal -->
+    <div class="modal fade" tabindex="-1" id="create_task_modal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create task</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="create_task_form" action=""
+                          method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group d-flex p-2">
+                            <label for="title_input_create" class="input-group-text me-2" style="width: 120px">Title</label>
+                            <input id="title_input_create" type="text" class="form-control" name="title"
+                                   placeholder="Task Title" required>
+                        </div>
+                        <div class="form-group p-2">
+                            <label for="description_create" class="form-label me-2">Description</label>
+                            <textarea id="description_create" class="form-control"  rows="3"></textarea>
+                        </div>
+                        <div class="form-group d-flex p-2">
+                            <label for="file_multiple_create" class="input-group-text me-2" style="width: 100px">Files
+                                Input</label>
+                            <input id="file_multiple_create" class="form-control" type="file" multiple>
+                        </div>
+                        <div class="form-group d-flex p-2">
+                            <label for="due_date_create" class="input-group-text me-2" style="width: 100px">Due Date</label>
+                            <input id="due_date_create" type="date" name="due_date_create">
+                        </div>
+                        <div class="form-group d-flex p-2">
+                            <label for="assignees_select_create" class="input-group-text me-2" style="width: 100px">
+                                Assignees</label>
+                            <select id="assignees_select_create" class="form-control custom-select" name="assignees"
+                                    multiple>
+                                {% for user in board.members.all %}
+                                    <option value={{ user.email }}>{{ user.email }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group d-flex p-2">
+                            <label for="priority_select_create" class="input-group-text me-2" style="width: 120px">
+                                Priority</label>
+                            <select id="priority_select_create" class="form-control custom-select" name="priority">
+                                <option value="High">High</option>
+                                <option selected>Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="max-w-200 mx-auto">
+                                <button type="submit" name="file_uploader_btn" id="btnSubmit"
+                                        class="max-w-200 btn btn-ofx-green btn-sm rounded-1">
+                                    Create Task
+                                </button>
+                                <button type="button" class="btn btn-ofx-blue btn-sm rounded-1" data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create column modal -->
+    <div class="modal fade" tabindex="-1" id="create_column_modal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create column</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="create_column_form" action=""
+                          method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group d-flex p-2">
+                            <input type="text" class="form-control" name="title"
+                                   placeholder="Column Title" required>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="max-w-200 mx-auto">
+                                <button type="submit" name="file_uploader_btn" id="btnSubmit"
+                                        class="max-w-200 btn btn-ofx-green btn-sm rounded-1">
+                                    Create Column
+                                </button>
+                                <button type="button" class="btn btn-ofx-blue btn-sm rounded-1" data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- View User modal   -->
+    <div class="modal fade" id="view_user" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Member</h5>
+                </div>
+                <div class="modal-body">
+                    {% for user in board.members.all %}
+                        {{ user.email }}
+                        <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View task modal -->
+    <div class="modal fade" tabindex="-1" id="view_task_modal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+            <div class="modal-content" id="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Task Detail</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="edit_task_form" action=""
+                          method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group d-flex p-2">
+                            <label class="input-group-text me-2" style="width: 120px"
+                                   for="title_input_edit">Title</label>
+                            <input id="title_input_edit" type="text" class="form-control" name="title"
+                                   placeholder="Task Title">
+                        </div>
+                        <div class="form-group  p-2">
+                            <label for="description_edit" class="form-label">Description</label>
+                            <textarea id="description_edit" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group d-flex p-2">
+                            <label for="file_multiple_create" class="input-group-text me-2" style="width: 100px">Files
+                                Input</label>
+                            <div id="files" style="overflow: hidden">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex p-2">
+                            <label for="due_date_edit" class="input-group-text me-2" style="width: 100px">Due Date</label>
+                            <input id="due_date_edit" type="date"name="due_date_edit">
+                        </div>
+                        <div class="form-group d-flex p-2">
+                            <label class="input-group-text me-2" style="width: 100px"
+                                   for="assignees_select_edit">Assignees</label>
+                            <select id="assignees_select_edit" class="form-control custom-select" name="assignees"
+                                    multiple>
+                                {% for user in board.members.all %}
+                                    <option value={{ user.email }}>{{ user.email }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group d-flex p-2">
+                            <label class="input-group-text me-2" style="width: 120px"
+                                   for="priority_select_edit">Priority</label>
+                            <select id="priority_select_edit" class="form-control custom-select" name="priority">
+                                <option value="High">High</option>
+                                <option selected>Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="max-w-200 mx-auto">
+                                <button id="update_task" type="submit" name="file_uploader_btn"
+                                        class="max-w-200 btn btn-ofx-blue btn-sm rounded-1">
+                                    Save Changes
+                                </button>
+                                <button id="delete_task" type="submit" name="file_uploader_btn"
+                                        class="max-w-200 btn btn-danger btn-sm rounded-1">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+
+
+    <script src="{% static 'project_management/js/jkanban.js' %}"></script>
+    <script src="{% static '/project_management/js/chosen.jquery.js' %}" type="text/javascript"></script>
+    <script src="{% static '/project_management/js/dom-autoscroller.min.js' %}"></script>
+    <script>
+        let csrf_token = "{{ csrf_token }}"
+        let kanban_url = "{% url 'project_management:kanban' %}";
+        var board = "{{ board }}";
+        var kabanID = "{{ board.id }}"
+        var columns =
+        {{ columns|safe }}
+        var tasks =
+        {{ tasks|safe }}
+    </script>
+    <script>
+        $('#assignees_select_create').chosen();
+        defaultColumns = []
+        defaultTasks = {}
+        console.log('Backend Task' + JSON.stringify(tasks));
+        tasks.forEach((element, index) => {
+            console.log('BACKEND ' + element.fields.title + "--" + element.fields.column);
+            if (defaultTasks.hasOwnProperty(element.fields.column)) {
+                defaultTasks[element.fields.column].push(
+                    {
+                        taskID: element.fields.restID,
+                        title: element.fields.title,
+                        date: element.fields.date
+                    }
+                )
+            } else {
+                defaultTasks[element.fields.column] = [
+                    {
+                        // id: element.fields.restID,
+                        taskID: element.fields.restID,
+                        title: element.fields.title,
+                        date: element.fields.date
+                    }
+                ]
+            }
+        })
+        console.log("Default Tasks" + JSON.stringify(defaultTasks))
+
+        console.log("BACKEND Columns " +JSON.stringify(columns))
+        columns.forEach((element, index) => {
+            defaultColumns.push(
+                {
+                    id: element.fields.restID,
+                    title: element.fields.title,
+                    item: defaultTasks[element.pk]
+                }
+            )
+        })
+
+        console.log('Default Columns' + JSON.stringify(defaultColumns))
+        
+        /** 
+         * 
+         * update/delete
+         * 
+         * Usage: On edit_task_form submit
+         * 
+         * Warning: Make it null when updateing/deleting a task is done
+         * 
+         * **/
+        let taskAction;
+        $('#edit_task_form #update_task').click(function(e) {
+            taskAction = 'update'
+        })
+        $('#edit_task_form #delete_task').click(function(e) {
+            taskAction = 'delete'
+        })
+
+        /**
+         * Usage: Selected board for adding new task
+         * 
+         * Warning: Make it null when adding a task is done
+         **/
+        let selectedBoardID = null
+
+        /**
+         * Usage: When updating/deleting a task is done
+         * 
+         * Warning: Make it null when updating a task is done
+         **/
+        let selectedTaskEl = null
+
+        var KanbanTest = new jKanban({
+            element: "#myKanban",
+            gutter: "10px",
+            widthBoard: "250px",
+            // itemHandleOptions: {
+            //     enabled: true,
+            // },
+            click: function (el) {
+                $.ajax({
+                    headers: {"X-CSRFToken": csrf_token},
+                    url: kanban_url + "task/" + el.attributes[1].value,
+                    type: "GET",
+                    dataType: "json",
+                    cache: true,
+                    success: function (data) {
+                        data = JSON.parse(data["task"])[0]
+                        console.log(data.fields)
+                        //$("#modal-content").empty()
+                        $("#edit_task_form").find("input[type=text], textarea").val("");
+                        $("#due_date_edit").val("");
+
+                        $("#title_input_edit").val(data.fields.title);
+                        $('#assignees_select_edit option').prop('selected', false)
+                        $("#description_edit").val(data.fields.description);
+                        if (data.fields.date != null) {
+                            $("#due_date_edit").val(data.fields.date);
+                        }
+                        if (data.fields.file != "" || data.fields.fiel != null) {
+                            $("#files").empty()
+                            $("#files").append(
+                                `<a href="/media/` + data.fields.file + `">` + data.fields.file + `</a>`
+                            )
+                        }
+                        $('select option:contains("' + data.fields.priority + '")').prop('selected', true);
+                        if (data.fields.assignees.length > 0) {
+                            data.fields.assignees.forEach(assignee => {
+                                $('#assignees_select_edit option:contains(' + assignee[0] + ')').prop('selected', true)
+                            }); 
+                        }
+                        $('#view_task_modal').modal('show');
+                    },
+                    error: function (data) {
+                    },
+                });
+
+                selectedTaskEl = el
+            },
+            context: function (el, e) {
+                console.log("Trigger on all items right-click!");
+            },
+            dropEl: function (el, target, source, sibling) {
+                var taskid = el.getAttribute('data-taskid')
+                var index = $("[data-taskid=" + taskid + "]").index()
+                if (taskid == null) {
+                    taskid = el.getAttribute('data-eid')
+                    index = $("[data-eid=" + taskid + "]").index()
+
+                }
+                $.ajax({
+                    headers: {"X-CSRFToken": csrf_token},
+                    url: kanban_url + "update/task",
+                    data: {
+                        id: target.parentElement.getAttribute('data-id'),
+                        taskID: taskid,
+                        task_order: index
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    cache: false,
+                    success: function (data) {
+                        console.log(data)
+                        // location.reload();
+                    },
+                    error: function (data) {
+                    },
+                });
+            },
+            buttonClick: function (el, boardID) {
+                $("#create_task_form").find("input[type=text], textarea").val("");
+                $("#due_date_create").val("");
+
+                $("#title_input_create").val("");
+                $('#assignees_select_create option').prop('selected', false)
+                $("#description_create").val("");
+                $("#file_multiple_create").val("")
+                $('#assignees_select_edit option').prop('selected', false)
+                $('select option').prop('selected', false);
+
+                $('#create_task_modal').modal('show');
+                selectedBoardID = boardID
+            },
+            itemAddOptions: {
+                enabled: true,
+                content: '+ Add New Task',
+                class: 'btn btn-outline-secondary',
+                footer: true
+            },
+            boards: defaultColumns
+        });
+
+        autoScroll([
+            document.querySelector('#myKanban')
+        ],{
+            margin: 30,
+            maxSpeed: 10,
+            scrollWhenOutside: true,
+            autoScroll: function(){
+                return this.down && KanbanTest.drake.dragging;
+            }
+        });
+        // var toDoButton = document.getElementById("addToDo");
+        // toDoButton.addEventListener("click", function() {
+        //   KanbanTest.addElement("_todo", {
+        //     title: "Test Add"
+        //   });
+        // });
+
+        // var toDoButtonAtPosition = document.getElementById("addToDoAtPosition");
+        // toDoButtonAtPosition.addEventListener("click", function() {
+        //   KanbanTest.addElement("_todo", {
+        //     title: "Test Add at Pos"
+        //   }, 1);
+        // });
+        $('#create_task_form').submit(function (e) {
+            e.preventDefault();
+            const taskID = Math.random().toString(36).slice(2)
+
+            if (selectedBoardID == null) return; 
+            if (taskID == null) console.error('Unable to generate taskID')
+
+            var options = [];
+            $('#assignees_select_create > option:selected').each(
+                function () {
+                    options.push($(this).text())
+                }
+            );
+            options = options.join(",")
+            KanbanTest.addElement(selectedBoardID, taskID, {
+                taskID: taskID,
+                title: e.target.elements.title.value,
+                description: e.target.elements.description_create.value,
+                due_date: e.target.elements.due_date_create.value,
+                priority: e.target.elements.priority.value,
+            });
+            var index = $("#" + taskID).index()
+            var fd = new FormData($('#create_task_form').get(0));
+            fd.append("id", selectedBoardID);
+            fd.append("taskID", taskID)
+            fd.append("description", e.target.elements.description_create.value)
+            fd.append("due_date", e.target.elements.due_date_create.value)
+            fd.append("assignees", options)
+            fd.append("task_order", index)
+            fd.append("file", $('#file_multiple_create').prop("files")[0])
+
+            for (var key of fd.entries()) {
+                console.log(key[0] + ', ' + key[1]);
+            }
+
+            $.ajax({
+                headers: {"X-CSRFToken": csrf_token},
+                url: kanban_url + "task",
+                data: fd,
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (data) {
+                },
+            });
+            $('#create_task_form').unbind()
+            $('#create_task_modal').modal('hide');
+            selectedBoardID = null
+        });
+
+        $('#edit_task_form').submit(function (e) {
+            e.preventDefault();
+            if (selectedTaskEl == null) console.error('Empty selected task!')
+            var options = [];
+            $('#assignees_select_edit > option:selected').each(
+                function () {
+                    options.push($(this).text())
+                }
+            );
+            options = options.join(",")
+            KanbanTest.replaceElement(selectedTaskEl, {
+                taskID: selectedTaskEl.getAttribute('data-taskid'),
+                title: e.target.elements.title_input_edit.value,
+                description: e.target.elements.description_edit.value,
+                priority: e.target.elements.priority.value,
+            })
+
+            if (taskAction === 'update') {
+                console.log(`Updating ${selectedTaskEl.getAttribute('data-taskid')}`)
+                $.ajax({
+                    headers: {"X-CSRFToken": csrf_token},
+                    url: kanban_url + "update/task",
+                    data: {
+                        taskID: selectedTaskEl.getAttribute('data-taskid'),
+                        title: e.target.elements.title_input_edit.value,
+                        description: e.target.elements.description_edit.value,
+                        priority: e.target.elements.priority_select_edit.value,
+                        assignees: options,
+                        due_date: e.target.elements.due_date_edit.value
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    cache: false,
+                    success: function (data) {
+                        console.log(data)
+                        location.reload();
+                    },
+                    error: function (data) {
+                    },
+                });
+            } else if (taskAction === 'delete') {
+                $.ajax({
+                    headers: {"X-CSRFToken": csrf_token},
+                    url: kanban_url + "delete/task",
+                    data: {
+                        taskID: selectedTaskEl.getAttribute('data-taskid'),
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    cache: false,
+                    success: function (data) {
+                        location.reload()
+                    },
+                    error: function (data) {
+                    },
+                })
+            }
+            $('#create_task_form').unbind()
+            $('#create_task_modal').modal('hide');
+
+            selectedTaskEl = null
+            taskAction = null
+        });
+
+        $('#addColumnBtn').click( function() {
+            $('#create_column_modal').modal('show');
+            $('#create_column_modal #create_column_form input[name=title]').val('')
+            $('#create_column_modal #create_column_form input[name=title]').focus()
+        });
+        
+        $('#create_column_form').submit(function (e) {
+            e.preventDefault()
+            const generatedColumnID = Math.random().toString(36).slice(2)
+            if (e.target.elements.title.value.trim().length === 0) return;
+            console.log(board)
+            $.ajax({
+                headers: {"X-CSRFToken": csrf_token},
+                url: kanban_url + "column",
+                data: {
+                    "boardID": kabanID,
+                    "id": generatedColumnID,
+                    "title": e.target.elements.title.value,
+                },
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#create_column_modal').modal('hide');
+                    $('#create_column_form').unbind()
+                    KanbanTest.addBoards([
+                        {
+                            id: generatedColumnID,
+                            title: e.target.elements.title.value,
+                            item: []
+                        }
+                    ]);
+                },
+                error: function (data) {
+                },
+            });
+        })
+
+
+        var deleteColumnDefault = document.getElementById("deleteColumnBtn");
+        $('#deleteColumnBtn').click(function () {
+            $('#deleteModal').modal('show');
+        });
+        $('#deleteModal').submit(function (e) {
+            e.preventDefault();
+            var element = document.getElementById("deleteColumn");
+            var eleIndex = element.selectedIndex;
+            var value = element.options[eleIndex].value;
+            console.log("aaa")
+            console.log("eleIndex", eleIndex)
+            console.log("element", element)
+            console.log("value", value)
+            console.log("e.target.elements.deleteColumn", e.target.elements.deleteColumn)
+            $.ajax({
+                headers: {"X-CSRFToken": csrf_token},
+                url: kanban_url + "column_deletion",
+                data: {
+                    id: value,
+                },
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#deleteModal').modal('hide');
+                    console.log(data)
+                    location.reload();
+                },
+                error: function (data) {
+                },
+            });
+        })
+
+
+        var viewUsers = document.getElementById("view_users");
+        viewUsers.addEventListener("click", function () {
+            $('#view_user').modal('show');
+        });
+        setTimeout(function () {
+            if( document.getElementById("flash-message") !== null)
+            document.getElementById("flash-message").style.display = "none";
+          }, 3000); 
+
+      
+          $('#btnSubmit').on('click', function (event) {
+                formId = event.target.form.id;
+                console.log("formid", formId)
+                const form = document.getElementById(formId);
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    form.classList.add('was-validated');
+                }      
+                 
+          }); 
+        // var removeBoard = document.getElementById("removeBoard");
+        // removeBoard.addEventListener("click", function() {
+        //   KanbanTest.removeBoard("_done");
+        // });
+        //
+        // var removeElement = document.getElementById("removeElement");
+        // removeElement.addEventListener("click", function() {
+        //   KanbanTest.removeElement("_test_delete");
+        // });
+
+        // var allEle = KanbanTest.getBoardElements("_todo");
+        // allEle.forEach(function(item, index) {
+        //   //console.log(item);
+        // });
+    </script>
+
+
+{% endblock %}

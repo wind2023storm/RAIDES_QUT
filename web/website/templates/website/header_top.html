@@ -1,0 +1,33 @@
+<div class="header-top-wrap theme-bg-three">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="header default-menu-style position-relative">
+                    <div class="header-midle-box">
+                        <div class="header-bottom-wrap d-md-block">
+                            <div class="navigation-menu top-message text-right">
+                                {% if request.user.is_authenticated %}
+                                    <li class="has-child">
+                                        <a class="dropdown-toggle" href="#">{{request.user.email}}</a>
+                                        <ul class="submenu submenu-right">
+                                            <li><a href="{% url 'appboard:home' %}"><span>Dashboard</span></a></li>
+                                            <li><a href="{% url 'user:inactive' %}"><span>Status</span></a></li>
+                                            <li><a href="{% url 'user:email' %}"><span>My Emails</span></a></li>
+                                            <li><a href="{% url 'user:change_password' %}"><span>Change Pass</span></a></li>
+                                            <li><a href="{% url 'user:logout' %}"><span>Logout</span></a></li>
+                                        </ul>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a href="{% url 'user:login' %}">Login</a> <span class="text-white"> / </span> <a href="{% url 'user:register' %}">Register</a>
+                                    </li>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

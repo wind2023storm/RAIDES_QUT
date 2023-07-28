@@ -1,0 +1,21 @@
+  .fa-times{
+    color:red;
+    display:none;
+  }
+  .fa-check{
+    color:green;
+    display:none;
+  }
+
+  
+  #client-error{
+    color : red;
+    font-size:.70rem;
+  
+  }
+  
+  #server-error{
+    position: absolute;
+    font-size:.7rem;
+    top:120px;
+  }

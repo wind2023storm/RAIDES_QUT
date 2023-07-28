@@ -1,0 +1,30 @@
+
+
+<div class="modal fade" id="{{ id }}Modal" tabindex="-1" aria-labelledby="{{ id }}Label" aria-hidden="true"
+     {% if static %}data-bs-backdrop="static" data-bs-keyboard="false"{% endif %}>
+    <div class="modal-dialog">
+        <form id="{{ id }}Form" method="{{ method }}" action="{{ action }}" enctype="{{ enctype }}"
+            {% for key, value in kwargs.items %}data-form-{{ key }}="{{ value }}"{% endfor %}>
+            <div class="modal-content">
+                <div class="modal-header">
+                    {{ title }}
+                </div>
+                <div class="modal-body">
+                    {{ content }}
+                </div>
+                <div class="modal-footer">
+                    {% if cancel_text %}
+                        <button type="button" id="btnCancel" class="btn btn-sm btn-ofx-blue" data-bs-dismiss="modal">
+                            {{ cancel_text }}
+                        </button>
+                    {% endif %}
+                    {% if submit_text %}
+                        <button type="{{btn_type}}" id="btnSubmit" class="btn btn-sm {{ submit_class }}">
+                            {{ submit_text }}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

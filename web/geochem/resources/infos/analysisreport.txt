@@ -1,0 +1,1 @@
+This is an automatically generated report for the analysis completed so far. For each analysis method you have used, there will be some figures, and explanations of the methodology used. After this, there will also be a brief explanation of the method used.

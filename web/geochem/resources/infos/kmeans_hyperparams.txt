@@ -1,0 +1,7 @@
+*Brief Explanation of Hyperparameters
+Algorithm used: In the case of auto or elkan, an algorithm is used that is more efficient on data that has well defined clusters, at the expense of memory. If it is full, an expectation maximum algorithm is used.
+Initialisation method: If this is k-means++, the centroids are chosen according to some initial observations made on the data. If it is random, they are chosen at random.
+Maximum iterations: The maximum number of iterations that a single run can go for.
+Number of clusters: The number of clusters (and centroids) chosen for the data.
+Random state: The random seed used to produce results. Setting this makes results consistent.
+Number of beginning seeds: The number of times the algorithm will be run on different starting seeds. Alogorithm will automatically choose the one with best performance among seeds.

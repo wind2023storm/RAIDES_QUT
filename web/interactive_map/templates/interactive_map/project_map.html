@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 50%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
+    </style>
+
+    <meta
+      name="viewport"
+      content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <!-- Adjust padding bottom to increase/decrease map height-->
+    <style>
+      #project_map {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 80%;
+        left: 0%;
+        top: 0%;
+      }
+      .leaflet-container {
+        font-size: 1rem;
+      }
+
+      .foliumtooltip {
+        font-size: 10px;
+      }
+      .foliumtooltip table {
+        margin: auto;
+      }
+      .foliumtooltip tr {
+        text-align: left;
+      }
+      .foliumtooltip th {
+        padding: 2px;
+        padding-right: 8px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card shadow w-100">
+      <div class="card-header font-weight-bold">Project Map</div>
+      <div class="card-body" id="project_map"></div>
+    </div>
+  </body>
+
+  <script>
+    $(document).ready(function () {
+      var tenements = "{{context}}"; // get json string containing tenement names from url
+      tenements = tenements.replaceAll("&quot;", '"'); // modify it for javascript
+
+      var targets = "{{targets}}";
+      targets = targets.replaceAll("&quot;", '"'); // modify it for javascript
+
+      $.getJSON('get/tenements_json/', function (data) {
+        var project_map = generate_project_map(JSON.parse(tenements), JSON.parse(targets), data);
+        $('#sidebarToggleButton').on('click',function (e) {     
+          setTimeout(function(){project_map.invalidateSize()}, 200);
+        });
+      });
+    });
+  </script>
+</html>

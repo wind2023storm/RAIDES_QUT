@@ -1,0 +1,128 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+
+
+<!-- breadcrumb-area start -->
+<div class="breadcrumb-area bg-img" data-bg="{% static 'website/images/bg/breadcrumb_bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_box text-center">
+                    <h2 class="breadcrumb-title title--default">Contact_</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb-area end -->
+
+
+<!--============ Personal Contact Us Area Start ============-->
+<div class="personal-contact-us-area section-space--pt_120 section-space--pb_60">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="contact-us-info section-space--mb_40">
+                    <div class="section-title-wrap">
+                        <h6 class="section-sub-title">Contact</h6>
+                        <h4 class="mb-20 theme-color-default">Hello, what’s on your mind?</h4>
+                        <p class="mb-15 font-weight--light">Most popular typesetting, remaining are essentially was popu
+                            larised in the 1960s with the release of uncov er many web sites
+                            in their infancy. Various are versions have evolved</p>
+                    </div>
+
+                    <div class="contact-widget__wrap section-space--mt_50">
+                        <div class="single-footer-widger mb-30">
+                            <h5 class="mb-10">Address</h5>
+                            <p>275 South Poal, 4th Floor Central Plaza, Main Town, New Yourk, USA</p>
+                        </div>
+                        <div class="single-footer-widger mb-30">
+                            <h5 class="mb-10">Phone</h5>
+                            <p>01254 879 658, 65987 456 987 <br> 01256 879 857, 0123456789</p>
+                        </div>
+                        <div class="single-footer-widger mb-30">
+                            <h5 class="mb-10">Web</h5>
+                            <p>
+                                <a href="#">info@example.com</a> <br>
+                                <a href="#">www.example.com</a>
+                            </p>
+                        </div>
+
+                        <div class="social-share">
+                            <h5 class="mb-10 personal-share-title">Also find me here</h5>
+                            <ul class="list ht-social-networks default-color">
+
+                                <li class="item">
+                                    <a href="https://facebook.com" target="_blank">
+                                        <i class="fa fa-facebook-f link-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="item">
+                                    <a href="https://twitter.com" target="_blank">
+                                        <i class="fa fa-twitter link-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="item">
+                                    <a href="https://instagram.com" target="_blank">
+                                        <i class="fa fa-instagram link-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="item">
+                                    <a href="https://linkedin.com" target="_blank">
+                                        <i class="fa fa-linkedin link-icon"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="contact-us-form section-space--mb_40">
+                    <form  action="{% url 'website:contact' %}" method="POST"> <!--id="contact-form"-->
+                        {% csrf_token %}
+                        <div class="contact-form__one ml-lg-5">
+
+                            <div class="contact-title section-space--mb_30">
+                                <h4 class="text-white">Send us a message</h4>
+                            </div>
+
+                            <div class="contact-input input-row">
+                                <div class="contact-inner input-col-5">
+                                    <input name="name" type="text" placeholder="Name *" required>
+                                </div>
+                                <div class="contact-inner input-col-5">
+                                    <input name="email" type="email" placeholder="Email *" required>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-input">
+                                <div class="contact-inner">
+                                    <input name="subject" type="text" placeholder="Subject *" required>
+                                </div>
+                            </div>
+                            <div class="contact-inner contact-message">
+                                <textarea name="message" placeholder="Message*" required></textarea>
+                            </div>
+                            <div class="comment-submit-btn text-right">
+                                <button class="ht-btn ht-btn-sm personal-contact-btn" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--============ Personal Contact Us Area End ============-->
+
+
+
+
+{% endblock %}

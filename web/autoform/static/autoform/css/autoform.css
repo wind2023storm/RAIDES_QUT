@@ -1,0 +1,138 @@
+:root {
+    --fs-header: 24pt;
+    --fs-body: 12pt;
+    --fs-small: 10pt;
+    --fs-letterhead: 10pt;
+}
+
+.fs-small {
+    font-size: var(--fs-small);
+}
+
+.pdf {
+    border: 1px #D3D3D3 solid;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    width: 21cm;
+    /*min-height: 29.7cm;*/
+    height: fit-content;
+    background: white;
+    padding: 40px 80px;
+    margin-bottom: 5px;
+}
+
+.pdf-content h1, .pdf-content h2, .pdf-content h3, .pdf-content h4, .pdf-content h5, .pdf-content h6 {
+    color: var(--ofx-blue);
+}
+
+.pdf-content * {
+    font-family: Arial, serif;
+}
+
+.pdf-content div, .pdf-content p, .pdf-content span[data-autofield] {
+    font-size: var(--fs-body);
+    color: #000;
+}
+
+div[data-letterhead] span[data-autofield] {
+    font-size: var(--fs-letterhead);
+}
+
+.pdf-container {
+    margin: 0 auto;
+}
+
+.pdf-input, *[pdf-input], *[data-autofield][data-type="input"] {
+    border: 1px black solid;
+    padding: 3px;
+}
+
+.pdf-table-bordered td, .pdf-table-bordered th {
+    border-width: 1px;
+}
+
+.pdf-table-spacing {
+    border-collapse: separate;
+    border-spacing: 3px;
+}
+
+
+@page {
+    size: A4;
+    margin: 1in;
+}
+
+@media not print {
+    *[data-autofield], .auto-field-test {
+        padding: 0.1rem 1ch 0.1rem 1ch;
+        min-width: 100px;
+    }
+
+    span[data-autofield]:not(:empty), img[data-autofield][src], .auto-field-test:not(:empty) {
+        background-color: rgba(35, 45, 255, 0.2);
+    }
+
+    span[data-autofield]:empty, img[data-autofield]:not([src]), .auto-field-test:empty {
+        background-color: rgba(255, 142, 43, 0.2);
+    }
+
+    *[data-autofield]:empty::before {
+        content: attr(data-description);
+    }
+
+    .auto-field-test:hover, *[data-autofield]:hover, *[data-autofield]:focus, .autoform-hover {
+        background-color: rgba(156, 255, 65, 0.2) !important;
+        cursor: pointer;
+    }
+
+    .auto-field-placeholder::before {
+        content: attr(data-placeholder);
+    }
+
+    .autoform-popup {
+        display: none;
+        position: absolute;
+        padding: 2px;
+        text-align: center;
+        background-color: var(--ofx-light);
+        border: 2px var(--ofx-blue) solid;
+    }
+
+    .autoform-popup p {
+        padding: 1px;
+        margin: 0;
+        font-weight: bold;
+    }
+}
+
+@media print {
+    .pdf {
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        width: initial;
+        min-height: initial;
+        box-shadow: none;
+        background: initial;
+        page-break-after: always;
+    }
+
+    .page-break {
+        page-break-before: always; /* add a page break before the .print-page element */
+        page-break-after: always; /* add a page break after the .print-page element */
+    }
+
+    /* This is just to maintain the 'size' of the element, might have to change the content to something else */
+    *[data-autofield]:empty::before {
+        content: attr(data-description);
+        visibility: hidden;
+    }
+
+    .pdf button { /*, .pdf input, .pdf textarea*/
+        visibility: hidden;
+    }
+
+    .autoform-popup {
+        display: none;
+    }
+}

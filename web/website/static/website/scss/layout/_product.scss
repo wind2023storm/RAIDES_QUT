@@ -1,0 +1,511 @@
+/*=======================================
+=          08. Product style Css          =
+=========================================*/
+
+
+.single-product-wrap {
+    & .product-thumbnail {
+        position: relative;
+        overflow: hidden;
+        & a {
+            display: block;
+            & img {
+                width: 100%;
+            }
+        }
+    }
+    & .product-hover-image {
+        transition: all .6s;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+    }
+    & .product-thumbnail-box {
+        & img {
+            transition: all .6s;
+            width: 100%;
+        }
+    }
+    & .product-badges {
+        position: absolute;
+        top: 10px;
+        right: 8px;
+        z-index: 99;
+        display: flex;
+        & > span {
+            position: relative;
+            top: 0;
+            left: 0;
+            display: block;
+            margin: 0 2px;
+            padding: 6px 6px 4px;
+            min-height: 0;
+            min-width: 56px;
+            border-radius: 3px;
+            color: #fff;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        & .hot {
+            color: #fff;
+            background-color: #d3122a;
+        }
+        & .onsale {
+            color: #fff;
+            background-color: #f6b500;
+        }
+    }
+
+    & .product-actions {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        color: #fff;
+        padding-right: 8px;
+        background: #333;
+        transform: translateY(100%);
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        & .p-action-btn {
+            padding: 0px 8px;
+            color: $white;
+        }
+    }
+    
+    &:hover {
+        & .product-actions {
+            transform: none;
+            visibility: visible;
+            opacity: 1;
+        }
+        & .product-thumb-image img {
+            transform: scale3d(1.1, 1.1, 1.1);
+        }
+        & .product-hover-image {
+            z-index: 3;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+    }
+    
+    &.list-style {
+        display: flex;
+        border-bottom: 1px solid #e4e8f6;
+        padding-bottom: 30px;
+        margin-bottom: 30px;
+
+        & .product-thumbnail {
+            position: relative;
+            overflow: hidden;
+            width: 260px;
+            flex-shrink: 0;
+        }
+        & .product-info {
+            flex-grow: 1;
+            padding-left: 34px;
+            text-align: left;
+        } 
+        
+        
+        @media #{$large-mobile}{
+            flex-direction: column;
+            & .product-thumbnail {
+                width: 100%;
+            }
+            & .product-info {
+                padding-left: 0px;
+            } 
+        }
+        
+    }
+    
+    & .product-cart-btn {
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0 20px;
+        color: #fff;
+        background: none;
+        transform: none ;
+        line-height: 56px;
+        height: 56px;
+        font-weight: 500;
+        &::before {
+            content: '\f290' !important;
+            font-size: 15px;
+            position: absolute;
+            left: 0;
+            top: 19px;
+            visibility: hidden;
+            opacity: 0;
+            display: inline-block;
+            line-height: 1;
+            font-family: $font-awesome-pro;
+            font-weight: 400;
+            transition: $transition--default;
+        }
+        &:hover{
+            padding-left: 35px;
+            color: $white;
+        }
+        &:hover::before {
+            left: 15px;
+            visibility: visible;
+            opacity: 1;
+            color: $white;
+        }
+    }
+    
+    & .product-info {
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0px 0px 54px 0px rgba(39, 50, 114, 0.15); 
+        & .product__title {
+            font-weight: 600;
+            font-size: 18px;
+            color: $theme-color--default;
+        }
+        & .price-box {
+            margin-top: 5px;
+            & .old-price {
+                font-size: .88em;
+                font-weight: 400;
+                color: #b6b7d2;
+                text-decoration: line-through;
+            } 
+            & .new-price {
+                font-size: 18px;
+                font-weight: 500;
+                color: $theme-color--two;
+            } 
+        }
+    }
+    
+}
+
+.product-details-thumbs-2  {
+    float: left;
+    width: 170px;   
+    & .sm-image {
+        margin-bottom: 28px;
+        &:last-child {
+            margin-bottom: 0;
+        }
+        img {
+            display: block;
+            width: 100%;
+        }
+    }
+    @media #{$small-mobile} {
+        width: 80px;   
+    }
+}
+.product-details-images-2 {
+    float: right;
+    width: calc(100% - 170px);
+    padding-left: 28px;
+    & .lg-image {
+        & a {
+            display: block;
+            & img {
+                width: 100%;
+            }
+        }
+    }
+    @media #{$small-mobile} {
+        width: calc(100% - 80px);  
+        padding-left: 18px;
+    }
+}
+
+
+
+.product-details-thumbs-2  {
+    & .slick-arrow {
+        font-size: 20px;
+        position: absolute;
+        right: 50%;
+        transform: translateX(50%);
+        top: 0;
+        bottom: auto;
+        background: #ddd;
+        border: none;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        border-radius: 5px;
+        z-index: 5;
+        visibility: hidden;
+        opacity: 0;
+        transition: 0.3s ease-in-out;
+        cursor: pointer;
+        &:hover {
+            background: $theme-color--default;
+            color: $white;
+        }
+        &.slick-next {
+            bottom: 0px;
+            top: auto;
+        }
+    } 
+    &:hover .slick-arrow {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+
+
+.totle-review-star-box {
+    display: flex;
+    margin-top: 5px;
+    .totle-review-star {
+        margin-right: 20px;
+        a {
+            color: $theme-color--two;
+        }
+    }
+}
+.product-details-view-content {
+    & .price-box {
+        margin-top: 10px;
+        & .old-price {
+            font-size: 18px;
+            font-weight: 400;
+            color: #b6b7d2;
+            text-decoration: line-through;
+            margin-right: 20px;
+        } 
+        & .new-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: $theme-color--two;
+        } 
+    }
+}
+.attend-check-box-area {
+    margin-top: 30px;
+}
+.leble-title {
+    margin-bottom: 15px;
+    color: $theme-color--default;
+}
+
+
+
+
+
+.check-box {
+    display: block;
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 12px;
+    line-height: 15px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default checkbox */
+.check-box input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+  
+  /* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    border: 1px solid #444;
+    border-radius: 50%;
+}
+  
+/* On mouse-over, add a grey background color */
+.check-box:hover input ~ .checkmark {
+    background-color: $theme-color--two;
+    border: 1px solid $theme-color--two;
+}
+  
+/* When the checkbox is checked, add a blue background */
+.check-box input:checked ~ .checkmark {
+    background-color: $theme-color--two;
+    border: 1px solid $theme-color--two;
+}
+  
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+  
+/* Show the checkmark when checked */
+.check-box input:checked ~ .checkmark:after {
+    display: block;
+}
+  
+.check-box-wrap {
+    & .check-box{
+        margin-right: 15px;
+    }
+}
+
+/* ==========================
+    quantity
+============================== */
+
+
+.cart-quantity {
+    display: flex;
+    align-items: flex-end;
+    & .add-to-cart {
+        border: none;
+        font-size: 14px;
+        color: #ffff;
+        position: relative;
+        background: #323232;
+        padding-left: 13px;
+        padding-bottom: 3px;
+        cursor: pointer;
+        font-weight: 500;
+        text-transform: capitalize;
+        padding: 10px 30px;
+        border-radius: 2px;
+        &:hover {
+            background: $theme-color--default;
+        }
+    }
+}
+.cart-plus-minus {
+    margin-right: 25px;
+    position: relative;
+    width: 100px;
+    text-align: center;
+    padding: 2px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    & .cart-plus-minus-box {
+        border: 1px solid #fff;;
+        color: #333;
+        height: 23px;
+        text-align: center;
+        width: 48px;
+        width: 3rem;
+    }
+    & .dec,
+    & .inc {
+        &.qtybutton {
+            background: #ddd;
+            color: #333333;
+            cursor: pointer;
+            height: 23px;
+            line-height: 20px;
+            position: absolute;
+            text-align: center;
+            -webkit-transition: all 0.3s ease-in-out 0s;
+            transition: all 0.3s ease-in-out 0s;
+            width: 24px;
+            font-family: $font-family-name;
+            font-weight: 600;
+            font-style: normal;
+            &:hover {
+               background: #ddd;
+            }
+        }
+    }
+    & .dec {
+        &.qtybutton {
+            top: 50%;
+            transform: translateY(-50%);
+            right: 4px;
+            border-radius: 0px 15px 15px 0;
+        }
+    }
+    & .inc {
+        &.qtybutton {
+            left: 0;
+            top: 50%;
+            line-height: 23px;
+            font-family: normal;
+            transform: translateY(-50%);
+            right: auto;
+            margin-left: 4px;
+            border-radius: 15px 0px 0px 15px;
+        }
+    }
+}
+.single-product-share {
+    & .meta-content {
+        & a {
+            margin-left: 20px;
+        }
+    }
+}
+.product-details-tab {
+    & .nav {
+        & li {
+            margin-right: 30px;
+            & a {
+                font-weight: 500;
+                font-size: 18px;
+                display: block;
+                position: relative;
+                transition: 0.3s ease-in-out;
+                &::before {
+                    content: "";
+                    background: $theme-color--default;
+                    width: 0%;
+                    height: 1px;
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                }
+                &.active {
+                    color: $theme-color--default;
+                    &::before{
+                       visibility: visible;
+                       width: 100%;
+                    }
+                }
+                @media #{$small-mobile}{
+                  padding-bottom: 10px;
+                    &:last-child {
+                        margin-top: 10px;
+                    }
+                }
+            }
+            &:hover{
+                & > a {
+                    &::before{
+                       visibility: visible;
+                       width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}

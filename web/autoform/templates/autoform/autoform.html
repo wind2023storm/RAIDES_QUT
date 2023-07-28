@@ -1,0 +1,46 @@
+{% extends 'appboard/base.html' %}
+{% load autoform_tags %}
+{% load static %}
+
+{% block extra_head %}
+    <link href="{% static 'autoform/css/autoform.css' %}" rel="stylesheet" type="text/css">
+
+    <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.min.js"></script>
+    <script src="https://github.com/niklasvh/html2canvas/releases/download/v1.0.0-alpha.12/html2canvas.min.js"></script>
+{% endblock %}
+
+{% block head_title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mb-2">
+        <div class="row justify-content-center mb-4">
+            <i class="mb-4">NOTE: This feature may not work in certain browsers. The print or save to PDF buttons sometimes have unintended
+                results and these functions will be improved.</i>
+            <h1 class="text-center">{{ page_title }}</h1>
+            <ul>
+                <b>Auto-Form Instructions:</b>
+                <li><span class="auto-field-test">Blue fields</span> are already filled and will be included on printed documents.</li>
+                <li><span class="auto-field-test auto-field-placeholder" data-placeholder="Red fields"></span> are currently empty and won't be shown on printed documents.</li>
+                <li>Linked Fields share the same contents, such as text or images.</li>
+                <li>When a field is highlighted, all related linked fields will be highlighted also.</li>
+                <li>When preparing a document to print, all unique formatting will be removed and the fields will look like regular text.</li>
+            </ul>
+        </div>
+        {# Masonry container #}
+        <div class="pdf-container">
+            {# Load supplied form templates #}
+            {% for template in templates %}
+                {% include template %}
+            {% endfor %}
+        </div>
+        {# This popup div is contains the input field that shows when an auto-field has been clicked #}
+    </div>
+{% endblock %}
+
+{% block extra_body %}
+    <script src="{% static 'autoform/js/masonry.pkgd.min.js' %}"></script>
+    <script src="{% static 'autoform/js/autoform.js' %}"></script>
+    <script>window.autoform.context = {{ field_data|safe }};</script>
+{% endblock %}

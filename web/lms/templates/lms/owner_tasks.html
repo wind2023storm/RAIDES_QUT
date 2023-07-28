@@ -1,0 +1,58 @@
+{% if not items %}
+    <div><i>None</i></div>
+{% else %}
+    {% for task in items %}
+        <li data-type="task" data-id="{{ task.id }}">
+            <table>
+                <tbody>
+                <tr>
+                    <th>Title:</th>
+                    <td>
+                        <span data-field="name" data-value="{{ task.name }}">{{ task.name }}</span>
+                        <button data-bs-toggle="modal" data-bs-target="#deleteTaskModal" data-action="delete"
+                                data-url="{% url 'lms:handle_task' slug=project.slug action="delete" %}">Delete
+                        </button>
+                        <button data-bs-toggle="modal" data-bs-target="#modifyTaskModal" data-action="modify"
+                                data-url="{% url 'lms:handle_task' slug=project.slug action="modify" %}">Modify
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Content:</th>
+                    <td data-field="content" data-value="{{ task.content }}">{{ task.content }}</td>
+                </tr>
+                <tr>
+                    <th>Status:</th>
+                    <td data-field="status" data-value="{{ task.status }}">{{ task.get_status_display }}</td>
+                </tr>
+                <tr>
+                    <th>Priority:</th>
+                    <td data-field="priority" data-value="{{ task.priority }}">{{ task.get_priority_display }}</td>
+                </tr>
+                <tr>
+                    <th>Date Due:</th>
+                    <td data-field="date_due" data-value="{{ task.date_due|date:'Y-m-d' }}">{{ task.date_due }}</td>
+                </tr>
+                <tr>
+                    <th>Date Created:</th>
+                    {# READONLY #}
+                    <td>{{ task.date_created }} by {{ task.user }}</td>
+                </tr>
+                <tr>
+                    <th>Last Modified:</th>
+                    {# READONLY #}
+                    <td>{{ task.date_updated }} by {{ task.user_updated }}</td>
+                </tr>
+                <tr>
+                    <th>Files:</th>
+                    <td>
+                        <ol>
+                            {% include 'lms/files.html' with project=project files=task.files %}
+                        </ol>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+    {% endfor %}
+{% endif %}

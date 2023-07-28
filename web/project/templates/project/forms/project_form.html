@@ -1,0 +1,22 @@
+#TODO: We are using the default form with css but can change to our defined form later
+
+{#{% for field, errors in fields %}#}
+{#    {{ errors }}#}
+{#    <div class="form-group">#}
+{#    {{ field.label_tag }}#}
+{##}
+{#        {% if field.name == "state" %}#}
+{#            {{ field.values }}#}
+{#            <select id="state_label" class='state_select' name="state_label" style="all: unset;"#}
+{#                    onmousedown="(function(e){ e.preventDefault(); })(event, this)">#}
+{#                {% for value, display_text in field.choices %}#}
+{#                    <option  value ="{{ value }}">{{ display_text }}</option>#}
+{#                {% endfor %}#}
+{#            </select>#}
+{#        {% endif %}#}
+{#    {{ field.errors }}#}
+{#    {{ field.help_text }}#}
+{#    </div>#}
+{##}
+{##}
+{#{% endfor %}#}

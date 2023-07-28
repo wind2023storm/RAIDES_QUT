@@ -1,0 +1,157 @@
+
+/*=============================================
+=            12. Services Css               =
+=============================================*/
+.ht-btn {
+    background: $theme-color--default;
+    line-height: 1;
+    color: $white;
+    transform: translateY(0px);
+    &-lg {
+        font-size: 24px;
+        padding: 24px 28px;
+    }
+    &-md{
+        font-size: 18px;
+        padding: 24px 20px;
+    }
+    &-sm{
+        padding: 20px 25px;
+        font-size: 15px;
+    }
+    &:hover, &:active, &:focus {
+      color: #ffffff;
+      background: $theme-color--two;
+      transform: translateY(-3px);
+    }
+    &.btn--white {
+        background: $white;
+        color: #333333;
+        padding: 20px 30px;
+        &:hover{
+            background: $theme-color--default;
+            color: #ffffff;
+        }
+    }
+}
+.btn {
+    font-size: 15px;
+    font-weight: 500;
+    padding: 0 25px;
+    transition: all 0.4s ease-in-out;
+    height: 54px;
+    line-height: 54px;
+    border-radius: 0;
+    color: $white;
+    &__secondary {
+        background-color: $theme-color--two;
+        &:hover {
+            transform: translateY(-3px);
+            color: $white;
+        }
+    }
+}
+.hero-button {
+    .ht-btn {
+        &-lg {
+            @media #{$large-mobile}{
+                font-size: 20px;
+                padding: 16px 22px;
+            }
+        }
+    }
+}
+
+.ht-btn-icon {
+    padding: 8px 83px 8px 25px;
+    background: $theme-color--default;
+    color: $white;
+    position: relative;
+    overflow: hidden;
+    z-index: 3;
+    &::before {  
+        font-family: $font-awesome-pro;
+        content: "\f105";
+        left: auto;
+        right: 3px;
+        z-index: 2;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        width: 40px;
+        color: #ffffff;
+
+    }
+    &::after {
+        width: 30%;
+        height: 200%;
+        background: $theme-color--two;
+        z-index: 1;
+        right: 0;
+        top: 0;
+        margin: -5px 0 0 -5px;
+        transform-origin: 0 0;
+        position: absolute;
+        content: '';
+        transition: $transition--default;
+    }
+    &:hover {
+        color: $white;
+        &::after {
+            transform: rotate(-20deg);
+        }
+    }
+    &-two{
+        padding: 8px 83px 8px 25px;
+        background: $theme-color--two;
+        color: $white;
+        position: relative;
+        overflow: hidden;
+        z-index: 3;
+        &::before {  
+            font-family: $font-awesome-pro;
+            content: "\f105";
+            left: auto;
+            right: 3px;
+            z-index: 2;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            width: 40px;
+            color: #ffffff;
+
+        }
+        &::after {
+            width: 30%;
+            height: 200%;
+            background: $theme-color--default;
+            z-index: 1;
+            right: 0;
+            top: 0;
+            margin: -5px 0 0 -5px;
+            transform-origin: 0 0;
+            position: absolute;
+            content: '';
+            transition: $transition--default;
+        }
+        &:hover {
+            color: $white;
+            &::after {
+                transform: rotate(-20deg);
+            }
+        }
+    }
+}
+
+.purchase-btn,.btn-view-demo {
+    background: $theme-color--two;
+    line-height: 1;
+    color: $white;
+    padding: 18px 30px;
+    &:hover{
+        color: $white;
+        background: #333;
+    }
+}

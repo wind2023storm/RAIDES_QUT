@@ -1,0 +1,53 @@
+{% extends "appboard/base.html" %}
+{% block head_title %}
+    GIS -Similarity Comparison
+{% endblock %}
+{% load static %}
+{% load leaflet_tags %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'gis/css/data-processor.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+    <script src="//npmcdn.com/geotiff@0.3.6/dist/geotiff.js"></script>
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    {% leaflet_js plugins="ALL" %}
+    {% leaflet_css %}
+    <style>
+      .leaflet-container { height: 100%; }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<body>
+    <input id="process_id" type="hidden" class="process_id" name="process_id"/>
+    <div class="modal fade" id="view_task_modal" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+            <div class="modal-content" id="modal-content">
+            </div>
+        </div>
+    </div>
+    <h4 class="mb-4 text-ofx-blue">GIS -Similarity Comparison&nbsp&nbsp  <i class="fas fa-fw fa-globe"></i></h4>
+    <div>
+        <button class="sizeSelection" id="x-small" name="x-small">5km</button>
+        <button class="sizeSelection" id="small" name="small">10km</button>
+        <button class="sizeSelection" id="medium" name="medium">15km</button>
+        <button class="sizeSelection" id="large" name="large">20km</button>
+        <button class="submit" id="submit" name="submit">Submit</button>
+    </div>
+    <div class="map">
+    {% leaflet_map "main" %}
+    </div>
+</body>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+    let csrf_token = "{{ csrf_token }}"
+    var STATIC_URL = "{{ static }}";
+</script>
+<script src="{% static 'gis/js/mss.js' %}"></script>
+{% endblock %}

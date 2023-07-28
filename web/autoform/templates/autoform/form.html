@@ -1,0 +1,21 @@
+<div class="pdf" data-pdf-name="{% block pdf_name %}{% endblock %}">
+    <div class="position-absolute m-0 p-0" style="right: 2px; top: 2px;" data-html2canvas-ignore>
+{# Uses the browser print functions, seems to mess up on IE #}
+        <button class="btn btn-sm text-lg btn-ofx-fa-blue py-0 my-0" data-toggle="tooltip"
+                onClick="$(this).printToPDF();"
+                title="Print Document">
+            <span class="fa fa-file-download"></span>
+        </button>
+{# This button produces some pretty bad results and doesn't include the CSS specific to #}
+{# printed media #}
+        <button class="btn btn-sm text-lg btn-ofx-fa-red py-0 my-0" data-toggle="tooltip"
+                onClick="$(this).saveToPDF();"
+                title="Save as PDF">
+            <span class="fa fa-file-pdf"></span>
+        </button>
+    </div>
+    <div class="pdf-content">
+        {% block pdf_content %}
+        {% endblock %}
+    </div>
+</div>

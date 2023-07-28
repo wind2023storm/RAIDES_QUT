@@ -1,0 +1,5 @@
+ALS Clean - Upload a .csv file from ALS. Extracts the meta-data, merges the headers, removes cells with inequalities in them and converts to uniform units.
+
+Petrosea Clean - Upload a .csv file from Petrosea. Removes some empty cells.
+
+

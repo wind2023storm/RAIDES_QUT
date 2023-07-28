@@ -1,0 +1,138 @@
+{% load static %} {% load modal_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="shortcut icon" href="{% static 'website/images/favicon.ico' %}">
+
+    <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js"
+            integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet"/>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'appboard/css/appboard.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'appboard/css/orefox.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'notification/css/notification.css' %}"/>
+
+    <title>{% block head_title %}{% endblock %} - OreFox</title>
+
+    {% block extra_head %} {% endblock %}
+</head>
+
+<body class="m-0 p-0">
+<div class="d-flex">
+    <div id="sidebar" class="bg-ofx-blue min-vh-100">
+        <nav class="sticky-top position-sticky">
+            <ul class="navbar-nav flex-column text-ofx-light px-3">
+                <li class="nav-item py-3 text-center">
+                    <img class="img-profile" style="height: 44px; width: 44px; transform: rotate(345deg);"
+                         src="{% static 'website/images/icons/counter-center-new.png' %}">
+                    <span class="text-of-light ms-2 pt-1 side-orefox">OREFOX</span>
+                </li>
+                <hr class="text-ofx-gray my-2">
+                {% include 'appboard/sidebar_items.html' %}
+                <hr class="my-1 pb-3">
+                <div class="text-center">
+                    <button
+                            id="sidebarToggleButton"
+                            class="rounded-circle border-0 sidetoggle"
+                            type="button"
+                            data-bs-toggle="sidebar-colapse"
+                            data-bs-target="#sidebar"
+                            aria-controls="sidebar"
+                            aria-expanded="true"
+                            aria-label="Toggle navigation"
+                    >
+                        <i id="collapse-icon" class="fas fa-angle-left text-ofx-gray"></i>
+                    </button>
+                </div>
+            </ul>
+        </nav>
+    </div>
+    <div class="container-fluid m-0 p-0">
+        <nav id="topbar" class="navbar navbar-expand-lg bg-light shadow sticky-top position-sticky">
+            <div class="container-fluid">
+                {# The top bar can have content in the left and right hand sides #}
+                <ul id="nav-topbar-left" class="navbar-nav">
+                    <li class="nav-item d-inline-flex align-items-center">
+                        {% block breadcrumb %}
+                        {% endblock %}
+                    </li>
+                </ul>
+                <ul id="nav-topbar-right" class="navbar-nav ms-auto">
+                    {% block topbar_items_extra %}
+                    {% endblock %}
+
+                    {% if request.user.is_authenticated %}
+                        {% include 'notification/topbar_dropdown.html' %}
+                    {% endif %}
+
+                    {% include 'appboard/topbar_usermenu_dropdown.html' %}
+                </ul>
+            </div>
+        </nav>
+        <div class="p-4">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+{#<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>#}
+{#<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js" ></script>#}
+<script type="text/javascript"
+        src="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.13.1/b-2.3.3/b-colvis-2.3.3/b-html5-2.3.3/b-print-2.3.3/date-1.2.0/fc-4.2.1/fh-3.3.1/r-2.4.0/sl-1.5.0/datatables.min.js"></script>
+<script type="text/javascript" src="{% static 'appboard/js/appboard.js' %}"></script>
+
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
+        integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+
+<script src="{% static 'notification/js/notification.js' %}"></script>
+
+{% block extra_body %} {% endblock %}
+<button onclick="topFunction()" id="scrollUp"></button>
+
+<script>
+    var popoverTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl);
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Check for the modal parameter in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const modalParam = urlParams.get('modal');
+
+        if (modalParam === 'True') {
+            // Show the modal if the parameter is present
+            $('#myModal').modal('show');
+        }
+    });
+
+    {# Add the active class to whichever sidebar menu item is active #}
+    $(`#sidebar > nav > ul > li > a[href="{{ request.get_full_path }}"]`).closest('li').addClass('active');
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+{% extends 'appboard/base.html' %}
+{% load static %}
+
+{% block head_title %}
+    Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+{% if messages %}
+<div id="flash-message" class="alert alert-success text-sm p-2 ms-4"  >
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
+
+    <div class="container-fluid mb-4 content-margin-top-offest">
+      
+        <div class="container">
+            <h4 class="mb-4 text-ofx-blue">My Dashboard<i class="ms-2 fas fa-fw fa-tachometer-alt"></i></h4>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12 my-3">
+                    <div class="card shadow h-100">
+                        <div class="card-header">
+                            <h5>My Tasks</h5>
+                        </div>
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 my-3">
+                    <div class="card shadow h-100">
+                        <div class="card-header">
+                            <h5>Project Index</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>My Projects</li>
+                                <li>My Tenements</li>
+                                <li>My Reports</li>
+                            </ul>
+                          
+                            <a href="{% url 'project:index' %}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+
+            </div>
+        </div>
+
+
+        <!--  Modals  -->
+
+        <div class="modal modal-md fade" id="petrosea_app_modal">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header card-header">
+                        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href=".home" role="tab"
+                                   aria-controls="home"
+                                   aria-selected="true">Create New Project</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href=".profile" role="tab"
+                                   aria-controls="profile" aria-selected="false">Use Existing Project</a>
+                            </li>
+
+                        </ul>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class=" card-body">
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show home active" id="home" role="tabpanel"
+                                 aria-labelledby="home-tab">
+                                <div class="card shadow-sm container py-2 max-w-700 my-2">
+                                    <form action="{% url 'project:index' %}" method="POST">
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
+                                        <div class="form-group">
+                                            <button class="form-control btn btn-primary mt-3 spin-on-click"
+                                                    spinner-class="spinner-border spinner-border-sm text-light"
+                                                    spinner-text="Loading...">
+                                                Create
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <div class="card shadow-sm container py-2 max-w-700 my-2">
+                                    <div class="form-group">
+                                        <label for="select_existing_project">Select a Project to start
+                                            processing...</label>
+                                        <select class="form-control custom-select" id="select_existing_project">
+                                            <option selected disabled value="">-- Select --</option>
+                                            {% for member in members %}
+                                                {% if member.is_write %}
+                                                    <option value="{% url 'data_processor' project_url=member.project.slug %}">
+                                                        {{ member.project.name }}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    
+<script>
+    setTimeout(function () {
+        if( document.getElementById("flash-message") !== null)
+        document.getElementById("flash-message").style.display = "none";
+      }, 3000);   // Change "3000" to the number of milliseconds to display the flash message
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,40 @@
+.leaflet-legend {
+    background-color: white;
+  }
+  
+  .leaflet-legend-title {
+    margin: 3px;
+    margin-left: 10px;
+  }
+  
+  .leaflet-legend-column {
+    float: left;
+    margin-left: 5px;
+  }
+  
+  
+  .leaflet-legend-item {
+    display: table;
+    margin: 2px 0;
+  }
+  
+  
+  .leaflet-legend-item i {
+    display: inline-block;
+    padding: 0px 3px 0px 4px;
+    position: relative;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+
+  
+  .leaflet-legend-expanded .leaflet-legend-contents {
+    display: block;
+    padding: 6px 15px 6px 6px;
+  }
+  
+  .leaflet-legend-contents:after {
+    content: "";
+    display: block;
+    clear: both;
+  }

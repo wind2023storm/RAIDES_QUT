@@ -1,0 +1,52 @@
+{% extends "autoform/form.html" %}
+{% load static %}
+{% load autoform_tags %}
+
+
+{% block pdf_name %}
+    Statement of Financial Capabilities
+{% endblock %}
+
+{% block pdf_content %}
+    <div class="row mb-2">
+        <div class="col-8 mt-5">
+            <h4>Statement of Financial Commitments</h4>
+            <p>
+                To General Manager, Mining and Petroleum Operations</br>
+                Department of Resources</br>
+                Po Box 15216, Brisbane 4001
+            </p>
+        </div>
+        <div class="col-4">
+            <div class="float-right" data-letterhead>
+                {% auto_field "company.name" %} </br>
+                {% auto_field "company.address" %} </br>
+                {% auto_field "company.number" %} </br>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mb-2">
+            <p>
+                {% auto_field "company.name" %} Statement of financial commitments for {% auto_field "project.name" %}.
+            </p>
+            <p>
+                I, {% auto_field "company.director.name" %}, as the sole director of {% auto_field "company.name" %},
+                have a full and understanding of the current commitments, obligations and liabilities before the company.
+            </p>
+            <p>
+                {% auto_field "obligations" type="textarea" %}
+            </p>
+            <p>
+                Regards,</br>
+                {% auto_field "company.director.signature" type="image" %} </br>
+                {% auto_field "company.director.name" %} </br>
+            </p>
+            <p>
+                Sole Director</br>
+                {% auto_field "company.name" %} </br>
+                {% auto_field "current_date" %}
+            </p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,1 @@
+This is an automatically generated report for the data you have uploaded. It will give you some very quick and high level insight to the data to help guide you in the appropriate direction for cleaning and analysis.

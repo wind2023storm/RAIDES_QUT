@@ -1,0 +1,312 @@
+/*=============================================
+=            24. Creative Pages Css          =
+=============================================*/   
+
+.creative-hero {
+    height: 890px;
+    display: flex;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    
+    & .creative-hero-text {
+        margin-top: 50px;
+    }
+    & .hero-sub-title {
+        color: #172541;
+        margin-bottom: 15px;
+    }
+    & h1 {
+        font-size: 63px;
+        line-height: 1.2;
+    }
+    
+    @media #{$laptop-device}{
+        height: 700px;
+        & h1 {
+            font-size: 52px;
+        }
+    }
+    @media #{$desktop-device}{
+        height: 600px;
+        & h1 {
+            font-size: 52px;
+        }
+    }
+    @media #{$tablet-device}{
+        height: 490px;
+        & .corporate-hero-text {
+            margin-top: 0px;
+        }
+        & h1 {
+            font-size: 40px;
+        }
+    }
+    @media #{$large-mobile}{
+        height: 400px;
+        & .corporate-hero-text {
+            margin-top: 0px;
+        }
+        & h1 {
+            font-size: 30px;
+        }
+    }
+    
+}
+
+
+
+
+.creative-about-us-images {
+    & .creative-agency-about-img {
+        padding-left: 50px;
+        @media #{$tablet-device, $large-mobile}{
+            padding-left: 0px;
+        }
+    }
+    & .creative-agency-about-img-pr {
+        padding-right: 50px;
+        @media #{$tablet-device, $large-mobile}{
+            padding-left: 0px;
+        }
+    }
+}
+.creative-agency-about-us-content{
+    &.pr-50 {
+        padding-right: 50px;
+        @media #{$tablet-device, $large-mobile}{
+            padding-right: 0px;
+        }
+    }
+    &.pl-50 {
+        padding-left: 50px;
+        @media #{$tablet-device, $large-mobile}{
+            padding-left: 0px;
+        }
+    }
+}
+.about-inner-contact-info {
+    max-width: 410px;
+    background: $theme-color--default;
+    padding: 50px;
+    margin-top: -100px;
+    position: relative;
+    text-align: center;
+    @media #{$small-mobile}{
+        max-width: 310px;
+        padding: 40px 20px;
+    }
+}
+.about-inner-btn {
+    background: $theme-color--default;
+    padding: 17px 50px;
+    margin-top: -38px;
+    position: relative;
+    float: right;
+}
+.services-hight {
+    height: 483px;
+}
+
+.single-working-process {
+    margin-bottom: 30px;
+    h3 {
+        font-weight: 400;
+        line-height: 0.9;
+        border-bottom: 2px solid $theme-color--default;
+        display: inline-block;
+        margin-bottom: 23px;
+    }
+    & span {
+        font-weight: 400;
+        font-size: 24px;
+        display: block;
+        line-height: 1.3;
+    }
+}
+
+
+
+/**
+ * Roundbox
+ */
+
+.roundbox {
+    position: relative;
+    height: 360px;
+    width: 360px;
+    right: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+
+    &:before {
+        content: "";
+        // background: url(../images/icons/creative_agency-counter-sercale.png) no-repeat scroll center center;
+        background-size: cover;
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        transform-origin: center center;
+        @media #{$tablet-device,$large-mobile}{
+            display: none;
+        }
+    }
+
+    &::after {
+        left: 0;
+        top: 0;
+        height: 150px;
+        width: 150px;
+        // background: url(../images/icons/counter-center.png) no-repeat scroll center;
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: auto;
+        bottom: 0;
+        @media #{$tablet-device,$large-mobile}{
+            display: none;
+        }
+    }
+    &-block {
+        text-align: center;
+        display: inline-block;
+        position: absolute;
+
+        &:nth-child(1) {
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        &:nth-child(2) {
+            left: 0;
+            top: 50%;
+            transform: translate(-50%, -40%);
+        }
+
+        &:nth-child(3) {
+            left: auto;
+            right: 0;
+            top: 50%;
+            transform: translate(55%, -40%);
+        }
+
+        &:nth-child(4) {
+            top: auto;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        h5 {
+            color: #ffffff;
+            margin-bottom: 0;
+            font-weight: 400;
+            font-size: 20px;
+        }
+    }
+
+    &-box {
+        height: 140px;
+        width: 140px;
+        text-align: center;
+        box-shadow: 0px 0px 54px 0px rgba(39, 50, 114, 0.14);
+        border-radius: 100px;
+        display: inline-block;
+        background: #ffffff;
+        @media #{$small-mobile} {
+            height: 125px;
+            width: 125px;
+        }
+    }
+
+    @media only screen and (max-width: 1400px){
+        height: 225px;
+        width: 225px;
+
+        &-block {
+            h5 {
+                font-size: 15px;
+            }
+        }
+    }
+
+    @media #{$desktop-device} {
+        height: 225px;
+        width: 225px;
+
+        &-block {
+            h5 {
+                font-size: 15px;
+            }
+        }
+    }
+
+    @media #{$tablet-device} {
+        height: auto;
+        width: auto;
+
+        &-block {
+            position: relative;
+            transform: translate(0) !important;
+            left: inherit !important;
+            top: inherit !important;
+            margin-top: 30px;
+
+            &:not(:last-child){
+                margin-right: 30px;
+            }
+
+            h5 {
+                margin-top: 15px;
+                font-size: 15px;
+            }
+        }
+    }
+
+    @media #{$large-mobile} {
+        height: auto;
+        width: auto;
+
+        &-block {
+            position: relative;
+            transform: translate(0) !important;
+            left: inherit !important;
+            top: inherit !important;
+            margin-top: 20px;
+            min-width: 120px;
+
+            &:not(:last-child){
+                margin-right: 30px;
+            }
+
+            h5 {
+                margin-top: 15px;
+                font-size: 15px;
+            }
+        }
+    }
+
+    @media #{$large-mobile}{
+        &-block:not(:last-child){
+            margin-right: 15px;
+        }
+        &-icon{
+            height: 65px;
+            width: 65px;
+            line-height: 65px;
+            font-size: 26px;
+        }
+    }
+}
+.testimonials-content-right-box {
+    padding-left: 50px;
+    @media #{$tablet-device,$large-mobile}{
+        padding-left: 0px;
+    }
+}

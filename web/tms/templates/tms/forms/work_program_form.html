@@ -1,0 +1,80 @@
+{% comment %}
+This is the base template for the CreateWorkProgram form. The primary reason for creating this template is that
+because the activities visible depends on the discipline selected, we have to render the options in a way that
+the javascript can easily change which is visible. This means we don't have to use ajax to continuously request
+the appropriate activities (we also don't need to hard code them in javascript)
+
+The units/quantity labels are select fields that look like regular text fields. Change this as you need.
+
+Select fields that need to match with discipline:
+
+    activity
+    units_label
+    quantity_label
+
+Notes:
+
+Because of how silly Django is, if you make changes to this you have to re-run the server to notice any changes
+{% endcomment %}
+
+{{ errors }}
+{% if errors and not fields %}
+    <p>{% for field in hidden_fields %}{{ field }}{% endfor %}</p>
+{% endif %}
+
+{% for field, errors in fields %}
+    {{ errors }}
+
+    <div class="form-group">
+        {{ field.label_tag }}
+
+        {% if field.name == "activity" %}
+            <select id="{{ field.auto_id }}" name="{{ field.name }}" class="{{ field.field.widget.attrs.class }}">
+                {% for discipline in activity_json %}
+                    {% for option in discipline %}
+                        <option name="activity_options" value="{{ option.0 }}" data-discipline="{{ forloop.parentloop.counter|add:"-1" }}"
+                                {% if forloop.parentloop.counter != 1 %}hidden{% endif %}>{{ option.1 }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select>
+        {% elif field.name == 'units' %}
+            <div class="input-group">
+                {{ field }}
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <select id="id_units_label" class='units_select' name="units_label" style="all: unset;"
+                                onmousedown="(function(e){ e.preventDefault(); })(event, this)">
+                            {% for label in units_labels %}
+                                <option  value="{{ label.0 }}">{{ label.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        {% elif field.name == 'quantity' %}
+            <div class="input-group" id="quantity_inputs" >
+                {{ field }}
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <select id="id_quantity_label" name="quantity_label" style="all: unset; "
+                                onmousedown="(function(e){ e.preventDefault(); })(event, this)">
+                            {% for label in quantity_labels %}
+                                <option class='quantity_options' value="{{ label.0 }}">{{ label.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {{ field }}
+        {% endif %}
+    {{ field.errors }}
+    {{ field.help_text }}
+    </div>
+
+
+{% endfor %}
+
+{% if not fields and not errors %}
+    {% for field in hidden_fields %}{{ field }}{% endfor %}
+{% endif %}

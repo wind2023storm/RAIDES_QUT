@@ -1,0 +1,48 @@
+{% for land_parcel in items %}
+    <li data-type="parcel" data-id="{{ land_parcel.id }}">
+        <table>
+            <tbody>
+            <tr>
+                <th>Lot/Plan</th>
+                <td>{{ land_parcel.parcel.lot_plan }}
+                    <button data-action="modify" disabled>Modify Not Required Here</button>
+                </td>
+            </tr>
+            <tr>
+                <th>Tenure</th>
+                <td>{{ land_parcel.parcel.tenure }}</td>
+            </tr>
+            <tr>
+                <th>Area</th>
+                <td>{{ land_parcel.parcel.area }} sqm</td>
+            </tr>
+            <tr>
+                <th>Bulk Mail Target</th>
+                <td>{{ land_parcel.bulk_mail_target }}</td>
+                {# It's a queryset so just get first entry #}
+            </tr>
+            </tbody>
+        </table>
+
+        <input type="checkbox" data-category="owner"
+               data-url="{% url "lms:handle_owner" slug=project.slug action="get" %}">
+        <label for="owner">
+            <b>Owners</b>
+            <button data-bs-toggle="modal" data-bs-target="#newOwnerModal" data-action="new"
+                    data-url="{% url "lms:handle_owner" slug=project.slug action="new" %}">New +
+            </button>
+        </label>
+        <ol data-category="owner">
+            {# LAND PARCEL OWNER CONTENT HERE #}
+        </ol>
+
+        <input type="checkbox" data-category="history"
+                   data-url="{% url "lms:handle_history" slug=project.slug model="parcel" action="get" %}">
+        <label for="owners">
+            <b>History</b>
+        </label>
+        <ol data-category="history">
+            {# LAND PARCEL HISTORY CONTENT HERE #}
+        </ol>
+    </li>
+{% endfor %}

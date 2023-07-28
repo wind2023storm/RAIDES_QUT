@@ -1,0 +1,262 @@
+.kanban-container {
+  position: relative;
+  box-sizing: border-box;
+  width: auto;
+}
+
+.kanban-container * {
+  box-sizing: border-box;
+}
+
+.kanban-container:after {
+  clear: both;
+  display: block;
+  content: "";
+}
+
+.kanban-board {
+  position: relative;
+  float: left;
+  background: #e2e4e6;
+  width:200px;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.kanban-board.disabled-board {
+  opacity: 0.3;
+}
+
+.kanban-board.is-moving.gu-mirror {
+  transform: rotate(3deg);
+}
+
+.kanban-board.is-moving.gu-mirror .kanban-drag {
+  overflow: hidden;
+  padding-right: 50px;
+}
+
+.kanban-board header {
+  position: relative;
+  font-size: 16px;
+  padding: 15px;
+}
+
+.kanban-board header .kanban-title-board {
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+
+.kanban-board header .kanban-title-button {
+  float: right;
+}
+
+.kanban-board .kanban-drag {
+  min-height: 200px;
+  padding: 20px;
+}
+
+.kanban-board:after {
+  clear: both;
+  display: block;
+  content: "";
+}
+
+.kanban-item {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  animation: append-animate 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes append-animate {
+	from {
+		transform: translateY(-20px);
+	}
+	to {
+		transform: translateY(0px);
+	}
+}
+
+.kanban-item:hover {
+  cursor: move;
+}
+
+.kanban-item:last-child {
+  margin: 0;
+}
+
+.kanban-item.is-moving.gu-mirror {
+  transform: rotate(3deg);
+  height: auto !important;
+}
+
+/* Dragula CSS  */
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+}
+
+.gu-hide {
+  display: none !important;
+}
+
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.gu-transit {
+  opacity: 0.2 !important;
+  transform: rotate(0deg) !important;
+}
+
+.drag_handler {
+    background: #fff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    float: left;
+    top: -3px;
+    margin-right: 4px;
+}
+
+.drag_handler:hover {
+  cursor: move;
+}
+
+.drag_handler_icon {
+    position: relative;
+    display: block;
+    background: #000;
+    width: 24px;
+    height: 2px;
+    top: 12px;
+    transition: .5s ease-in-out;
+}
+
+.drag_handler_icon:before,
+.drag_handler_icon:after {
+    background: #000;
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: .5s ease-in-out;
+}
+
+ .drag_handler_icon:before {
+    top: 6px;
+}
+
+.drag_handler_icon:after {
+    bottom: 6px;
+}
+
+#data_cleaning_form .btn-radio.active{
+  background-color: var(--info);
+  color: var(--white);
+}
+
+
+.lib_select_card:hover,
+.input_type_card:hover{
+  cursor: pointer;
+}
+.lib_select_card:hover,
+.input_type_card:hover:not(.active){
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important
+}
+.input_type_card.active{
+  box-shadow: none;
+  border: 1px solid var(--info) !important;
+  cursor: default !important;
+}
+.input_type_card.active:hover{
+  cursor: default;
+}
+.input_type_card.active .card-header,
+.input_type_card.active .card-footer{
+  background: var(--info);
+  color: var(--white);
+}
+
+.btn-radio{
+  cursor: pointer;
+}
+
+.radio-group .btn-radio{
+  box-shadow: 0 0 1rem rgba(0,0,0,.25);
+  cursor: pointer;
+}
+.radio-group .btn-radio.active{
+  box-shadow: none;
+  border: 1px solid var(--info);
+  cursor: default !important;
+}
+.radio-group .btn-radio.active .card-header{
+  background-color: var(--info);
+  color: var(--white);
+}
+
+.form-check-input-btn .form-check-input{
+  height: 31px;
+  width: 31px;
+}
+#file_uploader_modal{
+  z-index: 100004!important;
+}
+#file_uploader_modal .modal-body{
+  height: 100%;
+  min-height: 200px;
+  width: 100%;
+  padding: 10px;
+}
+.file_upload_area{
+  height: 100%;
+  min-height: 180px;
+  width: 100%;
+  border: 2px dashed grey;
+  border-radius: 10px;
+  background-color: #80808049;
+}
+.file_upload_area .icon{
+  font-size: 48px;
+}
+.file_upload_area:hover{
+  cursor: pointer;
+}
+.file_upload_area:hover .inner-content{
+  color: black;
+}
+.text-black{
+  color: black !important;
+}
+.options-popover{
+  z-index: 100010;
+}
+
+.popover-header,
+.popover-body{
+  color: black;
+}
+
+.morecontent span {
+  display: none;
+}
+.morelink,
+.morelink:hover,
+.morelink:active,
+.morelink:focus {
+  text-decoration: none;
+  /* display: block; */
+}
+
+  

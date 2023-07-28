@@ -1,0 +1,1027 @@
+{% extends 'appboard/base.html' %}
+{% load static %}
+{% load modal_tags %}
+{% load project_tags %}
+{% load humanize %}
+
+{% block head_title %}
+    {{ tenement.permit_id }}
+{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+{% endblock %}
+
+
+{% block breadcrumb %}
+    {% with tenement.project as project %}
+        {% if project and project|is_read:member %}
+            <a class="nav-link" href="{% url 'project:index' %}">Project Index</a> /
+            <a class="nav-link" href="{% url 'project:dashboard' slug=project.slug %}">{{ project.name }}</a> /
+            <a class="nav-link" href="#">{{ tenement.permit_id }}</a>
+        {% endif %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+<div
+id="flash-message" class="text-sm ms-4">
+    {% if messages %}
+    {% for message in messages %} 
+    {% if message.level == 25 %}
+    <span
+    class="alert alert-success text-center p-2"> {{ message }}
+    </span>
+    {% elif message.level == 40 %}
+    <span
+    class="alert alert-danger text-center p-2"> {{ message }}
+    </span>
+    {% endif %} {% endfor %} {% endif %}
+</div>
+
+  <div class="container-fluid px-4">
+      <div class="row text-center mb-2 content-margin-top-offest">
+          <h4 class="mb-4 text-ofx-blue">{{ tenement.permit_id }}<i class="fa-solid fa-earth-oceania ms-2"></i></h4>
+      </div>     
+        <div class="row row-cols g-3">
+            <div class="col-sm-12 col-xl-8">
+                <div class="row g-3">
+
+                    <div class="col-12">
+                        {# INFO: MAIN NAV #}
+                        <div class="card shadow mb-2">
+                            <div class="card-header">
+                                <div class="nav nav-tabs card-header-tabs" id="nav-tab" rolelist="tablist">
+                                    <a class="nav-link active" id="nav-permit-tab" data-bs-toggle="tab"
+                                       data-bs-target="#nav-permit" aria-controls="nav-permit" aria-selected="true">
+                                        Permit Info
+                                    </a>
+                                    <a class="nav-link" id="nav-holders-tab" data-bs-toggle="tab"
+                                       data-bs-target="#nav-holders" aria-controls="nav-holders" aria-selected="false">
+                                        Holders
+                                    </a>
+                                    <a class="nav-link" id="nav-permit-info-tab" data-bs-toggle="tab"
+                                       data-bs-target="#nav-area" aria-controls="nav-area" aria-selected="false">
+                                        Area
+                                    </a>
+                                    {% if tenement.project|is_read:member %}
+                                        <a class="nav-link" id="nav-permit-info-tab" data-bs-toggle="tab"
+                                           data-bs-target="#nav-targets" aria-controls="nav-targets"
+                                           aria-selected="false">
+                                            Targets
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="card-body tab-content overflow-auto" id="nav-tabContent">
+                                <div class="tab-pane active col-12" id="nav-permit" role="tabpanel"
+                                     aria-labelledby="nav-permit-tab">
+                                    <div class="row">
+                                        <div class="col col-sm-12 col-xl-6">
+                                            <h4 class="mt-2 fw-bold">Tenement Permit</h4>
+                                            <table class="table table-sm p-dash-table">
+                                                <colgroup>
+                                                    <col span="1" style="width: 25%">
+                                                    <col span="1" style="width: 75%">
+                                                </colgroup>
+                                                <tbody>
+                                                <tr>
+                                                    <th>Tenement ID</th>
+                                                    <td>{{ tenement.permit_id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Tenement Type</th>
+                                                    <td>{{ tenement.get_permit_type_display }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Status</th>
+                                                    <td>{{ tenement.get_permit_status_display }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Lodged Date</th>
+                                                    <td>{{ tenement.date_lodged }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Approved Date</th>
+                                                    <td>{{ tenement.date_granted }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Commencement Date</th>
+                                                    <td>{{ tenement.date_commenced }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Expiry Date</th>
+                                                    <td>{{ tenement.date_expiry }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Current Term</th>
+                                                    <td>{% if tenement.term_current %}Term
+                                                        {{ tenement.term_current }}{% endif %}</td>
+                                                </tr>
+                                                {% if tenement.date_expiry %}
+                                                    <tr>
+                                                        <th>Expires In</th>
+                                                        <td>
+                                                            {% if tenement.expiry_distance.0 > 0 %}
+                                                                {{ tenement.expiry_distance.0 }}y
+                                                            {% endif %}
+                                                            {% if tenement.expiry_distance.1 > 0 %}
+                                                                {{ tenement.expiry_distance.1 }}m
+                                                            {% endif %}
+                                                            {% if tenement.expiry_distance.2 > 0 %}
+                                                                {{ tenement.expiry_distance.2 }}d
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {% if tenement.environmental_authority %}
+                                            {% with tenement.environmental_authority as EA %}
+                                                <div class="col col-sm-12 col-xl-6">
+                                                    <h4 class="mt-2 fw-bold">Environmental Authority</h4>
+                                                    <table class="table table-sm p-dash-table">
+                                                        <colgroup>
+                                                            <col span="1" style="width: 25%">
+                                                            <col span="1" style="width: 75%">
+                                                        </colgroup>
+                                                        <tbody>
+                                                        <tr>
+                                                            <th>EA Permit ID</th>
+                                                            <td>{{ EA.number }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Status</th>
+                                                            <td>{{ EA.get_status_display }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Permit Type</th>
+                                                            <td>{{ EA.type }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Condition Type</th>
+                                                            <td>{{ EA.condition_type }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Activity</th>
+                                                            <td>{{ EA.activity }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Permit Holder(s)</th>
+                                                            <td>{{ EA.holder }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Effective Date</th>
+                                                            <td>{{ EA.date_effective }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Assurance</th>
+                                                            <td>{{ EA.assurance }}</td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% endwith %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="nav-holders" role="tabpanel"
+                                     aria-labelledby="nav-holders-tab">
+                                     <h4 class="mt-2 fw-bold">Authorised Holder Representative (AHR)</h4>
+                                    <table class="table table-sm p-dash-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 15%">
+                                            <col span="1" style="width: 85%">
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <th>Name</th>
+                                            <td>{{ tenement.ahr_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Address</th>
+                                            <td>{{ tenement.ahr_address }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <h4 class="mt-4 fw-bold">Holders</h4>
+                                    <table class="table table-sm p-dash-table">
+                                        <thead>
+                                        <th>Holder Name</th>
+                                        <th>Share %</th>
+                                        <th>Status</th>
+                                        <th>Held From</th>
+                                        <th>Held To</th>
+                                        <th>AH</th>
+                                        </thead>
+                                        <tbody>
+                                        {% for holder in tenement.holders.all %}
+                                            <tr>
+                                                <td>{{ holder.name_main }}<br/>{{ holder.address }}</td>
+                                                <td>{{ holder.share_percent }}</td>
+                                                <td>{{ holder.get_status_display }}</td>
+                                                <td>{{ holder.date_start }}</td>
+                                                <td>{{ holder.date_end }}</td>
+                                                <td>{% if holder.is_authorised_holder %}
+                                                    <span class="fa fa-check text-ofx-green"/>
+                                                {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane" id="nav-area" role="tabpanel" aria-labelledby="nav-area-tab">
+                                    <h4 class="mt-2 fw-bold">Tenement Area Information</h4>
+                                    <table class="table table-sm p-dash-table">
+                                        <colgroup>
+                                            <col span="1" style="width: 15%">
+                                            <col span="1" style="width: 85%">
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <th>Mining District</th>
+                                            <td>{{ tenement.area_mining_district }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Local Authority</th>
+                                            <td>{{ tenement.area_local_authority }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Area</th>
+                                            <td>{{ tenement.area_units }} {{ tenement.area_label }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Rent/unit Area</th>
+                                            <td>${{ tenement.rent_rate }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Exclusions</th>
+                                            <td>{{ tenement.area_exclusions }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Prescribed Minerals</th>
+                                            <td>{{ tenement.prescribed_minerals|join:',' }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    {% if tenement.blocks.all|length %}
+                                        <h4 class="mt-4 fw-bold">Sub-Blocks</h4>
+                                        <table class="table table-sm p-dash-table">
+                                            <thead>
+                                            <th>Block</th>
+                                            {% for id in "ABCDEFGHJKLMNOPQRSTUVWXYZ" %}
+                                                <th class="text-center">{{ id }}</th>
+                                            {% endfor %}
+                                            </thead>
+                                            <tbody>
+                                            {% for block in tenement.blocks.all %}
+                                                <tr>
+                                                    {# Loops through each block and places a checkmark in the columns for each subblock if exists #}
+                                                    <td>{{ block.get_block_identification_map_display }} {{ block.number }}</td>
+                                                    {% for sub_block, value in block.sub_blocks.items %}
+                                                        <td class="text-center">
+                                                            {% if value %}
+                                                                <span class="fa fa-check text-ofx-blue"/>
+                                                            {% endif %}
+                                                        </td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                </div>
+
+                                {% if tenement.project|is_read:member %}
+                                    <div class="tab-pane" id="nav-targets" role="tabpanel"
+                                         aria-labelledby="nav-targets-tab">
+                                        <table id="target-table" class="table table-sm dt-responsive w-100">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                                <th>Location (Lat/Long)</th>
+                                                <th>
+                                                    {% comment %} {% if tenement.project|is_admin:member %}
+                                                        <span data-bs-toggle="modal" data-bs-target="#addTargetModal">
+                                                            <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="left"
+                                                                    title="Add Target">
+                                                                <span class="fa fa-plus"/>
+                                                            </button>
+                                                        </span>
+                                                    {% endif %} {% endcomment %}
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        {# UTILITY BAR #}
+                        <div class="float-end">
+                            {# Is Project Member #}
+                            {% if tenement.project %}
+                                {% if tenement.project|is_read:member %}
+                                    <button class="btn btn-sm btn-ofx-blue" type="button"
+                                            onclick="window.location.href='{% url 'project:dashboard' slug=tenement.project.slug %}';">
+                                        {{ tenement.project.name }} <span class="fa fa-chalkboard"/>
+                                    </button>
+                                    <button class="btn btn-sm btn-ofx-blue" type="button">KMS <span
+                                            class="fa fa-comment"/>
+                                    </button>
+
+                                    {# Owner Only #}
+                                    {% if tenement.project|is_admin:member %}
+                                        <button class="btn btn-sm btn-ofx-gray" type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modifyTenementModal">
+                                            Modify <span class="fa fa-cog"/>
+                                        </button>
+                                    {% endif %}
+                                    {% if tenement.project|is_owner:member %}
+                                        <button class="btn btn-sm btn-ofx-red" type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteTenementModal">
+                                            Relinquish <span class="fa fa-trash"/></button>
+                                    {% endif %}
+
+                                    {# Is Not in Project Members #}
+                                {% else %}
+                                    <button class="btn btn-sm btn-ofx-gray" type="button" disabled>Already Claimed
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                {# Is Unclaimed #}
+                                <button class="btn btn-sm btn-ofx-green" type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#claimTenementModal">
+                                    Add to Project <span class="fa fa-plus"/>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if tenement.project|is_read:member %}
+                        {# Appear in screen smaller than xl. Disappear otherwise #}
+                        <div id="statistics_div_small" class="col-12">
+                        </div>
+
+                        {# PENDING TASKS #}
+                        <div class="col-12">
+                            <div class="card shadow mb-2">
+                                <div class="card-header">
+                                    Pending Tasks
+                                </div>
+                                <div class="card-body">
+                                    <table id="task-table" class="table table-sm dt-responsive w-100">
+                                        <thead>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Authority</th>
+                                        <th>Due Date</th>
+                                        <th>Attachment(s)</th>
+                                        <th>
+                                            {% if tenement.project|is_admin:member %}
+                                                <span data-bs-toggle="modal" data-bs-target="#createTaskModal">
+                                            <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                    data-bs-toggle="tooltip" data-bs-placement="left" title="Add Task">
+                                                <span class="fa fa-plus"/>
+                                            </button>
+                                        </span>
+                                            {% endif %}
+                                        </th>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# WORK PROGRAM #}
+                        <div class="col-12">
+                            <div class="card shadow mb-2">
+                                <div class="card-header">
+                                    <span>Work Program</span>
+                                    <div class="nav nav-tabs card-header-tabs" id="work-program-tab" rolelist="tablist">
+                                        <a class="nav-link active" id="work-program-summary-total-tab"
+                                           data-bs-toggle="tab"
+                                           data-bs-target="#work-program-summary-total"
+                                           aria-controls="work-program-summary-total" aria-selected="true">
+                                            Summary Totals
+                                        </a>
+                                        <a class="nav-link" id="work-program-yearly-total-tab" data-bs-toggle="tab"
+                                           data-bs-target="#work-program-yearly-total"
+                                           aria-controls="work-program-yearly-total" aria-selected="false">
+                                            Yearly Totals
+                                        </a>
+                                        <a class="nav-link" id="work-program-activties-tab" data-bs-toggle="tab"
+                                           data-bs-target="#work-program-activity"
+                                           aria-controls="work-program-activities" aria-selected="false">
+                                            Activities
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body tab-content overflow-auto" id="work-program-tabContent">
+
+                                    <div class="tab-pane active col-12" id="work-program-summary-total" role="tabpanel"
+                                         aria-labelledby="nav-holders-tab">
+                                        <table id="summary-total-table" class="table table-sm dt-responsive w-100">
+                                            <thead>
+                                            <th>Discipline</th>
+                                            <th>Units</th>
+                                            <th>Quantity</th>
+                                            <th>Total Cost</th>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane" id="work-program-yearly-total" role="tabpanel"
+                                         aria-labelledby="nav-holders-tab">
+                                        <table id="yearly-total-table" class="table table-sm dt-responsive w-100">
+                                            <thead>
+                                            <th>Year</th>
+                                            <th>Discipline</th>
+                                            <th>Units</th>
+                                            <th>Quantity</th>
+                                            <th>Total Cost</th>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="tab-pane overflow-auto" id="work-program-activity" role="tabpanel"
+                                         aria-labelledby="nav-holders-tab">
+                                        <table id="activity-table" class="table table-sm dt-responsive w-100">
+                                            <thead>
+
+                                            <th>Year</th>
+                                            <th>Discipline</th>
+                                            <th>Activity</th>
+                                            <th>Units</th>
+                                            <th>Quantity</th>
+                                            <th>Expenditure</th>
+                                            <th>Actual Expenditure</th>
+                                            <th>Receipt</th>
+                                            <th>
+                                                {% if tenement.project|is_admin:member %}
+                                                <span data-bs-toggle="modal" data-bs-target="#createWorkProgramModal">
+                                            <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                    data-bs-toggle="tooltip" data-bs-placement="left" title="Create Work Program">
+                                                <span class="fa fa-plus"/>
+                                            </button>
+                                        </span>
+                                            {% endif %}
+                                            </th>
+
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-xl-4">
+                {% if tenement.project|is_read:member %}
+{#                     TODO: Statistics Box #}
+{#                     Appear in screen larger or equal to xl. Disappear otherwise #}
+
+                    <div id="statistics_div_xl" class="mb-3 py-0">
+                        <div id="statistics_card" class="card shadow ">
+                            <div class="card-header mb-0">
+                                Actions Overview    --     Coming soon
+                            </div>
+                            <div class="card-body ">
+                                <div class="card-body justify-content-between">
+                                   <div class="d-flex justify-content-around ">
+                                        <a class="btn btn-sm btn-ofx-green  mb-3 me-2" href="#" style="width:150px"><i
+                                            class="fa-solid fa-file-lines  fa-fw "></i>Annual Report</a>
+                                        <a class="btn btn-sm btn-ofx-red  mb-3" href="#" style="width:150px"><i
+                                            class="fa-solid fa-money-bill-wave fa-fw "></i>&nbspExpenditure</a>
+                                    </div>
+                                    <div class="d-flex justify-content-around">
+                                        <a class="btn btn-sm btn-ofx-green me-2" style="width:150px" href="#"><i
+                                            class="fa-solid fa-seedling  fa-fw "></i>&nbspEA return</a>
+                                        <a class="btn btn-sm btn-ofx-blue " style="width:150px" href="#"><i
+                                            class="fa-solid fa-arrows-spin  fa-fw"></i>Renewal</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# TODO: Map box #}
+                <div id='tenement_map_box'>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% with tenement.project as project %}
+
+        {% if not project %}
+            {# UNCLAIMED TENEMENT MODAL FORMS #}
+            {% modalform id='claimTenement' title='Claim Tenement' method='POST' %}
+                {% csrf_token %}
+                {{ claimTenementForm.as_p }}
+            {% endmodalform %}
+
+        {% else %}
+
+            {# CLAIMED TENEMENT MODAL FORMS #}
+            {% if project|is_write:member %}
+
+                {% modalform id='createTask' title='Create Task' %}
+                    {% csrf_token %}
+                    {{ createTaskForm.as_p }}
+                {% endmodalform %}
+
+            {% endif %}
+
+            {% if project|is_write:member %}
+                {% modalform id='createWorkProgram' title='Create Work Program' %}
+                    {% csrf_token %}
+                    {{ createWorkProgramForm.as_p }}
+                   
+                {% endmodalform %}
+            {% endif %}
+            {% if project|is_write:member %}
+                {% modalform id='createWorkProgram' title='Create Work Program' %}
+                    {% csrf_token %}
+                    {{ createWorkProgramForm.as_p }}
+
+                {% endmodalform %}
+            {% endif %}
+
+            {% if project|is_admin:member %}
+                {% modalform id='modifyTenement' title='Modify Tenement' submit_text='Update' %}
+                    {% csrf_token %}
+                    {{ modifyTenementForm.as_p }}
+                    <p>Coming Soon</p>
+                {% endmodalform %}
+
+                {% modalform id='deleteTenement' title='Relinquish Tenement' submit_class='Relinquish' submit_class='btn-ofx-red' %}
+                    {% csrf_token %}
+                    {{ deleteTenementForm.as_p }}
+                    <p>Relinquish ownership of <b>{{ tenement.permit_id }}</b> from
+                        its Project?
+                    </p>
+                    <p>This action will <strong class="text-ofx-red">permanently</strong> delete the following:</p>
+                    <ul>
+                        <li>All Tasks and associated files.</li>
+                        <li>All Targets within the Tenement.</li>
+                    </ul>
+                {% endmodalform %}
+
+                {% modalform id='deleteTask' title='Delete Task' submit_text='Remove' submit_class='btn-ofx-red' dynamic='true' %}
+                    {% csrf_token %}
+                    {{ deleteTaskForm.as_p }}
+                    <p>Remove <b id="name"></b> from the tenement?</p>
+                {% endmodalform %}
+
+                {% modalform id='deleteWorkProgram' title='Delete Work Program' submit_text='Remove' submit_class='btn-ofx-red' dynamic='true' %}
+                    {% csrf_token %}
+                    {{ deleteWorkProgramForm.as_p }}
+                    <p>Remove <b id="name"></b> from the work program?</p>
+                {% endmodalform %}
+             
+                {% modalform id='createWorkProgramReceipt' title='Create Work Program Receipt' submit_text='Submit'  dynamic='true' %}
+                    {% csrf_token %}
+                    {{ createWorkProgramReceipt.as_p }}
+                    
+               {% endmodalform %}
+            {% endif %}
+        {% endif %}
+    {% endwith %}
+
+{% endblock %}
+
+
+{% block extra_body %}
+    <script type="text/javascript" src="{% static 'tms/js/tenement_dashboard.js' %}"></script>
+    <script type="text/javascript" src="{% static 'interactive_map/js/get_tenement_map.js' %}"></script>
+    <script>
+        //$(window).resize(updateStatisticsCardPos)
+
+        setTimeout(function () {
+            if( document.getElementById("flash-message") !== null)
+            document.getElementById("flash-message").style.display = "none";
+          }, 3000);
+          
+          $('button[type="submit"]').on('click', function (event) {
+            formId = event.target.form.id;
+            const form = document.getElementById(formId);
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+               }
+
+           });
+
+    </script>                
+    <script>
+        $(window).resize(updateStatisticsCardPos)
+
+        $(document).ready(function () {
+            updateStatisticsCardPos()
+
+            {% if tenement.project|is_read:member %}
+                let targetsTable = $('#target-table').DataTable({
+                    'bSort': true,
+                    'bPaginate': false,
+                    'bDestroy': true,
+                    columns: [
+                        {data: 'name'},
+                        {data: 'description'},
+                        {data: 'location'},
+                        {
+                            data: 'actions', bSortable: false,
+                            {% if project|is_admin:member %}
+                                render: function (data, type, row) {
+                                    return `<div class="float-end">
+                                <span data-bs-toggle="modal" data-bs-target="#deleteTargetModal">
+                                    <button class="btn btn-sm btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                            title="Delete Target">
+                                        <span class="fa fa-trash"/>
+                                    </button>
+                                </span></div>`;
+                                }
+                            {% endif %}
+                        }
+                    ],
+                    ajax: {
+                        url: "{% url 'tms:get_targets' permit_state=tenement.permit_state permit_type=tenement.permit_type permit_number=tenement.permit_number %}",
+                        type: 'GET',
+                        contentType: 'application/json',
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        dataSrc: function (response) {
+                            return get_intersected_targets(response.tenement, response.targets, L.geoJson(response.tenement_data));
+                        },
+                    }
+                });
+
+                let taskTable = $('#task-table').DataTable({
+                    'bSort': true,
+                    'bPaginate': false,
+                    'bDestroy': true,
+                    order: [[4, "asc"]],
+                    columns: [
+                        {data: 'name', bSortable: true},
+                        {data: 'description', bSortable: true},
+                        {data: 'authority', bSortable: true},
+                        {data: 'due_date', bSortable: true},
+                        {
+                            data: 'attachments', bSortable: false,
+                            render: function (data, type, row) {
+                                let files = data['files'];
+                                let options = '';
+
+                                $.each(files, function (i, file) {
+                                    options += `
+                                    <span class="dropdown-item">
+                                        <a href="${file['url']}" download>${file['filename']}</a>
+                                        <span class="text-sm text-ofx-gray">${file['size']}</span>
+                                    </span>`
+                                });
+
+                                return options ? `
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-ofx-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        ${files.length} Files (<span class="text-sm text-ofx-dark">${data['size']}</span>)
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        ${options}
+                                    </div>
+                                </div>` : ''
+                            }
+                        },
+                        {
+                            data: 'actions', bSortable: false,
+                            {% if tenement.project|is_admin:member %}
+                                mRender: function () {
+                                    return `
+                                <div class="float-end">
+                                    <span data-bs-toggle="modal" data-bs-target="#deleteTaskModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                                title="Delete Task">
+                                            <span class="fa fa-trash"/>
+                                        </button>
+                                    </span>
+                                </div>`
+                                }
+                            {% endif %}
+                        }
+                    ],
+                    ajax: {
+                        url: "{% url 'tms:get_tasks' permit_state=tenement.permit_state permit_type=tenement.permit_type permit_number=tenement.permit_number %}",
+                        type: 'GET',
+                        contentType: 'application/json',
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        data: function (response) {
+                            return response.data;
+                        },
+                    }
+                });
+
+                let workProgramTable = $('#activity-table').DataTable({
+                    'bSort': true,
+                    'bPaginate': false,
+                    'bDestroy': true,
+                    order: [[0, "asc"], [1, "asc"]],
+                    columns: [
+                        {data: 'year', bSortable: true,},
+                        {data: 'discipline', bSortable: true,},
+                        {data: 'activity', bSortable: true,},
+                        {
+                            data: 'units', bSortable: true,
+                            render: function (data, type, row) {
+                                return `${data} ${row.units_display}`
+                            }
+                        },
+                        {
+                            data: 'quantity', bSortable: true,
+                            render: function (data, type, row) {
+                                return `${data} ${row.quantity_display}`
+                            }
+                        },
+                        {
+                            data: 'expenditure', bSortable: true,
+                            render: function (data, type, row) {
+                                return `$${(data).toFixed(2)}`
+                            }
+                        },
+                        {
+                            data: 'actual_expenditure', bSortable: true,
+                            render: function (data, type, row) {
+                                return `$${(data).toFixed(2)}`
+                            }
+                        },
+                        {
+                            data: 'receipts', bSortable: false,
+                            render: function (data, type, row) {
+                                let files = data['files'];
+                                let options = '';
+
+                                $.each(files, function (i, file) {
+                                    options += `
+                                    <span class="dropdown-item">
+                                        <a href="${file['url']}" download>${file['filename']}</a>
+                                        <span class="text-sm text-ofx-gray">${file['size']}</span>
+                                    </span>`
+                                });
+
+                                return options ? `
+                                <div class="w-100">
+                                    <button class="text-left btn btn-sm btn-ofx-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        ${files.length} Files (<span class="text-sm text-ofx-dark">${data['size']}</span>)
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        ${options}
+                                    </div>
+                                    {% if tenement.project|is_admin:member %}
+                                        <span data-bs-toggle="modal" data-bs-target="#createWorkProgramReceiptModal">
+                                            <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                    data-bs-toggle="tooltip" data-bs-placement="left" title="Add Receipt">
+                                                <span class="fa fa-plus"/>
+                                            </button>
+                                        </span>
+                                    {% endif %}
+                                </div>` : `
+                                {% if tenement.project|is_admin:member %}
+                                    <span data-bs-toggle="modal" data-bs-target="#createWorkProgramReceiptModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-green float-end text-xs"
+                                                data-bs-toggle="tooltip" data-bs-placement="left" title="Add Receipt">
+                                            <span class="fa fa-plus"/>
+                                        </button>
+                                    </span>
+                                {% endif %}`
+                            }
+                        },
+                        {
+                            data: 'actions', bSortable: false,
+                            {% if tenement.project|is_admin:request.user %}
+                                mRender: function () {
+                                    return `
+                                <div class="float-end">
+                                    <span data-bs-toggle="modal" data-bs-target="#deleteWorkProgramModal">
+                                        <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="left"
+                                                title="Delete Work Program">
+                                            <span class="fa fa-trash"/>
+                                        </button>
+                                    </span>
+                                </div>`
+                                }
+                            {% endif %}
+                        }
+                    ],
+                    ajax: {
+                        url: "{% url 'tms:get_workload' permit_state=tenement.permit_state permit_type=tenement.permit_type permit_number=tenement.permit_number %}",
+                        type: 'GET',
+                        contentType: 'application/json',
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        dataSrc: function (response) {
+                            yearly_total_data = {}
+                            work_program = response.data
+                            for (i = 0; i < work_program.length; i++) {
+                                if (yearly_total_data.hasOwnProperty(String(work_program[i].year) + work_program[i].discipline)) {
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].units += work_program[i].units
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].quantity += work_program[i].quantity
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].expenditure += work_program[i].expenditure
+                                } else {
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline] = {}
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].units = work_program[i].units
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].year = work_program[i].year
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].discipline = work_program[i].discipline
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].quantity = work_program[i].quantity
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].expenditure = work_program[i].expenditure
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].units_display = work_program[i].units_display
+                                    yearly_total_data[String(work_program[i].year) + work_program[i].discipline].quantity_display = work_program[i].quantity_display
+                                }
+                            }
+                            yearly_total_data_list = []
+                            for (var key in yearly_total_data) {
+                                if (yearly_total_data.hasOwnProperty(key)) {
+                                    yearly_total_data_list.push(yearly_total_data[key]);
+                                }
+                            }
+                            let yearlyTotalTable = $('#yearly-total-table').DataTable({
+                                'bSort': false,
+                                'bPaginate': false,
+                                'bDestroy': true,
+                                order: [[0, "asc"], [1, "asc"]],
+                                rowGroup: {
+                                    dataSrc: function (row) {
+                                        return 'Year ' + row.year;
+                                    },
+                                    className: "dt-body-center",
+                                },
+                                columns: [
+                                    {data: 'year', bSortable: true, visible: false},
+                                    {data: 'discipline', bSortable: false,},
+                                    {
+                                        data: 'units', bSortable: false,
+                                        render: function (data, type, row) {
+                                            return `${data} ${row.units_display}`
+                                        }
+                                    },
+                                    {
+                                        data: 'quantity', bSortable: false,
+                                        render: function (data, type, row) {
+                                            return `${data} ${row.quantity_display}`
+                                        }
+                                    },
+                                    {
+                                        data: 'expenditure', bSortable: false,
+                                        render: function (data, type, row) {
+                                            return `$${(data).toFixed(2)}`
+                                        }
+                                    },
+                                ],
+                                data: yearly_total_data_list,
+                            })
+
+                            summary_total_data = {}
+                            for (i = 0; i < work_program.length; i++) {
+
+                                if (summary_total_data.hasOwnProperty(work_program[i].discipline)) {
+                                    summary_total_data[work_program[i].discipline].units += work_program[i].units
+                                    summary_total_data[work_program[i].discipline].quantity += work_program[i].quantity
+                                    summary_total_data[work_program[i].discipline].expenditure += work_program[i].expenditure
+                                } else {
+                                    summary_total_data[work_program[i].discipline] = {}
+                                    summary_total_data[work_program[i].discipline].units = work_program[i].units
+                                    summary_total_data[work_program[i].discipline].discipline = work_program[i].discipline
+                                    summary_total_data[work_program[i].discipline].quantity = work_program[i].quantity
+                                    summary_total_data[work_program[i].discipline].expenditure = work_program[i].expenditure
+                                    summary_total_data[work_program[i].discipline].units_display = work_program[i].units_display
+                                    summary_total_data[work_program[i].discipline].quantity_display = work_program[i].quantity_display
+                                }
+                            }
+
+                            summary_total_data_list = []
+                            for (var key in summary_total_data) {
+                                if (summary_total_data.hasOwnProperty(key)) {
+                                    summary_total_data_list.push(summary_total_data[key]);
+                                }
+                            }
+                            let summaryTotalTable = $('#summary-total-table').DataTable({
+                                'bSort': false,
+                                'bPaginate': false,
+                                'bDestroy': true,
+                                order: [[0, "asc"]],
+                                columns: [
+
+                                    {data: 'discipline', bSortable: true,},
+                                    {
+                                        data: 'units', bSortable: false,
+                                        render: function (data, type, row) {
+                                            return `${data} ${row.units_display}`
+                                        }
+                                    },
+                                    {
+                                        data: 'quantity', bSortable: false,
+                                        render: function (data, type, row) {
+                                            return `${data} ${row.quantity_display}`
+                                        }
+                                    },
+                                    {
+                                        data: 'expenditure', bSortable: false,
+                                        render: function (data, type, row) {
+                                            return `$${(data).toFixed(2)}`
+                                        }
+                                    },
+                                ],
+                                data: summary_total_data_list,
+                            })
+
+                            for (program of response.data) {
+                                let actual_expenditure = 0
+                                for (receipt of program.receipts.files) {
+                                    actual_expenditure += receipt.cost
+                                }
+                                program.actual_expenditure = actual_expenditure
+                            }
+
+                            return response.data;
+                        },
+                    }
+                });
+
+            {% endif %}
+
+            {% if not tenement.project %}
+
+                $("#claimTenementForm").on('submit', function (e) {
+                    e.preventDefault()
+                    let $form = $(this)
+                    let $modal = $form.closest('.modal')
+
+                    $.ajax({
+                        type: 'POST',
+                        url: location.origin + location.pathname + `post/claim/`,
+                        data: $form.serialize(),
+                        success: function () {
+                            window.location.reload();
+                        },
+                        error: function (response) {
+                            $form.displayFormErrors(response['responseJSON']);
+                        }
+                    })
+                })
+
+            {% endif %}
+
+            $('#tenement_map_box').load("{% url 'tms:get_tenement_map' permit_state=tenement.permit_state permit_type=tenement.permit_type permit_number=tenement.permit_number %}");
+        })
+
+        let previousWidth = $(window).width();
+
+        /**
+         * Update statistics card position based on screen size
+         *
+         * Required by: $window.resize(), $document.ready
+         *
+         * @param {number} screen_size - Current screen size
+         **/
+        function updateStatisticsCardPos() {
+            let currentWidth = $(window).width();
+
+            // Min breakpoint size
+            const breakpoint = {
+                'sm': 576, 'md': 768,
+                'lg': 992, 'xl': 1200, 'xxl': 1400
+            }
+
+            // True when changing breakpoint between xl and other smaller breakpoints
+            const isDifferentBreakpoint = (previousWidth >= breakpoint.xl && currentWidth < breakpoint.xl)
+                || (previousWidth < breakpoint.xl && currentWidth >= breakpoint.xl)
+
+            if (currentWidth === previousWidth || isDifferentBreakpoint) {
+                let card = $("#statistics_card").detach()
+                $(currentWidth < breakpoint.xl ? "#statistics_div_small" : "#statistics_div_xl").append(card)
+            }
+
+            previousWidth = currentWidth
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'appboard/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link href="{% static 'appboard/css/style.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid mb-4">
+    <div class="container app_container">
+        <h1 class="h3 mb-4 text-gray-800">GIS functions</h1>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12 my-3">
+                <a href="{% url 'gis:plotter' %}">
+                <div class="card shadow app_card h-100">
+                    <div class="card-header text-dark">
+                        <h5>Map Plotter</h5>
+                    </div>
+                    <div class="card-body">
+                        
+                    </div>
+                </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

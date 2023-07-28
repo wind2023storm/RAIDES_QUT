@@ -1,0 +1,70 @@
+{% extends "autoform/form.html" %}
+{% load autoform_tags %}
+{% load static %}
+
+{% comment %}
+The statemt
+{% endcomment %}
+
+
+{% block pdf_name %}
+    Statement of Financial Capabilities
+{% endblock %}
+
+{% block pdf_content %}
+    <div class="row mb-2">
+        <div class="col-8 mt-5">
+            <h4>Statement of Financial Capabilities</h4>
+            <p>
+                To General Manager, Mining and Petroleum Operations</br>
+                Department of Resources</br>
+                Po Box 15216, Brisbane 4001
+            </p>
+        </div>
+        <div class="col-4">
+            <div class="float-right" data-letterhead>
+                {% auto_field "company.name" %} </br>
+                {% auto_field "company.address" %} </br>
+                {% auto_field "company.number" %} </br>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mb-2">
+            <p>
+                RE: {% auto_field "company.name" %} Statement of financial capabilities for
+                {% auto_field "project.name" %}.
+            </p>
+            <p>
+                I, {% auto_field "company.director.name" %}, as the sole director of {% auto_field "company.name" %},
+                have a full and comprehensive understanding of the company's current commitments, obligations and
+                liabilities.
+            </p>
+            <p>
+                I understand {% auto_field "company.name" %} is submitting a work program to the Queensland
+                Government,
+            </p>
+            <p>
+                This program will require ${% auto_field "program_fund" %} in funding to be
+                available over the next 5 years to support the program and to meet the Company obligations to the State
+                of Queensland should this application be approved.
+            </p>
+            <p>
+                In my capacity as Director, I confirm {% auto_field "company.name" %} has sufficient funding
+                in place to meet approximately {% auto_field "company.contribution" type="number" %}% of the funding required to deliver the proposed work program, and
+                should this application be successful, {% auto_field "company.name" %} will be able to raise the
+                additional prospective funding to meet the work program submitted.
+            </p>
+            <p>
+                Regards,</br>
+                {% auto_field "company.director.signature" type="image" %} </br>
+                {% auto_field "company.director.name" %}
+            </p>
+            <p>
+                Sole Director</br>
+                {% auto_field "company.name" %} </br>
+                {% auto_field "current_date" %}
+            </p>
+        </div>
+    </div>
+{% endblock %}

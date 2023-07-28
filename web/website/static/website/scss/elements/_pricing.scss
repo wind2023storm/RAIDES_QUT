@@ -1,0 +1,234 @@
+/*=============================================
+=            21. Pricing  Css            =
+=============================================*/
+
+.pricing-table-one {
+    & .pricing-table {
+        &__inner{
+            position: relative;
+            overflow: hidden;
+            transition: $transition--default;
+            text-align: center;
+            padding: 34px 20px 40px;
+            background: #f6f7ff;
+             margin-bottom: 30px;
+            & .pricing__tab-menu {
+                & .tab__item {
+                    & a {
+                        background: $theme-color--default;
+                        color: $white;
+                        width: 100px;
+                        &.active {
+                            background: $theme-color--two;
+                        }
+                    }
+                }
+            }
+        }
+
+        &__title{
+            color: $theme-color--default;
+            margin-bottom: 10px;
+        }
+        
+        &__price-wrap{
+            text-align: center;
+            margin: 20px 0 0 0;
+            .price{
+                font-size: 24px;
+                line-height: .9;
+                font-weight: 600;
+                color: $theme-color--default;
+                &__two {
+                    background: $theme-color--default;
+                    display: inline-block;
+                    padding: 12px 20px;
+                    color: $white;
+                }
+
+            }
+        }
+        &__body {
+            margin-top: 30px;
+        }
+
+        &__list{
+            li{
+                position: relative;
+                display: block;
+                padding: 5px 0;
+
+                .featured{
+                    font-weight: 500;
+                }
+            }
+        }
+
+        &__footer{
+            margin-top: 30px;
+            .ht-btn{
+                width: 180px;
+                max-width: 100%;
+                &--outline{
+                    border-width: 1px;
+                }
+            }
+        }
+
+        &__feature-mark{
+            position: absolute;
+            top: -1px;
+            right: -1px;
+            width: 0;
+            height: 0;
+            border-top: 88px solid #ee7455;
+            border-bottom: 88px solid transparent;
+            border-left: 88px solid transparent;
+
+            span{
+                position: absolute;
+                top: -72px;
+                right: 6px;
+                text-align: center;
+                font-size: 11px;
+                font-weight: 700;
+                line-height: 1.19;
+                display: block;
+                color: #fff;
+                transform: rotate(45deg);
+            }
+        }
+
+        &:hover{
+            .pricing-table__inner{
+                box-shadow: 0 2px 30px rgba(89, 69, 230, 0.12);
+                border: 0 solid transparent;
+                padding: 35px 21px 41px;
+                transform: translateY(-5px);
+            }
+        }
+
+        &--popular{
+            .pricing-table__inner{
+                box-shadow: 0 2px 30px rgba(89, 69, 230, 0.12);
+                border: 0 solid transparent;
+                padding: 35px 21px 41px;
+            }
+            &__bg {
+                .pricing-table {
+                    &__inner{
+                        border: 0px solid transparent;
+                    }
+                    &__title {
+                        color: $white;
+                    }
+                    &__price-wrap {
+
+                        .currency{
+                            color: $white;
+                        }
+                        .price{
+                            color: $white;
+                        }
+                        .period{
+                            color: $white;
+                        }
+                    }
+                    &__list{
+                        li{
+                            color: $white;
+                        }
+                    }
+                }
+            }
+        }
+    } 
+}
+.pricing-table-two {
+    & .pricing-table {
+        &__inner{
+            position: relative;
+            overflow: hidden;
+            transition: $transition--default;
+            text-align: center;
+            padding: 90px 20px 100px;
+            background: #f6f7ff;
+            margin-bottom: 30px;
+            &::after {
+                position: absolute;
+                left: 0;
+                top: 0;
+                content: "";
+                height: 100%;
+                width: 100%;
+                // background: url(../images/patterns/pricing-01.png);
+                background-position-x: 0%;
+                background-position-y: 0%;
+                background-repeat: repeat;  
+                background-repeat: no-repeat;
+                background-position: top;
+            }
+            &::before {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                content: "";
+                height: 100%;
+                width: 100%;
+                // background: url(../images/patterns/pricing-02.png);
+                background-position-x: 0%;
+                background-position-y: 0%;
+                background-repeat: repeat;  
+                background-repeat: no-repeat;
+                background-position: bottom;
+            }
+
+            .price {
+                font-size: 24px;
+                line-height: .9;
+                font-weight: 600;
+                margin-bottom: 20px;
+                &__three {
+                    color: $theme-color--default;
+                }
+            }
+        }
+        
+        &__title{
+            color: $theme-color--default;
+            line-height: 30px;
+        }
+        
+        &__price-wrap{
+            text-align: center;
+            margin: 0;
+            
+        }
+        &__body {
+            margin-top: 30px;
+        }
+
+        &__list{
+            li{
+                position: relative;
+                display: block;
+                padding: 5px 0;
+
+                .featured{
+                    font-weight: 500;
+                }
+            }
+        }
+
+        &__footer{
+            margin-top: 30px;
+            .ht-btn{
+                width: 180px;
+                max-width: 100%;
+                &--outline{
+                    border-width: 1px;
+                }
+            }
+        }
+    } 
+}

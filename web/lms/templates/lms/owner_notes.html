@@ -1,0 +1,46 @@
+{% if not items %}
+    <div><i>None</i></div>
+{% else %}
+    {% for note in items %}
+        <li data-type="note" data-id="{{ note.id }}">
+            <table>
+                <tbody>
+                <tr>
+                    <th>Title:</th>
+                    <td>
+                        <span data-field="name" data-value="{{ note.name }}">{{ note.name }}</span>
+                        <button data-bs-toggle="modal" data-bs-target="#deleteNoteModal" data-action="delete"
+                                data-url="{% url 'lms:handle_note' slug=project.slug action="delete" %}">Delete
+                        </button>
+                        <button data-bs-toggle="modal" data-bs-target="#modifyNoteModal" data-action="modify"
+                                data-url="{% url 'lms:handle_note' slug=project.slug action="modify" %}">Modify
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Content:</th>
+                    <td data-field="content" data-value="{{ note.content }}">{{ note.content }}</td>
+                </tr>
+                <tr>
+                    <th>Date Created:</th>
+                    {# READONLY #}
+                    <td>{{ note.date_created }} by {{ note.user }}</td>
+                </tr>
+                <tr>
+                    <th>Last Modified:</th>
+                    {# READONLY #}
+                    <td>{{ note.date_updated }} by {{ note.user_updated }}</td>
+                </tr>
+                <tr>
+                    <th>Files:</th>
+                    <td>
+                        <ol>
+                            {% include 'lms/files.html' with project=project files=note.files %}
+                        </ol>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+    {% endfor %}
+{% endif %}

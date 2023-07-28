@@ -1,0 +1,25 @@
+#myKanban {
+  overflow-x: auto;
+}
+
+.btn-outline-secondary {
+  /*background-color: lightgray;*/
+  border: none;
+  /*color: white;*/
+  padding: 7px 15px;
+  margin: 12.5px;
+  width: 90%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+#inputGroupSelect01 {
+  width: 300px !important;
+}
+
+/* Remove the dropdown icon */
+.dropdown-toggle::after {
+  display: none;
+}

@@ -1,0 +1,388 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block head_title %}{% endblock %}OreFox</title>
+    <meta name="description" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'website/images/favicon.ico' %}">
+
+    <!-- CSS
+        ============================================ -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'website/css/vendor/bootstrap.min.css' %}">
+
+    <!-- FontAwesome CSS -->
+    <link rel="stylesheet" href="{% static 'website/css/vendor/fontawesome-all.min.css' %}">
+
+    <!-- Swiper slider CSS -->
+    <link rel="stylesheet" href="{% static 'website/css/plugins/swiper.min.css' %}">
+
+    <!-- Animate text CSS -->
+    <link rel="stylesheet" href="{% static 'website/css/plugins/animate-text.css' %}">
+
+    <!-- AOS CSS -->
+    <link href="{% static 'website/css/plugins/aos.css' %}" rel="stylesheet">
+
+    <!-- Some Plugins CSS -->
+    <!-- <link href="'website/css/plugins/some-plugins.min.css" rel="stylesheet"> -->
+
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{% static 'website/css/plugins/animate.min.css' %}">
+
+
+    <!-- Vendor & Plugins CSS (Please remove the comment from below vendor.min.css & plugins.min.css for better website load performance and remove css files from avobe) -->
+    <!--
+        <link rel="stylesheet" href="website/css/vendor/vendor.min.css">
+        <link rel="stylesheet" href="website/css/plugins/plugins.min.css">
+        -->
+
+    <!-- Main Style CSS -->
+    <link rel="stylesheet" href="{% static 'website/css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+
+    <noscript>
+        <style>
+            *[data-aos] {
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+            .wow{
+                display: block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+        </style>
+    </noscript>
+</head>
+<body>
+    
+
+
+
+    <!------- Preloader --------->
+    {% include 'website/preloader.html' %}
+    <!------- Preloader Ends --------->
+
+
+
+
+    <!-------------- Notification Area ----------------->
+    {% include 'website/notification.html' %}
+    <!-------------- Notification Area Ends ----------------->
+
+
+
+
+
+    <!--====================  header area ====================-->
+    <div class="header-area header-area--default">
+        
+
+        <!-- Header Top Wrap Start -->
+        {% include 'website/header_top.html' %}
+        <!-- Header Top Wrap End -->
+
+        <!-- Header Bottom Wrap Start -->
+        <div class="header-bottom-wrap header-area--absolute  header-sticky">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="header default-menu-style position-relative">
+
+                            <!-- brand logo -->
+                            <div class="header__logo">
+                                <a href="{% url 'website:home' %}">
+                                    <img src="{% static 'website/images/logo/dark-logo.png' %}" class="img-fluid" alt="">
+                                </a>
+                            </div>
+
+                            <!-- header midle box  -->
+                            <div class="header-midle-box">
+                                <div class="header-bottom-wrap d-md-block d-none">
+                                    <div class="header-bottom-inner">
+                                        <div class="header-bottom-left-wrap">
+                                            <!-- navigation menu -->
+                                            <div class="header__navigation d-none d-lg-block">
+                                                <nav class="navigation-menu primary--menu  navigation-menu--onepage">
+                                                    {% include 'website/menu.html' %}
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="mobile-navigation-icon d-block d-lg-none" id="mobile-menu-trigger">
+                                <i></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Header Bottom Wrap End -->
+
+    </div>
+    <!--====================  End of header area  ====================-->
+
+
+
+
+
+
+    <!---------- Main content ------------>
+    <div class="site-wrapper-reveal overflow-hiden">
+
+        {% block content %}
+        {% endblock %}
+    </div>
+    <!---------- Main content ends------------>
+
+
+
+
+
+
+    <!--====================  footer area ====================-->
+    <div class="footer-area-wrapper ">
+        <div class="footer-area section-space--ptb_120 bg-img bg-cover-center blue-bg--overlay-8" 
+        data-bg="{% static 'website/images/bg/29.jpg' %}">
+            <div class="container">
+                <div class="row footer-widget-wrapper">
+                    <div class="col-lg-4 col-md-12 col-sm-12 footer-widget">
+                        <div class="footer-widget__logo mb-30">
+                            <img style="height: 37px;" src="{% static 'website/images/logo/white-logo.png' %}" class="img-fluid" alt="">
+                        </div>
+                        <div class="footer-widget-dic">
+
+                            <p class="footer-dec">We’re OreFox. 
+                                We provide artificial intelligence-based geological data analytics to mining and exploration companies
+                            </p>
+
+                            <!-- <div class="newsletter-footer-wrap mt-20">
+                                <h5 class="mb-10">Subscribe Newsletter</h5>
+                                <p>Subscribe our newsletter and get latest update
+                                    about our offers, promotions and adds</p>
+                                <div class="newsletter-footer mt-20">
+                                    <form action="#" class="widget-newsletter-form">
+                                        <input type="text" placeholder="Enter your email">
+                                        <div class="subscribe-button">
+                                            <button class="subscribe-btn">Subscribe</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div> -->
+                            <ul class="list ht-social-networks mt-30">
+
+                                <li class="item">
+                                    <a href="https://www.facebook.com/orefoxAI" target="_blank">
+                                        <i class="fa fa-facebook-f link-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="item">
+                                    <a href="https://twitter.com/Orefox_AI" target="_blank">
+                                        <i class="fa fa-twitter link-icon"></i>
+                                    </a>
+                                </li>
+                                <li class="item">
+                                    <a href="https://www.linkedin.com/company/orefoxai/" target="_blank">
+                                        <i class="fa fa-linkedin link-icon"></i>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-12 col-sm-12">
+                        <div class="coustom-row-in-footer">
+                            <div class="footer-widget-coustom-col footer-widget">
+                                <h4 class="footer-widget__title mb-20 text-white">Useful Links</h4>
+                                <ul class="footer-widget__item-list">
+                                    <li><a href="#home" class="hover-style-link">Home</a></li>
+                                    <li><a href="#about" class="hover-style-link">About Us</a></li>
+                                    <li><a href="#process" class="hover-style-link">Work Process</a></li>
+                                    <li><a href="#solutions" class="hover-style-link">Solutions</a></li>
+                                    <li><a href="#testimonial" class="hover-style-link">Testimonial</a></li>
+                                    <li><a href="#contact" class="hover-style-link">Contact Us</a></li>
+                                </ul>
+                                <ul class="footer-widget__item-list">
+                                    <li><a href="{% url 'appboard:home' %}" class="hover-style-link">Dashboard</a></li>
+                                </ul>
+                            </div>
+                            <div class="footer-widget-coustom-col footer-widget">
+                                <h4 class="footer-widget__title mb-20 text-white">Contact Info</h4>
+                                <div class="footer-widget__list">
+                                    <div class="single-footer-widger">
+                                        <p>Brisbane, Queensland 4000, AU</p>
+                                    </div>
+                                    <div class="single-footer-widger">
+                                        <p>01254 879 658, 65987 456 987</p>
+                                    </div>
+                                    <div class="single-footer-widger">
+                                        <p>
+                                            <a href="#">info@example.com</a> <br>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-4 col-md-4 col-sm-6 footer-widget">
+                        
+                    </div>-->
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright-area theme-bg-three pt-3 pb-3">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-12 text-center">
+                        <p class="copyright-text text-white">Copyright &copy; OreFox 2021</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--====================  End of footer area  ====================-->
+
+    
+
+
+
+
+
+
+
+
+
+    <!--====================  scroll top ====================-->
+    <a href="#" class="scroll-top" id="scroll-top">
+        <i class="arrow-top fa fa-angle-double-up"></i>
+        <i class="arrow-bottom fa fa-angle-double-up"></i>
+    </a>
+    <!--====================  End of scroll top  ====================-->
+
+
+
+
+
+
+
+
+
+
+
+    <!--====================  mobile menu overlay ====================-->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay">
+        <div class="mobile-menu-overlay__inner">
+            <div class="mobile-menu-overlay__header">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 col-8">
+                            <!-- logo -->
+                            <div class="logo">
+                                <a href="index.html">
+                                    <img src="{% static 'website/images/logo/dark-logo.png' %}" class="img-fluid" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-4">
+                            <!-- mobile menu content -->
+                            <div class="mobile-menu-content text-right">
+                                <span class="mobile-navigation-close-icon" id="mobile-menu-close-trigger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-menu-overlay__body">
+                <nav class="offcanvas-navigation">
+                    {% include 'website/menu.html' %}
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!--====================  End of mobile menu overlay  ====================-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- JS
+    ============================================ -->
+    <!-- Modernizer JS -->
+    <script src="{% static 'website/js/vendor/modernizr-2.8.3.min.js' %}"></script>
+
+    <!-- jQuery JS -->
+    <script src="{% static 'website/js/vendor/jquery-3.3.1.min.js' %}"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'website/js/vendor/bootstrap.min.js' %}"></script>
+
+    <!-- Swiper Slider JS -->
+    <script src="{% static 'website/js/plugins/swiper.min.js' %}"></script>
+
+    <!-- Waypoints JS -->
+    <script src="{% static 'website/js/plugins/waypoints.min.js' %}"></script>
+
+    <!-- Counter down JS -->
+    <script src="{% static 'website/js/plugins/countdown.min.js' %}"></script>
+
+    <!-- Isotope JS -->
+    <script src="{% static 'website/js/plugins/isotope.min.js' %}"></script>
+
+    <!-- Masonry JS -->
+    <script src="{% static 'website/js/plugins/masonry.min.js' %}"></script>
+
+    <!-- ImagesLoaded JS -->
+    <script src="{% static 'website/js/plugins/images-loaded.min.js' %}"></script>
+
+    <!-- Counterup JS -->
+    <script src="{% static 'website/js/plugins/counterup.min.js' %}"></script>
+
+    <!-- WOW JS -->
+    <script src="{% static 'website/js/plugins/wow.min.js' %}"></script>
+
+    <!-- AOS JS -->
+    <script src="{% static 'website/js/plugins/aos.js' %}"></script>
+
+    <!-- Some plugins JS -->
+    <script src="{% static 'website/js/plugins/some-plugins.js' %}"></script>
+
+
+    <!-- Plugins JS (Please remove the comment from below plugins.min.js for better website load performance and remove plugin js files from avobe) -->
+
+    <!--
+    <script src="website/js/plugins/plugins.min.js"></script>
+    -->
+
+    <!-- Main JS -->
+    <script src="{% static 'website/js/main.js' %}"></script>
+    
+    {% block extra_body %}
+    {% endblock %}
+</body>
+</html>

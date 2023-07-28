@@ -1,0 +1,7 @@
+*Brief Explanation of Hyperparameters
+Number of layers: Each layer will add a level of abstraction to the model. For this model, this will simply be another dense layer.
+Number of filters: Each Dense layer has a certain number of filters. This defines the dimensionality of the output of the layer and the necessary number of weights will be created to make this happen.
+Activation function: There are a lot of different activation functions, so covering them all here will not be possible. This dense neural network uses the rectified linear unit (relu), which will activate if the weight is positive, by that value. All non-positive values will be zero.
+Loss function: A loss function provides a way to score the accuracy of predictions. This model uses the mean absolute error.
+Optimiser: The optimiser used for this is Adam, one of many that could be used, but is somewhat the industry standard.
+Epochs: An epoch is one cycle through the training set in the training phase. Multiple epochs allows the model to see all of the examples multiple times with smaller learning rates to avoid overfitting to the data.

@@ -1,0 +1,155 @@
+@has_project_permission()
+def handle_owner(request, project, slug, action):
+    """Reactions to be had with a particular LandParcelOwner Task"""
+    if request.POST:
+        if action not in allowed_permissions(project, write={'new', 'modify'}, admin={'delete'}):
+            return JsonResponse({}, status=HTTPStatus.UNAUTHORIZED)
+
+    return handle_lms_request(
+        request,
+        action,
+        project,
+        LandParcelOwner,
+        LandParcelOwnerForm,
+        {
+            'id': request.POST.get('owner', None) or request.GET.get('owner', None),
+            'parcel__project_id': project.id
+        },
+        'lms/owner.html'
+    )
+
+
+@has_project_permission()
+def handle_task(request, project, slug, action):
+    """Reactions to be had with a particular LandParcelOwner Task"""
+    if request.POST:
+        if action not in allowed_permissions(project, write={'new', 'modify'}, admin={'delete'}):
+            return JsonResponse({}, status=HTTPStatus.UNAUTHORIZED)
+
+    return handle_lms_request(
+        request,
+        action,
+        project,
+        LandParcelOwnerTask,
+        LandParcelOwnerTaskForm,
+        {
+            'id': request.POST.get('task', None) or request.GET.get('task', None),
+            'owner': request.POST.get('owner', None) or request.GET.get('owner', None),
+            'owner__parcel__project_id': project.id
+        },
+        'lms/owner_tasks.html'
+    )
+
+
+@has_project_permission()
+def handle_correspondence(request, project, slug, action):
+    """Reactions to be had with a particular LandParcelOwner Correspondence"""
+    if request.POST:
+        if action not in allowed_permissions(project, write={'new', 'modify'}, admin={'delete'}):
+            return JsonResponse({}, status=HTTPStatus.UNAUTHORIZED)
+
+    return handle_lms_request(
+        request,
+        action,
+        project,
+        LandParcelOwnerCorrespondence,
+        LandParcelOwnerCorrespondenceForm,
+        {
+            'id': request.POST.get('correspondence', None) or request.GET.get('correspondence', None),
+            'owner': request.POST.get('owner', None) or request.GET.get('owner', None),
+            'owner__parcel__project_id': project.id
+        },
+        'lms/owner_correspondence.html'
+    )
+
+
+@has_project_permission()
+def handle_reminder(request, project, slug, action):
+    """Reactions to be had with a particular LandParcelOwner Reminder"""
+    if request.POST:
+        if action not in allowed_permissions(project, write={'new', 'modify'}, admin={'delete'}):
+            return JsonResponse({}, status=HTTPStatus.UNAUTHORIZED)
+
+    return handle_lms_request(
+        request,
+        action,
+        project,
+        LandParcelOwnerReminder,
+        LandParcelOwnerReminderForm,
+        {
+            'id': request.POST.get('reminder', None) or request.GET.get('reminder', None),
+            'owner': request.POST.get('owner', None) or request.GET.get('owner', None),
+            'owner__parcel__project_id': project.id
+        },
+        'lms/owner_reminders.html'
+    )
+
+
+@has_project_permission()
+def handle_note(request, project, slug, action):
+    """Reactions to be had with a particular LandParcelOwner Note"""
+    if request.POST:
+        if action not in allowed_permissions(project, write={'new', 'modify'}, admin={'delete'}):
+            return JsonResponse({}, status=HTTPStatus.UNAUTHORIZED)
+
+    return handle_lms_request(
+        request,
+        action,
+        project,
+        LandParcelOwnerNote,
+        LandParcelOwnerNoteForm,
+        {
+            'id': request.POST.get('note', None) or request.GET.get('note', None),
+            'owner': request.POST.get('owner', None) or request.GET.get('owner', None),
+            'owner__parcel__project_id': project.id
+        },
+        'lms/owner_notes.html'
+    )
+
+
+@has_project_permission()
+def handle_history(request, project, slug, action):
+    """Reverts the history of a parcel or owner, this is determined by the supplied action"""
+    if request.POST:
+        if action not in allowed_permissions(project, write={'owner'}, admin={'parcel'}):
+            return JsonResponse({}, status=HTTPStatus.UNAUTHORIZED)
+
+    # Prepare our inputs from the request
+    parent_id = request.GET.get(action) or request.POST.get(action)
+    history_id = request.GET.get('history') or request.POST.get('history')
+
+    # Prepare the model related stuff depending on what history we're after
+    if action == 'parcel':
+        model_class = LandParcel
+        model_history_class = LandParcelHistory
+        model_query_dict = {'id': history_id, 'target_id': parent_id, 'target__project_id': project.id}
+    elif action == 'owner':
+        model_class = LandParcelOwner
+        model_history_class = LandParcelOwnerHistory
+        model_query_dict = {'id': history_id, 'target_id': parent_id, 'target__parcel__project_id': project.id}
+    else:
+        return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
+
+    # Do the revert stuff here if we post
+    if request.POST:
+        try:
+            history = model_history_class.objects.get(**model_query_dict)
+            print(history.summary)
+            history.revert_to_here()
+        except Exception as e:
+            return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
+
+    # We're not interested in the ID since we need the whole category
+    del model_query_dict['id']
+
+    rendered_response = {
+        'html': render_to_string('lms/parcel_history.html', {
+            'history_type': action,
+            'project': project,
+            'items': model_history_class.objects.filter(**model_query_dict),
+        }, request=request)
+    }
+
+    return JsonResponse(rendered_response, status=HTTPStatus.OK)
+
+

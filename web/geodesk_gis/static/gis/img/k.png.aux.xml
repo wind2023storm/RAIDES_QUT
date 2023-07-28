@@ -1,0 +1,10 @@
+<PAMDataset>
+  <Metadata domain="IMAGE_STRUCTURE">
+    <MDI key="INTERLEAVE">PIXEL</MDI>
+  </Metadata>
+  <Metadata>
+    <MDI key="TIFFTAG_RESOLUTIONUNIT">2 (pixels/inch)</MDI>
+    <MDI key="TIFFTAG_XRESOLUTION">110</MDI>
+    <MDI key="TIFFTAG_YRESOLUTION">110</MDI>
+  </Metadata>
+</PAMDataset>

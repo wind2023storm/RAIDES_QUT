@@ -1,0 +1,32 @@
+CONSTUCTOR
+
+Source Lab (lab) - The lab that this data comes from. If not one of the currently supported labs, please select none.
+Unit (unit) - The unit that the data shold be converted to, if this can be specified.
+Index Column (index_col) - The name of the column that contains unique identifiers for each row.
+File Format (is_excel, is xls) - Tick this if your file is an excel spreadsheet.
+Sheet Name (sheet_name) - The name of the sheet within the excel file (if appropriate).
+Columns to Use (usecols) - If you only want a subset of the columns loaded, specify them here.
+
+CLEANING METHODS
+
+Handle Inequalities - Cells with < or > at the beginning of them cannot be directly used in analysis, so this will remove the cells, setting them either to the figure after them or to zero in the < case.
+Columns to Use (use_columns) - If you only want to check this on a subset of the columns in the dataset, specify them here.
+Set inequality Tolerance (set_inequality_tolerance) - If selected, for > cells, these will be set to the value in that cell. For example, >30 will be set to 30. If not selected these cells will be changed to zero.
+
+Convert Uniform Units - For all columns that are in percent, ppm or ppb, this will convert them all to the same unit.
+Unit (unit) - The unit to convert to.
+Columns to Use (subset_X) - If you only want to check this on a subset of the columns in the dataset, specify them here.
+Update Column Header (update_col_suffix) - If selected, this will update the end of the column header to represent the unit it has been changed to.
+Append Column Header (append_suffix) - If selected, and the previous option is selected, this will add the unit to the end of the header name. If not, it will replace the part of the text that is after the last '_' character.
+
+Remove Columns - Deletes columns from the dataset.
+Columns to Remove - Specify the columns that you want to remove.
+
+Remove Entries - Deletes rows from the dataset.
+Entries to Remove - Specify the rows that you want to remove.
+
+Impute Data - Fills in numerical data that is missing.
+Mode - The strategy that should be used for filling in the data. Value will set it to a specified value. ACA will set it to the average crustal abundance for that specific element. The mean and median will use those values respectively for the column, calculated using the data that is there. Multiple imputation with chained equations, MICE, uses a process called multiple imputation to come up with multiple imputed datasets and learn models for filling in the data.
+Columns to Use (subset_X) - If you only want to check this on a subset of the columns in the dataset, specify them here.
+
+Save csv - Saves the current copy of the dataset as a .csv file.

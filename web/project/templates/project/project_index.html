@@ -1,0 +1,449 @@
+{% extends 'appboard/base.html' %}
+{% load static %}
+{% load modal_tags %}
+
+{% block head_title %}
+    Project Index
+{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+{% block content %}
+
+{% csrf_token %}   
+<div id="flash-message" class="text-sm ms-4">
+    {% if messages %}
+    {% for message in messages %} 
+    {% if message.level == 25 %}
+    <span
+    class="alert alert-success text-center p-2"> {{ message }}
+    </span>
+    {% endif %} {% endfor %} {% endif %}
+</div>
+    <div class="container-fluid content-margin-top-offest mb-4">
+        <div class="container">  
+            <div class="form-outline mb-4">
+                <h4 class="text-ofx-blue mb-4">Project Index<span class="ms-2 fa fa-project-diagram" ></h4>
+                <div class="row">
+                    <div class="col-12 my-3">
+                <div class="card shadow mb-2">
+                    {# Project Tab #}
+                    <div class="card-header">
+                        <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-link active" id="nav-projects-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-projects" aria-controls="nav-projects" aria-selected="true">
+                                My Projects
+                            </a>
+                            <a class="nav-link" id="nav-tenements-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-tenements" aria-controls="nav-tenements" aria-selected="false">
+                                My Tenements
+                            </a>
+                            <a class="nav-link" id="nav-reports-tab" data-bs-toggle="tab"
+                               data-bs-target="#nav-reports" aria-controls="nav-reports" aria-selected="false">
+                                My Reports
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body tab-content overflow-auto" id="nav-tabContent">
+                        {# Projects Tab #}
+                        <div class="tab-pane active" id="nav-projects" role="tabpanel"
+                             aria-labelledby="nav-projects-tab">
+                            <table id="project-table" class="table table-sm dt-responsive w-100">
+                                <thead>
+                                <tr>
+                                    <th>State</th>
+                                    <th>Project Name</th>
+                                    <th>Permission</th>
+                                    <th>Date Created</th>
+                                    <th>Tenement(s)</th>
+                                    <th>File(s)</th>
+                                    <th>Disk Space Usage</th>
+                                    <th>Credits</th>
+                                    <th>Tags</th>
+                                    <th>
+                                        <span class="float-end" data-bs-toggle="modal"
+                                              data-bs-target="#createProjectModal">
+                                            <button class="btn btn-ofx-fa btn-ofx-green" data-bs-toggle="tooltip"
+                                                    data-bs-placement="left" title="New Project">
+                                                <span class="fa fa-plus"></span>
+                                            </button>
+                                        </span>
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <a href="{% url 'spirit:index' %}">
+                                <button class="btn btn-ofx-blue">                                                
+                                    KMS Projects
+                                </button>
+                            </a>
+                            
+                        </div>
+                        {# Tenements Tab #}
+                        <div class="tab-pane" id="nav-tenements" role="tabpanel" aria-labelledby="nav-tenements-tab">
+                            <table id="tenement-table" class="table table-sm dt-responsive w-100">
+                                <thead style="font-size:.85rem">
+                                <tr>
+                                    <th>State</th>
+                                    <th>Permit ID</th>
+                                    <th>Project</th>
+                                    <th>Permit Status</th>
+                                    <th>Grant Date</th>
+                                    <th>Tags</th>
+                                    <th>
+                                        <span class="float-end" data-bs-toggle="modal"
+                                              data-bs-target="#addTenementModal">
+                                            <button class="btn btn-ofx-fa btn-ofx-green text-xs" data-bs-toggle="tooltip"
+                                                    data-bs-placement="left" title="Add Tenement">
+                                                <span class="fa fa-plus"/>
+                                            </button>
+                                        </span>
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        {# Reports Tab #}
+                        <div class="tab-pane" id="nav-reports" role="tabpanel" aria-labelledby="nav-reports-tab">
+                            <table id="report-table" class="table table-sm dt-responsive w-100">
+                                <thead style="font-size:.85rem">
+                                <tr>
+                                    <th>Dataset</th>
+                                    <th>Project</th>
+                                    <th>Cleaner Report</th>
+                                    <th>Analysis Report</th>
+                                    <th>Type</th>
+                                    <th>
+                                        {# Since reports are created by other apps, we probably don't need this button #}
+                                        {#                                            <span data-bs-toggle="modal" data-target="#addReportModal">#}
+                                        {#                                                <button class="btn btn-sm btn-ofx-green float-right text-xs" data-bs-toggle="tooltip" data-bs-placement="left" title="Add Tenement">#}
+                                        {#                                                    <span class="fa fa-plus"/>#}
+                                        {#                                                </button>#}
+                                        {#                                            </span>#}
+                                    </th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {# END TABS #}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    {# CREATE PROJECT MODAL #}
+    {% modalform id='createProject' title='Create Project' submit_text='Create' %}
+       {% csrf_token %} 
+       {{createProjectForm.as_p}} 
+    {% endmodalform %}
+    {% modalform id='inviteUser' title='Invite Member' submit_text='Send Invite' dynamic="true" %}
+        {% csrf_token %}
+        <p>Invite a member to the project <b id="name"></b></p>
+        <p><i>Inviting non-registered users coming soon.</i></p>
+        {{ inviteUserForm.as_p }}
+    {% endmodalform %}
+
+    {% modalform id='addTenement' title='Add Tenement' submit_text='Add'%}
+        {% csrf_token %}
+        {{ addTenementForm.as_p }}
+    {% endmodalform %}
+
+    {% modalform id='leaveProject' title='Leave Project' submit_text='Leave' submit_class='btn-ofx-red' dynamic="true" %}
+        {% csrf_token %}
+        {{ leaveProjectForm.as_p }}
+        <p>Do you wish to Leave <b id="name"></b>?
+        </p>
+        <p>If you wish to re-join the project you will need to be re-invited by a project administrator.</p>
+    {% endmodalform %}
+
+    {% modalform id='deleteProject' title='Delete Project' submit_text='Delete' submit_class='btn-ofx-red' dynamic="true" %}
+        {% csrf_token %}
+        {{ deleteProjectForm.as_p }}
+        <p>Permanently delete <b id="name"></b>?</p>
+        <p>This action will <strong class="text-ofx-red">permanently</strong> delete the following:</p>
+        <ul>
+            <li><b id="name"></b> will be permanently deleted.</li>
+            <li>All Tenements assigned to the project will be relinquished.</li>
+            <li>All Tasks and associated files.</li>
+            <li>All Targets and associated files.</li>
+            <li>All Datasets and associated files.</li>
+            <li>All Models and associated files.</li>
+            <li>All Reports and associated files.</li>
+        </ul>
+    {% endmodalform %}
+
+    {% modalform id='deleteTenement' title='Relinquish Tenement' submit_text='Relinquish' submit_class='btn-ofx-red' dynamic="true" %}
+        {% csrf_token %}
+        {{ deleteTenementForm.as_p }}
+        <p>Relinquish ownership of <b id='permit[type]'></b><b id='permit[number]'></b> from this
+            project?
+        </p>
+        <p>This action will <strong class="text-ofx-red">permanently</strong> delete the following:</p>
+        <ul>
+            <li>All Tasks and associated files.</li>
+            <li>All Targets within the Tenement.</li>
+            <li>Tenement Work Program information.</li>
+        </ul>
+    {% endmodalform %}
+
+    {% modalform id='deleteReport' title='Delete Report' submit_text='Delete' submit_class='btn-ofx-red' dynamic="true" %}
+        {% csrf_token %}
+        {{ deleteReportForm.as_p }}
+        <p>Delete report <b id="report-label"></b> from this project?
+        </p>
+        <p>This action will <strong class="text-ofx-blue">not</strong> delete any of the following:</p>
+        <ul>
+            <li>Parent Dataset.</li>
+            <li>Any associated Cleaner reports.</li>
+        </ul>
+    {% endmodalform %}
+
+{% endblock %}
+
+{% block extra_body %}
+
+    {{ deleteProjectForm.media }}
+    {{ leaveProjectForm.media }}
+    {{ addTenementForm.media }}
+    {{ deleteTenementForm.media }}
+    {{ deleteReportForm.media }}
+
+    <script type="text/javascript" src="{% static 'project/js/project_index.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+
+            /*
+            $('#project-table tbody').on('click', 'tr', function () {
+                let data = $('#project-table').DataTable().row(this).data();
+                console.log(data);
+            })*/
+
+            let projectTable = $('#project-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+                columnDefs: [
+                { targets: [9], className: 'noowrap' }
+                 ],
+
+  
+                'columns': [
+                    {data: 'state', bSortable: true},
+                    {
+                        data: 'slug', bSortable: true,
+                        render: function (data, type, row) {
+                            return `<a href=${data}>${row.name}</a>`
+                        }
+                    },
+                    {data: 'permission', bSortable: true},
+                    {data: 'dateCreated', bSortable: true,
+                    "render": function(data, type, row, meta) {
+                        // Extract the date portion of the datetime string
+                        var date = data.substr(0, 10); // or data.slice(0, 10);
+
+                        return date;
+                    }},
+                    {data: 'tenementCount', bSortable: true},
+                    {data: 'fileCount', bSortable: true},
+                    {data: 'diskUsage', bSortable: true},
+                    {data: 'credits', bSortable: false},
+                    {data: 'tags', bSortable: false},
+                    {
+                        data: 'actions', bSortable: false,
+                        render: function (data, type, row) {
+                            let action = (data > 7) ?
+                                `<td><span data-bs-toggle="modal" data-bs-target="#inviteUserModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-green" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="Invite Member">
+                                        <span class="fa fa-user-plus"/>
+                                    </button></td><td>
+                                </span> <span data-bs-toggle="modal" data-bs-target="#deleteProjectModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom" title="Delete Project">
+                                        <span class="fa fa-trash"/>
+                                    </button>
+                                </span></td>` :
+                                `<td><span data-bs-toggle="modal" data-bs-target="#leaveProjectModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Leave Project">
+                                        <span class="fa fa-user-alt-slash"/>
+                                    </button>
+                                </span></td>`;
+
+                            return `<div class="float-end">${action}</div>`;
+                    }}
+                ],
+                ajax: {
+                    url: "{% url 'project:get_projects' %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data: function (response) {
+                        return response.data;
+                    },
+                }
+            });
+
+            let tenementTable = $('#tenement-table').DataTable({
+                'bSort': true,
+                'bPaginate': false,
+                'bDestroy': true,
+                columnDefs: [
+                { targets: [6], className: 'noowrap' }
+                 ],
+
+                'columns': [
+                    {data: 'state', bSortable: true},
+                    {
+                        data: 'permit', bSortable: true,
+                        mRender(permit) {
+                            return `<a href="${permit['slug']}">${permit['display']}</a>`
+                        }
+                    },
+                    {
+                        data: 'project', bSortable: true,
+                        mRender(project) {
+                            return `<a href="${project['slug']}">${project['name']}</a>`
+                        }
+                    },
+                    {data: 'status', bSortable: true},
+                    {data: 'date_granted', bSortable: true},
+                    {data: 'tags', bSortable: false},
+                    {
+                        data: 'actions', bSortable: false,
+                        mRender: function (data) {
+                            let action = (data > 7) ?
+                                `<span data-bs-toggle="modal" data-bs-target="#deleteTenementModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Relinquish Tenement">
+                                        <span class="fa fa-trash"/>
+                                    </button>
+                                </span>` : "";
+
+                            return `<div class="float-end">${action}</div>`;
+                        }
+                    }
+                ],
+                ajax: {
+                    url: "{% url 'project:get_tenements' %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data: function (response) {
+                        return response.data;
+                    }
+                }
+            });
+
+            let reportTable = $('#report-table').DataTable({
+                bSort: true,
+                bScrollCollapse: true,
+                bPaginate: false,
+                bDestroy: true,
+                columns: [
+                    {
+                        data: 'dataset', bSortable: true,
+                        mRender(data) {
+                            return `<a href=` + data.url + `>` + data.filename + `</a>`
+                        }
+                    },
+                    {
+                        data: 'project', bSortable: true,
+                        mRender: function (data) {
+                            return "<a href=" + data.slug + "/>" + data.name + "</a>"
+                        }
+                    },
+                    {
+                        data: 'cleaner', bSortable: true,
+                        mRender(data) {
+                            return (data) ? `<a href=` + data.url + `>` + data.filename + `</a>` : "";
+                        }
+                    },
+                    {
+                        data: 'report', bSortable: true,
+                        mRender(data) {
+                            return (data) ? `<a href=` + data.url + `>` + data.filename + `</a>` : "";
+                        }
+                    },
+                    {
+                        data: 'type', bSortable: true,
+                        mRender(data) {
+                            let format_data = data.replace(/\b\w/g, c => c.toUpperCase());
+                            switch (data) {
+                                case 'cleaner':
+                                    return '<span class="text-ofx-red">' + format_data + '</span>'
+                                case 'analysis':
+                                    return '<span class="text-ofx-blue">' + format_data + '</span>'
+                                default:
+                                    return format_data
+                            }
+                        }
+                    },
+                    {
+                        data: 'actions', bSortable: false,
+                        mRender(permission) {
+                            let actions = ""
+                            if (permission >= 7) {
+                                actions += `
+                                <span data-bs-toggle="modal" data-target="#deleteReportModal">
+                                    <button class="btn btn-ofx-fa btn-ofx-fa-red" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Delete Report">
+                                        <span class="fa fa-trash"/>
+                                    </button>
+                                </span>`;
+                            }
+                            return `<div class="float-end">${action}</div>`;
+                        }
+                    }
+                ],
+                /* TODO: Implement Get Reports Table
+                ajax: {
+                    url: "{% url 'project:get_reports' %}",
+                    type: 'GET',
+                    contentType: 'application/json',
+                    data: function(response) {
+                        return response.data;
+                    },
+                }
+                */
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+          // Check for the modal parameter in the URL
+          const urlParams = new URLSearchParams(window.location.search);
+          const modalParam = urlParams.get('modal');
+         
+          if (modalParam === 'True') {
+            // Show the modal if the parameter is present
+            $('#myModal').modal('show');
+          }
+          setTimeout(function () {
+            if( document.getElementById("flash-message") !== null)
+            document.getElementById("flash-message").style.display = "none";
+          }, 3000); 
+
+          $('button[type="submit"]').on('click', function (event) {
+            formId = event.target.form.id;
+            const form = document.getElementById(formId);
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+               }
+           });  
+        });
+        </script>
+       
+{% endblock %}

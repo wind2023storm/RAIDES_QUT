@@ -1,0 +1,492 @@
+{% extends 'appboard/base.html' %}
+{% load static %}
+
+{% block head_title %}
+Task Management
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'project_management/css/style.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-4 mb-4">
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">All Boards</h1>
+        </div>
+
+        <div class="w-100 border-bottom bg-ofx-blue"></div>
+
+        <div class="p-4">
+            <h4>Owner</h4>
+            <div class="row g-4">
+                <a id="addBoard" class="add-board-item col-lg-4 col-md-6 col-sm-12">
+                    + Create new board
+                </a>
+               
+                {% for board in own_boards %}
+                    <div id="board_item" class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card card-hover">
+                            <div class="card-body" style="position: relative;">
+                                {{ board.name }}
+    {#                            Label: <br>#}
+    {#                            Created At: <br>#}
+                                <div class="dropdown" style="position: absolute; right: 4px; top: 4px; z-index: 2;">
+                                    <a class="btn dropdown-toggle" style="color: white;" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </a>
+                                  
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a id="rename_board_a" board-id="{{board.id}}" board-name="{{board.name}}" class="dropdown-item">Rename board</a></li>
+                                        <li><a id="delete_board_a" board-id="{{board.id}}" board-name="{{board.name}}" class="dropdown-item">Delete board</a></li>
+                                    </ul>
+                                </div>
+                                <a href="{% url 'project_management:get_board' boardID=board.id %}" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="p-4">
+            <h4>Member</h4>
+            <div class="row">
+                {% for board in boards %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 my-3">
+                        <div class="card" style="background-color: var(--ofx-blue); color: white;">
+                            <div class="card-body">
+                                {{ board.name }}
+    {#                            Label: <br>#}
+    {#                            Created At: <br>#}
+
+                                <a href="{% url 'project_management:get_board' boardID=board.id %}" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!-- Create board modal -->
+        <div class="modal fade" tabindex="-1" id="create_board_modal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create Board</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="create_board_form" action=""
+                              method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="d-flex flex-column justify-content-center p-2">
+                                <input type="text" class="form-control mb-4 empty-validate" id="create_board_input"
+                                       placeholder="Board Title" required>
+
+                                <h6>Owner</h6>
+                                <p class="mb-4" style="color: grey;">{{ request.user }}</p>
+
+                                <h6>Members</h6>
+                                <div id="selected_members_list" class="selected-members-list">
+                                </div>
+                                <div id="members_search_dropdown" class="dropdown" style="position: relative;">
+                                    <input id="search_member_input" class="form-control dropdown-toggle" type="text" name="query" placeholder="+ Add member" aria-expanded="false">
+                                    <div id="search_member_menu" class="dropdown-menu" aria-labelledby="search_member_input">
+                                        <p class="placeholder-glow">
+                                            <span class="placeholder col-12"></span>
+                                          </p>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <div class="max-w-200 mx-auto">
+                                    <button type="submit" name="file_uploader_btn"
+                                            class="btn btn-ofx-blue max-w-200 rounded-1">
+                                        Create Board
+                                    </button>
+                                    <button type="button" class="btn close-btn" data-bs-dismiss="modal">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Rename board modal -->
+        <div class="modal fade" tabindex="-1" id="rename_board_modal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Renaming Board</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="rename_board_form" board-id="" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="d-flex flex-column p-2">
+                                <p id="rename_desc"></p>
+                                <input id="rename_board_input" type="text" class="form-control empty-validate" required>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="max-w-200 mx-auto">
+                                    <button id="rename_board_btn" type="submit"
+                                            class="max-w-200 btn btn-ofx-blue rounded-1">
+                                        Rename Board
+                                    </button>
+                                    <button type="button" class="btn close-btn" data-bs-dismiss="modal">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete board modal -->
+        <div class="modal fade" tabindex="-1" id="delete_board_modal" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-md" role="document" id="modal_body">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Deleting Board</h5>
+                    </div>
+                    <form id="delete_board_form" board-id="" method="POST" enctype="multipart/form-data">
+                        <div class="modal-body">
+                                <div>
+                                    <p id="delete_desc"></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="max-w-200 mx-auto">
+                                        <button id="delete_board_btn" board-id="" type="submit" 
+                                                class="btn btn-ofx-red max-w-200 rounded-1">
+                                            Delete Board
+                                        </button>
+                                        <button type="button" class="btn close-btn" data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'project_management/js/jkanban.js' %}"></script>
+    <script>
+        let csrf_token = "{{ csrf_token }}"
+        let kanban_url = "{% url 'project_management:kanban' %}"
+    </script>
+    <script>
+
+        $('[id="addBoard"]').click(function() {
+            $('#create_board_modal').modal('show');
+        })
+
+        // Create board
+
+        let searchTimeout = null;
+        let selectedMembers = [];
+        let searchingMembers = []
+        
+        const create_board_modal = document.getElementById('create_board_modal')
+        create_board_modal.addEventListener('show.bs.modal', () => {
+            // Empty UI
+            $('#create_board_input').val('')
+            $('#search_member_input').val('')
+            $('#selected_members_list').html('')
+            $('.empty-validate').removeClass('is-valid is-invalid')
+
+            // Empty variables
+            searchTimeout = null;
+            selectedMembers = [];
+            searchingMembers =[]
+            
+        })
+        create_board_modal.addEventListener('shown.bs.modal', () => {
+            $('#create_board_input').focus()
+            
+        })
+
+        create_board_modal.addEventListener('click', () => {
+            $('#members_search_dropdown .dropdown-toggle').dropdown('hide')
+        })
+
+        $('.empty-validate').on('keyup', function(e) {
+            e.preventDefault()
+            if ($(this).val().trim().length === 0) {
+                $(this).removeClass('is-valid')
+                $(this).addClass('is-invalid')
+            } else {
+                console.log('Valid now');
+                $(this).removeClass('is-invalid')
+                $(this).addClass('is-valid')
+            }
+        })
+        
+        $('#create_board_form').submit(function (e) {
+            e.preventDefault()
+
+            const boardNameInput = $(this).find('#create_board_input')
+            const boardName = $(this).find('#create_board_input').val()
+            if (boardName.trim().length === 0) return;
+            $.ajax({
+                headers: {"X-CSRFToken": csrf_token},
+                url: kanban_url + "board",
+                data: {
+                    "name": boardName,
+                    "members": JSON.stringify(selectedMembers)
+                },
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#create_board_modal').modal('hide');
+                    $('#create_board_form').unbind();
+                    location.reload();
+                },
+                error: function (data) {
+                },
+            });
+        })
+
+         // Member Search 
+
+        document.getElementById('members_search_dropdown').addEventListener('show.bs.dropdown', function (e) {
+            searchTimeout = null;
+
+            if ($('#search_member_input').val() === "") {
+                $('#members_search_dropdown .dropdown-toggle').dropdown('hide')
+                return false;
+            }
+        })
+
+        $('#search_member_input').on('click input', function(e) {
+            e.preventDefault()
+            if ($(this).val().trim().length === 0) {
+                console.log('Hide dropdown');
+                searchingMembers = []
+                $('#members_search_dropdown .dropdown-toggle').dropdown('hide')
+            }
+            else {
+                console.log('Show dropdown');
+                $('#members_search_dropdown .dropdown-toggle').dropdown('show')
+            }
+        })
+
+        
+        $('#search_member_input').on('keyup', function(e) {
+            e.preventDefault()
+            let input = $(this)
+            console.log('On key up ' + input.val());
+            
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+                if (!input.val().trim()) return
+            }
+            searchTimeout = setTimeout(function() {
+                console.log('Start doing search with ' + input.val());
+                searchMember(input.val())
+            }, 1500);
+            // console.log('Timeout ' + searchTimeout);
+            $('#search_member_menu').html(`
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            `)
+        })
+
+        function searchMember(query) {
+            if (!query || !query.trim()) return
+
+            $.ajax({
+                type: 'GET',
+                data: {
+                    query: query
+                },
+                dataType: 'json',
+                url: "{% url 'project_management:search_member' %}",
+                success: function (data) {
+                    
+                    let htmlString = "";
+                    let members_data = JSON.parse(data.members)
+                    searchingMembers = members_data
+
+
+                    for (let member of members_data) {
+                        const existed = (selectedMembers.findIndex(obj => obj.pk == member.pk) !== -1)
+                        if (existed) continue;
+
+                        console.log(`Member ${member.pk}: ${JSON.stringify(member)}`);
+                        const fields = member.fields
+                        htmlString += `<li
+                            class="dropdown-item"
+                            onclick='selectMemberFromSearch(${member.pk})'
+                        > 
+                                ${fields.email} - ${fields.first_name} ${fields.last_name}
+                        </li>`
+                    }
+                    $("#search_member_menu").html(htmlString)
+                },
+                error: function() {
+                    $("#search_member_menu").html("  Error loading users. Please try again.  ")
+                }
+            })
+        }
+
+        function selectMemberFromSearch(member_pk) {
+            if (member_pk == null) return
+
+            const member = searchingMembers.find((value) => {return value.pk == member_pk})
+
+            selectedMembers.unshift(member)
+            buildSelectedMembersList(selectedMembers)
+            $('#search_member_input').val('')
+        }
+
+
+        function deselectUserAt(index) {
+            if (index == null) return
+            
+            selectedMembers.splice(index, 1)
+            buildSelectedMembersList(selectedMembers)
+        }
+
+        function buildSelectedMembersList(list = []) {
+            let htmlString = ""
+            for (i in list) {
+                const member = list[i]
+                htmlString += `
+                    <div class="member-tag">
+                        ${member.fields.email}
+                        <button class="btn-close" onclick='deselectUserAt(${i})' aria-label="Deselect user"></button>
+                    </div>
+                `
+            }
+
+            $('#selected_members_list').html(htmlString)
+        }
+
+        // Rename board
+        const rename_board_form = $('#rename_board_modal #rename_board_form')
+        const rename_board_input = $('#rename_board_modal #rename_board_form #rename_board_input')
+        document.getElementById('rename_board_modal').addEventListener('show.bs.modal', function (event) {
+            $('.empty-validate').removeClass('is-valid is-invalid')
+        })
+        document.getElementById('rename_board_modal').addEventListener('shown.bs.modal', function (event) {
+            rename_board_input.focus()
+        })
+
+        $('#board_item #rename_board_a').click(function(e) {
+            const boardId = $(this).attr('board-id')
+            const boardName = $(this).attr('board-name')
+            if (!boardId || boardId.trim().length === 0) return;
+
+            $('#rename_board_modal #rename_desc').text(`Renaming ${boardName}`)
+            rename_board_form.attr('board-id', boardId)
+            rename_board_input.val('')
+            $(`#rename_board_modal`).modal('show');
+        })
+
+        rename_board_form.submit(function(e) {
+            e.preventDefault()
+            const boardId = $(this).attr("board-id")
+            if (!boardId || boardId.trim().length === 0) return;
+
+            const newName = rename_board_input.val()
+            if (newName.trim().length === 0) return;
+            console.log('Renaming board' + boardId + ' to ' + JSON.stringify(newName));
+
+            $.ajax({
+                headers: {"X-CSRFToken": csrf_token},
+                url: "{% url 'project_management:update_board' %}",
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                data: {
+                    id: boardId,
+                    name: newName
+                },
+                success: function (data) {
+                    $('#rename_board_modal').modal('hide');
+                    rename_board_form.unbind();
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log('Error updating board ' + boardId);
+                },
+                
+            })
+
+            
+        })
+
+        // Deleting Board
+        const delete_board_form = $('#delete_board_modal #delete_board_form')
+
+        $('#board_item #delete_board_a').click(function(e) {
+            const boardId = $(this).attr('board-id')
+            const boardName = $(this).attr('board-name')
+            if (!boardId || boardId.trim().length === 0) return;
+
+            $('#delete_board_modal #delete_desc').text(`Deleteing ${boardName}`)
+            delete_board_form.attr('board-id', boardId)
+            $(`#delete_board_modal`).modal('show');
+        })
+
+        delete_board_form.submit(function(e) {
+            e.preventDefault()
+            const boardId = $(this).attr("board-id")
+            if (!boardId || boardId.trim().length === 0) return;
+            console.log('Deleting board' + boardId);
+            $.ajax({
+                headers: {"X-CSRFToken": csrf_token},
+                type: "POST",
+                url: "{% url 'project_management:delete_board' %}", 
+                data: {id: boardId},
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    $('#delete_board_modal').modal('hide');
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log('Error delete board ' + boardId);
+                },
+            })
+            
+            
+        })
+
+        //
+        setTimeout(function () {
+            if( document.getElementById("flash-message") !== null)
+            document.getElementById("flash-message").style.display = "none";
+        }, 3000); 
+
+      
+        // $('button[type="submit"]').on('click', function (event) {
+        //     let formId = event.target.form.id;
+        //     console.log('formmm submit' + formId);
+        //     const form = document.getElementById(formId);
+        //     if (!form.checkValidity()) {
+        //         event.preventDefault();
+        //         form.classList.add('was-validated');
+        //     }      
+                
+        // }); 
+    </script>
+
+{% endblock %}

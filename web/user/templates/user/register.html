@@ -1,0 +1,175 @@
+{% extends "base.html" %} {% load i18n static %} {% load static %} 
+{% block content %}
+
+<section
+  class="gradient-form"
+  style="background-color: #fff; height: 98%; width: 99%"
+>
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div
+      class="col-md-6 d-flex align-items-center gradient-custom-2 h-100"
+      id="start-sidebar"
+    >
+      <div class="text-white px-3 py-2 p-md-5 mx-md-4">
+        <h4 class="mb-2">We’re OreFox</h4>
+        <p class="small mb-5">
+          We provide artificial intelligence-based geological data analytics to
+          mining and exploration companies
+        </p>
+        <h4 class="mb-2 mt-5">GeoDesk Pro Platform</h4>
+        <p class="small mb-0">
+          GeoDesk Pro is a Platform that can bring more efficiency to mineral
+          exploration and store and analyse the majority of geological data used
+          in exploration, using traditional and cutting-edge methods
+        </p>
+      </div>
+    </div>
+    <div class="col-md-6 h-100">
+      <div
+      class="position-absolute top-0 end-0 m-3"
+       
+      >
+        <a href="{% url 'website:home' %}">
+          <img
+            class="img-profile"
+            style="height: 25px; width: 120px"
+            src="{% static '.\user\img\orefox-logo.png' %}"
+            alt=""
+          />
+        </a>
+      </div>
+      <div
+        class="card-body mx-auto row w-100 d-flex align-items-center justify-content-center"
+        style="margin-top: 140px"
+      >
+      <div class="col-xl-6 col-8">
+        <div id="flash-message" class="text-sm  ms-2 mb-2 position-relative">
+          {% if messages %}
+          {% for message in messages %} 
+          {% if message.level == 40 %}
+          <span
+          class="alert alert-danger text-center px-2 py-0">  {{ message }}
+          </span>
+          
+          {% elif message.level == 25 %}
+          <span
+          class="alert alert-success text-center px-2 py-0">{{ message }}
+          </span>
+          {% endif %}
+          {% endfor %}
+          {% elif form.errors %}
+          <div
+            class="alert alert-danger pt-0 pb-0 mt-0"
+            >
+            {% for field, errors in form.errors.items %} 
+            {% for error in errors %}
+            <span>f{{ error }}<br /></span>
+            {% endfor %} {% endfor %}
+          </div>
+        
+          
+          {% endif %}
+      </div>
+    
+        <form method="post" class="ms-4" id="register-form">
+          {% csrf_token %} 
+          <div class="row"  id="client-error" >
+          <div class="col-12 text-start d-flex flex-column justify-content-end align-items-start p-0"
+                      
+          ></div>
+          </div>
+          <div class="row mt-3 mb-3">
+            <div class="form-outline col-10">
+               {{form.first_name}}
+               <label class="form-label" for="id_first_name">FirstName</label>
+            </div>
+           <div class="cross-marker col-1 text-start ms-1">
+              <i class="fas fa-check fname-cross-marker"></i>
+           </div>
+        </div>
+        <div class="row">
+          <div class="form-outline mb-3 col-10">
+            {{form.last_name}}
+            <label class="form-label" for="id_last_name">LastName</label>
+          </div>
+          <div class="cross-marker col-1 text-start ms-1" 
+            ><i class="fas fa-check lname-cross-marker"></i
+          ></div>
+        </div>
+          <div class="row">
+            <div class="form-outline mb-3 col-10">
+              {{form.email}} 
+            <label class="form-label" for="id_email">Email</label>
+          </div>
+          <div class="cross-marker col-1 text-start ms-1" 
+            ><i class="fas fa-check email-cross-marker"></i
+          ></div>
+        </div>
+          <div class="row">
+            <div class="form-outline mb-3 col-10">
+            {{form.company}}
+            <label class="form-label" for="id_company">Company</label>
+          </div>
+          <div class="cross-marker col-1 text-start ms-1" 
+            ><i class="fas fa-check company-cross-marker"></i
+          ></div>
+        </div>
+
+          <div class="row">
+            <div class="form-outline mb-3 col-10">
+            {{form.password1}}
+            <label class="form-label" for="id_password1">Password</label>
+          </div>
+          <div class="cross-marker col-1 text-start ms-1" 
+            ><i class="fas fa-check password1-cross-marker"></i
+          ></div>
+        </div>
+
+          <div class="row">
+            <div class="form-outline mb-3 col-10">
+            <input
+              type="password"
+              name="password2"
+              id="id_password2"
+              class="form-control"
+            />
+            <label class="form-label" for="id_password2"
+              >Confirm Password</label
+            >
+          </div>
+          <div class="cross-marker col-1 text-start ms-1" 
+            ><i class="fas fa-check password2-cross-marker"></i
+          ></div>
+        </div>
+
+          <div class=" row mb-3">
+            <button
+              class="btn btn-primary col-10 fa-lg gradient-custom-2  ms-0"
+              id="register-btn"
+              type="submit"
+              disabled
+            >
+              Sign Up
+            </button>
+            <div class="text-danger text-sm">**All fields are mandatory</div>
+          </div>
+
+         
+          <div class="row text-start">
+            <div class="col-11">
+            <span class="mb-0">Already have an account?</span>
+            <a
+              type="button"
+              class="btn btn-outline-danger px-3"
+              href="{% url 'user:login' %}"
+            >
+              Sign In</a
+            ></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="{% static 'user/js/register.js' %}"></script>
+{% endblock %}

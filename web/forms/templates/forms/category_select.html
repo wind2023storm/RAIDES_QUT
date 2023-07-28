@@ -1,0 +1,5 @@
+<select name="{{ widget.name }}" type="category" {% include "forms/category_attrs.html" %}>
+{% for option in widget.categories %}
+    {% include option.template_name with widget=option %}
+{% endfor %}
+</select>

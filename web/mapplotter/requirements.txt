@@ -1,0 +1,11 @@
+geopandas
+keplergl
+palettable
+# localtileserver
+streamlit
+streamlit-folium
+streamlit-keplergl
+streamlit-bokeh-events
+leafmap
+django-leaflet
+

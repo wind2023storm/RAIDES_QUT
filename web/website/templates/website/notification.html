@@ -1,0 +1,21 @@
+<div class="" id="message_container" style="position: fixed; z-index: 99998; width: 100%;">
+    <div class="container m-auto">
+        
+        <!-----------  Anouncement --------------->
+        <!-----------  Anouncement Ends --------------->
+
+        <!-------------- Message Area ----------------->
+        {% if messages %}
+        {% for message in messages %}
+        <div class="web-alert alert {{ message.tags }} alert-base alert-dismissible fade show m-2 shadow" role="alert">
+            {{message|safe}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <!-------------- Message Area Ends ----------------->
+
+    </div>
+</div>

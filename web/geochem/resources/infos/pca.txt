@@ -1,0 +1,4 @@
+*What is this method?
+Principal component analysis involves rotating the axes in which a dataset lies and consequently redefining data points in the original dataset in terms of this new set of axes (essentially a transformation). This rotation is performed in a special way such that each new axis can be easily ranked in terms of its variance (practically the axes will also be ranked in terms of predictive power) in data points in the original dataset. Consequently, any axes which explain little variance in the dataset (or predictive power) may be discarded. This is called dimensionality reduction and it is useful because it may make complex and computationally inefficient algorithms more viable for use as there will be less dimensions to perform computations on. 
+*What is a principal component?
+A principal component is one of these new axes after the rotation. 

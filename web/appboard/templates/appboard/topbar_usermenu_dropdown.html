@@ -1,0 +1,31 @@
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="userMenuDropdown" role="button"
+       data-bs-toggle="dropdown" aria-expanded="false">
+        {% if request.user.is_authenticated %}
+            {{ request.user.email }}
+        {% else %}
+            Anonymous
+        {% endif %}
+    </a>
+    <ul id="userTools" class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
+        <li>
+            <a class="dropdown-item" href="{% url 'user:manage' %}">
+                <i class="fas fa-heartbeat fa-sm fa-fw mr-2 text-gray-400"></i>
+                Manage Your Orefox Account
+            </a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% if request.user.is_authenticated %}
+            <li>
+                <a class="dropdown-item" href="{% url 'user:logout' %}" data-toggle="modal"
+                   data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Logout
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+
+</li>

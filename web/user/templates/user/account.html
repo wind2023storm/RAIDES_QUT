@@ -1,0 +1,335 @@
+{% extends 'appboard/base.html' %}
+
+{% load static %}
+{% block extra_head %}
+    <link href="{% static '/user/css/account.css' %}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+<div id="flash-message" class="text-sm ms-4">
+  {% if messages %}
+  {% for message in messages %} 
+  {% if message.level == 40 %}
+  <span
+  class="alert alert-danger text-center px-2 py-1"> {{ message }}
+  </span>
+  {% endif %}
+  {% if message.level == 25 %}
+  <span
+  class="alert alert-success text-center px-2 py-1"> {{ message }}
+  </span>
+  {% endif %}
+  {% endfor %} {% endif %}
+</div>
+
+    <div class="container-fluid content-margin-top-offest w-100 h-100 mb-5 px-4" >       <h4 class="mb-2 text-ofx-blue">Account Settings</h4>
+       
+   
+    <div class="subtitle">Personal Information</div>
+
+    <div class="form-group">
+        <div id="show-name">
+            <text class="attributeName" id="name-label">Name:</text>
+            <text class="attributeValue" id="name-text">{{ user.full_name }}</text>
+            <button class="btn-edit bg-ofx-blue" id="edit-name-button">Edit</button>
+        </div>
+        <form id="change-name" method="post" action="">
+          
+            {% csrf_token %}
+            <text class="attributeName">First name:</text>
+            <input class="account-input" name="first_name" id="id_first_name" value="{{ user.first_name }}" required>
+            <br/>
+            <text class="attributeName">Last name:</text>
+            <input class="account-input" name="last_name"  id="id_last_name" value="{{ user.last_name }}" required>
+            <button type="submit" class="btn-edit bg-ofx-blue" id="edit-name-confirm-button" >Confirm</button>
+            <span class="col-12 col-sm-2 ms-2 alert alert-danger p-1 align-items-center justify-content-center" id="name-error">
+         
+        </form>
+    </div>
+
+    <div class="form-group">
+        <div id="show-email">
+            <text class="attributeName">Email:</text>
+            <text class="attributeValue">{{ user.email }}</text>
+            <button class="btn-edit bg-ofx-blue" id="edit-email-button">Edit</button>
+
+        </div>
+        <form id="change-email" method="post" class="w-100">
+            {% csrf_token %}    
+            <text class="attributeName">Email:</text>
+            <input type="email" class="account-input" name="email" id="id_email" value="{{ user.email }}" required>
+        
+            <button type="submit" class="btn-edit" id="edit-email-confirm-button">Confirm</button>
+            <span class="col-12 col-sm-2 ms-2 alert alert-danger p-1 align-items-center justify-content-center" id="email-error">
+            </span>
+          
+        </form>
+    </div>
+
+
+
+    <div class="form-group">
+        <div id="show-company">
+            <text class="attributeName">Company:</text>
+            <text class="attributeValue">{{ user.company }}</text>
+            <button class="btn-edit bg-ofx-blue" id="edit-company-button">Edit</button>
+
+        </div>
+        <form id="change-company" method="post">
+            {% csrf_token %}
+            <text class="attributeName">Company:</text>
+            <input class="account-input" name="company" id="id_company" value="{{ user.company }}" required>
+            <button type="submit" class="btn-edit bg-ofx-blue" id="edit-company-confirm-button">Confirm</button>
+            <span class="col-12 col-sm-2 ms-2 alert alert-danger p-1 align-items-center justify-content-center" id="company-error">
+      
+        </form>
+      </div>
+     <div class="form-group mt-4">
+     
+        <button class="btn-edit bg-ofx-blue col-12 col-sm-3" id="passwd-button">Change Password</button>
+        
+        <form id="change-passwd" method="post">
+            {% csrf_token %}
+            <div class = "passwordAttribute">
+                <text class="attributeName">Old password:</text>
+                <input type="password" class="account-input" name="old_password" id="id_old_password" value="" autocomplete="off" required>
+            </div>
+            <div class = "mb-3">
+                <text class="attributeName">New password:</text>
+               
+                <input type="password" class="account-input col-3" name="new_password1" id="id_new_password1" value="" autocomplete="off" required>
+                <span class="cross-marker col-1 ms-2" style=""><i class="fas fa-times new-password1-cross-marker" id="new-password1-cross-marker"></i></span>
+             
+            </div>
+              
+            <div style = "margin-bottom: 20px">
+                <label class="attributeName">Confirm password:</label>
+                <input type="password"  class="account-input col-3" name="new_password2"  id="id_new_password2" autocomplete="off" value="" required>
+                <span class="cross-marker col-1 ms-2" style=""><i class="fas fa-times new-password2-cross-marker" id="new-password2-cross-marker"></i></span>
+     
+            </div>
+               <div class="row ">
+           <div class="col-12 col-sm-3 "><button type="reset" class="btn-edit" id="edit-passwd-cancel-button">Cancel</button></div>
+
+            <div class="col-12 col-sm-3 "><button type="submit" class="btn-edit" id="edit-passwd-confirm-button">Confirm</button></div>
+            <div class="col-12 col-sm-9 mt-2 mt-sm-0 alert alert-danger p-0 align-items-center justify-content-center" id="client-error">
+            </div>
+        </form>
+    </div>
+  </div>
+ 
+    {% comment %}
+        <div class="subtitle">Billing</div>
+        <a href="{% url 'transactions' %}">View Transaction</a>
+        <br/>
+        <a href="{% url 'credits' %}">View Credits</a>
+    {% endcomment %}
+
+        <script src="{% static 'user/js/account.js' %}"></script>
+        <script>
+          setTimeout(function () {
+            document.getElementById("flash-message").style.display = "none";
+          }, 3000);
+            const emailInput = document.querySelector("#id_email"); 
+            const firstNameInput = document.querySelector("#id_first_name"); 
+            const lastNameInput = document.querySelector("#id_last_name"); 
+            const companyInput = document.querySelector("#id_company"); 
+            const password1Input = document.querySelector('#id_new_password1');
+            const password2Input = document.querySelector('#id_new_password2');
+            const resetPwdButton = document.querySelector('#edit-passwd-confirm-button');
+            const emailEditButton = document.querySelector('#edit-email-confirm-button');
+            const nameEditButton = document.querySelector('#edit-name-confirm-button');
+            const companyEditButton = document.querySelector('#edit-company-confirm-button');
+           
+            const error = document.querySelector('#client-error');
+            const emailError = document.querySelector('#email-error');
+            const nameError = document.querySelector('#name-error');
+            const companyError = document.querySelector('#company-error');
+            const password1CrossMarker = document.querySelector('.new-password1-cross-marker');
+            const password2CrossMarker = document.querySelector('.new-password2-cross-marker');
+         
+            password1Input.addEventListener("input", () => {
+              checkServerError();
+              password1CrossMarker.style.display = "inline";
+              error.textContent = "";
+              let password = password1Input.value;
+              let isValid = true;
+              checkConfirmPassword();
+              if (error.textContent.trim() !== "") {
+                error.textContent = "";
+                password2CrossMarker.classList.replace("fa-check", "fa-times");
+              }
+              if (password.length < 8 || password.length > 24) {
+                error.style.display = "flex";
+                error.innerHTML = "Password must be between 8 to 24 characters long.";
+                password1Input.setCustomValidity(
+                  "Password must be between 8 to 24 characters long."
+                );
+                isValid = false;
+              }
+              if (!/[A-Z]/.test(password)) {
+                error.style.display = "flex";
+                error.innerHTML +=
+                  "<br> Password must contain at least one uppercase letter.";
+                password1Input.setCustomValidity(
+                  "Password must contain at least one uppercase letter."
+                );
+                isValid = false;
+              }
+          
+              if (!/\d/.test(password)) {
+                error.style.display = "flex";
+                error.innerHTML += "<br> Password must contain at least one digit.";
+                password1Input.setCustomValidity(
+                  "Password must contain at least one digit."
+                );
+                isValid = false;
+              }
+              if (!/\W/.test(password)) {
+                error.style.display = "flex";
+                error.innerHTML +=
+                  "<br> Password must contain at least one special character.";
+                password1Input.setCustomValidity(
+                  "Password must contain at least one special character."
+                );
+                isValid = false;
+              }
+          
+              if (isValid) {
+                error.textContent = "";
+                error.style.display = "none";            
+                password1Input.setCustomValidity("");
+                password1CrossMarker.classList.replace("fa-times", "fa-check");
+              } else password1CrossMarker.classList.replace("fa-check", "fa-times");
+              checkInputs();
+            });
+          
+            password2Input.addEventListener("input", () => {
+              checkConfirmPassword();
+            });
+            function checkInputs() {
+              console.log("check", document.querySelector(".fa-times"));
+              if (
+               password1Input.value &&
+                password2Input.value &&
+                 document.querySelector(".fa-times") === null
+              ) {
+                resetPwdButton.disabled = false;
+              } else resetPwdButton.disabled = true;
+            }
+            function checkServerError() {
+              if (document.getElementById("flash-message") !== null) {
+                document.getElementById("flash-message").style.display = "none";
+              }
+            }
+            function checkConfirmPassword() {
+              checkServerError();
+            //  error.style.marginTop = "-30px";
+              password2CrossMarker.style.display = "inline";
+          
+              const confirmPassword = password2Input.value;
+              const password = password1Input.value;
+          
+              if (confirmPassword.trim() === "" || confirmPassword !== password) {
+                error.style.display = "flex";
+                error.innerHTML = "Passwords do not match. <br>";
+                password2Input.setCustomValidity("Passwords do not match.");
+                password2CrossMarker.classList.replace("fa-check", "fa-times");
+              } else {
+                error.innerHTML = "";
+                error.style.display = "none";            
+                password2Input.setCustomValidity("");
+                password2CrossMarker.classList.replace("fa-times", "fa-check");
+              }
+              checkInputs();
+            }
+            emailInput.addEventListener("input", () => {
+              checkServerError();
+              let isValid = true;
+               if (emailInput.value.trim() !== "") {
+                if (emailInput.validity.typeMismatch) {
+                  emailError.style.display = "inline";
+                  emailError.textContent = "Please enter a valid email address.";
+                  emailInput.setCustomValidity("Please enter a valid email address.");
+                  isValid = false;
+                  } else {
+                    emailError.style.display = "none";
+                    emailError.textContent = "";
+                  emailInput.setCustomValidity("");
+                  isValid = true;
+                }
+              } else {
+                emailError.style.display = "inline";
+                emailError.textContent = "Please enter a valid email address.";
+                emailInput.setCustomValidity("Please enter a valid email address.");
+                isValid=false;
+
+             }
+                if (isValid )                
+              {
+                emailEditButton.disabled = false;
+              } else  emailEditButton.disabled = true;
+            });
+            firstNameInput.addEventListener("input", () => {
+              checkServerError();
+              let isValid = true;
+               if (firstNameInput.value.trim() == "" || lastNameInput.value.trim() == "") {
+                  nameError.style.display = "inline";
+                  nameError.textContent = " Name cannot be empty.";
+                  firstNameInput.setCustomValidity(" Name cannot be empty.");
+                  isValid = false;
+                  } else {
+                    nameError.style.display = "none";
+                    nameError.textContent = "";
+                    firstNameInput.setCustomValidity("");
+                  isValid = true;
+                }
+              
+                if (isValid )                
+              {
+                nameEditButton.disabled = false;
+              } else  nameEditButton.disabled = true;
+            });
+            lastNameInput.addEventListener("input", () => {
+              checkServerError();
+              let isValid = true;
+               if (firstNameInput.value.trim() == "" || lastNameInput.value.trim() == "") {
+                  nameError.style.display = "inline";
+                  nameError.textContent = " Name cannot be empty.";
+                  lastNameInput.setCustomValidity("Name cannot be empty.");
+                  isValid = false;
+                  } else {
+                    nameError.style.display = "none";
+                    nameError.textContent = "";
+                    lastNameInput.setCustomValidity("");
+                  isValid = true;
+                }
+              
+                if (isValid )                
+              {
+                nameEditButton.disabled = false;
+              } else  nameEditButton.disabled = true;
+            });
+            companyInput.addEventListener("input", () => {
+              checkServerError();
+              let isValid = true;
+               if (companyInput.value.trim() == "") {
+                companyError.style.display = "inline";
+                  companyError.textContent = "Company cannot be empty.";
+                  companyInput.setCustomValidity("Company cannot be empty.");
+                  isValid = false;
+                  } else {
+                    companyError.style.display = "none";
+                    companyError.textContent = "";
+                    companyInput.setCustomValidity("");
+                  isValid = true;
+                }
+              
+                if (isValid )                
+              {
+                companyEditButton.disabled = false;
+              } else  companyEditButton.disabled = true;
+            });
+          </script>
+
+{% endblock %}

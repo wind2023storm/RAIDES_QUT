@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100&display=swap');
+
+/**{*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    box-sizing: border-box;*/
+/*    list-style: none;*/
+/*    text-decoration: none;*/
+/*    !* font-family: 'Josefin Sans', sans-serif; *!*/
+/*    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;*/
+/*}*/
+
+body{
+    background: white ;
+}
+
+/* .wrapper{
+    display: flex;
+    position: relative;
+} */
+
+/*.grid-child .sidebar{*/
+/*    position: fixed;*/
+/*    width: 15%;*/
+/*    height: 100%;*/
+/*    background: #666EEE;*/
+/*    padding: 30px 0;*/
+/*    */
+/*}*/
+
+/*.grid-child .sidebar h2{*/
+/*    color : white;*/
+/*    text-align: center;*/
+/*    margin-bottom: 70px;*/
+/*    font-weight:700;*/
+/*}*/
+
+/*.grid-child .sidebar ul li{*/
+/*    padding: 15px;*/
+/*    border-bottom: 1px solid rgba(0,0,0,0.05);*/
+/*    border-top: 1px solid rgba(225,225,225,0.05);*/
+/*}*/
+
+/*.grid-child .sidebar ul li a {*/
+/*    color: white;*/
+/*    display: block;*/
+/*}*/
+
+.add-board-item {
+    display: flex;
+    color: black;
+    background-color: #F9F9F9;
+    text-decoration: none;
+    min-height: 45px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+    /* color: black; */
+    border-radius: 4px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: color linear;
+}
+
+.add-board-item:hover {
+    background-color:#ebebeb ;
+    color: var(--ofx-blue);
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.close-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    border-radius: 2px;
+}
+
+.close-btn:hover {
+    background-color: gainsboro;
+}
+
+.card {
+    background-color: var(--ofx-blue); 
+    color: white;
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.15s ease-out;
+    cursor: pointer;
+}
+
+.card:hover {
+    box-shadow: 1px 3px 10px 2px rgba(0, 0, 0, 0.4);
+}
+
+.selected-members-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+  
+.selected-members-list .member-tag {
+    display: block;
+    /* position: relative; */
+    padding: 5px 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid var(--ofx-blue);
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+#search_member_menu.dropdown-menu {
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+#search_member_menu.dropdown-item {
+    word-wrap: break-word;
+}

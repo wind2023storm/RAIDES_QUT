@@ -1,0 +1,17 @@
+*Brief Explanation of Hyperparameters
+Objective: The objective function. 'reg' refers to a regression, and the term after that will refer to the actual objective used.
+Learning rate: The step size between iterations.
+Gamma: The minimum loss reduction required to split a leaf node.
+Base score: The initial prediction score of all instances.
+Booster: The booster used for the model.
+Tree method: The method used for constructing a tree. 'auto' will use a heuristic to find the fastest method. Smaller datasets will use a greedy method. Larger methods will use the hist method. 'exact' is the exact greedy method. 'approx' is similar to the greedy method but uses a gradient histogram in the process.'hist' will use a histogram optmised for the approximate greedy algorithm.
+Number estimators: The number of estimators to use in the model.
+Column samples by level: The subsample ratio for columns for each level. 
+Column samples by node: The subsample ratio for columns for each node.
+Column samples by tree: The subsample ratio for columns for each tree. 
+Interaction constraints: If these are specified, the indexes of columns in the same lists are allowed to interact with each other.
+Monotone constraints: Constraints for variability monotonicity.
+Max delta step: If using the Poisson regression, the maximum delta.
+Max depth: The maximum depth of a tree.
+Min weight of child: The minimum sum of instance weight needed for a child.
+Random state: The random seed used to produce results. Setting this makes results consistent.
