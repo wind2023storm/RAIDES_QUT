@@ -53,6 +53,7 @@ pip install daphne
 pip install --upgrade attrs
 pip install --upgrade channels
 pip install psycopg2 
+pip install miceforest
 python manage.py makemigrations
 python manage.py migrate
 ```
