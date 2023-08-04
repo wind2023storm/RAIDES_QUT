@@ -1,0 +1,38 @@
+<!-- {% comment %}
+owner.html
+id=FILES_DROPDOWN_CONTENT
+{% endcomment %} -->
+
+{% load project_tags%}
+
+{% if view.instance %}
+
+{% elif view.queryset %}
+<div class="corresponence-list">
+  <div class="correspondence-item w-100">
+    <div class="files-search-div p-0 search-div me-2 w-100">
+      <input type="search" class="form-control search-box" id="file-search" placeholder="Search Files..."
+      onchange="filterObjects('file-search','file-item','a', 0)" />                   
+    </div>
+  </div>
+  {% for file in view.queryset %}
+  
+  <div class="correspondence-item file-item">
+      <div class="d-flex flex-column">
+        <a href="{% url 'lms:download_file' slug=view.project.slug owner=view.owner.id file=file.id %}">{{file.filename}}</a>
+        <span style="color: grey;">Size: {{file.file_size_str}}</span>
+        <span style="color: grey;">{{file.date_created|date:"d/m/Y H:i A"}}</span>
+      </div>
+      {% if view.project|is_admin:view.member %}
+        <button class="dark-hover"
+          data-bs-toggle="modal" data-bs-target="#deleteFileModal" data-action="delete"
+          data-url="{% url 'lms:delete_file' slug=view.project.slug owner=view.owner.id file=file.id %}"
+          data-modal-content="Deleting <b> {{ file.filename }}?</b"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+      {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,80 @@
+{% autoescape on %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            
+            .table {
+              margin: 0;
+              padding: 0;
+
+              border: 0;
+              border-spacing: 0;
+
+              overflow: hidden;
+              background-color: #ffffff;
+            }
+
+            .tbody {
+              margin: 0;
+              padding: 0;
+            }
+
+            .tr {
+              font-family: Helvetica, sans-serif;
+              font-size: 100%;
+
+              margin: 0;
+              padding: 0;
+            }
+
+            .td {
+              font-family: Helvetica, sans-serif;
+              font-size: 16px;
+              
+              margin: 0;
+              padding: 10px;
+              
+              font-weight: normal;
+              line-height: 24px;
+              
+              background-color: #ffffff
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Your HTML content here -->
+        <table cellspacing="0" cellpadding="0" width="100%">
+          <tbody>
+              <tr>
+                  <td>
+                        <p>Dear Owner of Parcel {{project_parcel.parcel.lot_plan}},</p>
+                        <br>
+                        {% with project_parcel.parcel as parcel %}
+                          <span><b>Project</b>: {{project_parcel.project.name}}</span><br>
+                          <span><b>Lot</b>: {{parcel.lot}}</span><br>
+                          <span><b>Plan</b>: {{parcel.plan}}</span><br>
+                          <span><b>Tenure</b>: {{parcel.tenure}}</span><br>
+                          <span><b>Shire</b>: {{parcel.shire_name}}</span><br>
+                          <span><b>Feature</b>: {{parcel.feature_name}}</span><br>
+                        {% endwith %}
+                        <br>
+                        <div class="">
+                          {{content|linebreaksbr}}
+                        </div>
+                        <br>
+                        <p>King Regards,<br>Orefox</p>
+
+                  </td>
+              </tr>
+          </tbody>
+        </table>
+
+
+    </body>
+</html>
+
+
+{% endautoescape %}

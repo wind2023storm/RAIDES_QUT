@@ -1,4 +1,5 @@
 {% extends 'appboard/base.html' %}
+
 {% load modal_tags %}
 {% load project_tags %}
 {% load static %}
@@ -12,9 +13,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 {% endblock %}
 
-
 {% block breadcrumb %}
-    <a class="nav-link" href="{% url 'project:index' %}">Project Index</a> /
+    <a class="nav-link" href="{{ project_index }}">Project Index</a> /
     <a class="nav-link" href="#">{{ project.name }}</a>
 {% endblock %}
 
@@ -22,7 +22,7 @@
 <div
   id="flash-message" class="text-sm ms-4 mt-2">
 {% if messages %}
-{% for message in messages %} 
+{% for message in messages %}
 {% if message.level == 25 %}
 <span
   class="alert alert-success text-center p-2"> {{ message }}
@@ -36,9 +36,11 @@
     <div class="container-fluid">
 
         <div class="row text-center mb-2 text-ofx-blue content-margin-top-offest">
-            <h4 class="mb-4 text-ofx-blue">Project Dashboard<i class="fa fa-chalkboard ms-2"></i></h4>
-       
-          </div>
+            <h4 class="mb-4 text-ofx-blue">
+                Project Dashboard
+                <i class="fa fa-chalkboard ms-2"></i>
+            </h4>
+      </div>
 
         {# Project Info #}
         <div class="row mb-4">
@@ -136,11 +138,6 @@
                                 <tbody>
                                 </tbody>
                             </table>
-                            <a href="{% url 'spirit:category:detail' slug=project.slug %}">
-                                <button class="btn btn-ofx-blue">                                                
-                                    KMS Tenements
-                                </button>
-                            </a>
                         </div>
                         {# Targets Tab#}
                         <div class="tab-pane" id="nav-targets" role="tabpanel" aria-labelledby="nav-targets-tab">
@@ -275,14 +272,17 @@
                                 onclick='window.location.href="{% url 'project:index' %}";'>
                             Project Index <i class="fa fa-diagram-project"></i>
                         </button>
-                        {# TODO: Reinclude Spirit #}
-                        {#                <button class="btn btn-sm btn-ofx-blue" type="button"#}
-                        {#                        onclick='window.location.href="{% url 'spirit:category:detail' slug=project.name|slugify %}";'>#}
-                        {#                    KMS <span class="fa fa-comment"></span> #}
-                        {#                </button>#}
                         <button class="btn btn-sm btn-ofx-blue" type="button"
-                        onclick='window.location.href="{% url 'interactive_map:home' %}";'>
+                                onclick='window.location.href="{% url 'interactive_map:home' %}";'
+                                title="Tenure Interactive Map"
+                        >
                             Map <span class="fa fa-map-marker-alt"></span>
+                        </button>
+                        <button class="btn btn-sm btn-ofx-blue" type="button"
+                                onclick='window.location.href="{% url 'lms:lms' slug=project.name|slugify %}";'
+                                title="Landowner Management System for {{project.name}}"
+                        >
+                            LMS <i class="fa-solid fa-earth-oceania"></i>
                         </button>
                         {% if project|is_owner:member %}
                             <span data-bs-toggle="modal" data-bs-target="#deleteProjectModal">
@@ -717,7 +717,8 @@
                 'bDestroy': true,
                 order: [[4, "asc"]],
                 columnDefs: [
-                { targets: [6], className: 'noowrap' }
+                { targets: [6], className: 'noowrap' },
+               
                  ],
                 columns: [
                     {
@@ -727,7 +728,7 @@
                         }
                     },
                     {data: 'name', bSortable: true},
-                    {data: 'description', bSortable: true},
+                    {data: 'description', bSortable: true },
                     {data: 'authority', bSortable: true},
                     {data: 'due_date', bSortable: true},
                     {

@@ -181,7 +181,7 @@ class InviteUserForm(forms.Form):
 
 class CreateTaskForm(forms.ModelForm):
     authority = forms.ChoiceField()
-    attachments = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True,'required':False}))
+    attachments = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True,'required':False}), required=False)
 
     def __init__(self, instance: Union[Tenement, Project] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -210,9 +210,10 @@ class CreateTaskForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             if field.widget.attrs.get('class'):
                 field.widget.attrs['class'] += ' form-control'
-                            
+                                           
             else:
                 field.widget.attrs['class'] = 'form-control'
+                
 
     def clean(self):
         data = self.cleaned_data

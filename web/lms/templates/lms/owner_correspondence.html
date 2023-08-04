@@ -1,49 +1,68 @@
-{% if not items %}
-    <div><i>None</i></div>
-{% else %}
-    {% for correspondence in items %}
-        <li data-type="correspondence" data-id="{{ correspondence.id }}">
-            <table>
-                <tbody>
-                <tr>
-                    <th>Title:</th>
-                    <td>
-                        <span data-field="name" data-value="{{ correspondence.name }}">{{ correspondence.name }}</span>
-                        <button data-bs-toggle="modal" data-bs-target="#deleteCorrespondenceModal" data-action="delete"
-                                data-url="{% url 'lms:handle_correspondence' slug=project.slug action="delete" %}">
-                            Delete
-                        </button>
-                        <button data-bs-toggle="modal" data-bs-target="#modifyCorrespondenceModal" data-action="modify"
-                                data-url="{% url 'lms:handle_correspondence' slug=project.slug action="modify" %}">
-                            Modify
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Content:</th>
-                    <td data-field="content"
-                        data-value="{{ correspondence.content }}">{{ correspondence.content }}</td>
-                </tr>
-                <tr>
-                    <th>Date Created:</th>
-                    {# READONLY #}
-                    <td>{{ correspondence.date_created }} by {{ correspondence.user }}</td>
-                </tr>
-                <tr>
-                    <th>Last Modified:</th>
-                    {# READONLY #}
-                    <td>{{ correspondence.date_updated }} by {{ correspondence.user_updated }}</td>
-                </tr>
-                <tr>
-                    <th>Files:</th>
-                    <td>
-                        <ol>
-                            {% include 'lms/files.html' with project=project files=correspondence.files %}
-                        </ol>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
-    {% endfor %}
+<!-- {% comment %}
+owner.html
+id=CORRESPONDENCE_DROPDOWN_CONTENT
+{% endcomment %} -->
+{% load static %}
+{% load project_tags %}
+
+{% if view.instance %}
+{% with view.instance as correspondence %}
+{% endwith%}
+{% elif view.queryset %}
+<div class="correspondence-item w-100">
+  <div class="corres-search-div p-0 search-div me-2 w-100">
+    <input type="search" class="form-control search-box" id="corres-search" placeholder="Search Correspondence..."
+    onchange="filterObjects('corres-search','corres-item','div', 0)" />                   
+  </div>
+</div>
+{% for correspondence in view.queryset %}
+
+<div class="card mt-4 corres-item form-data ">
+  <div class="fw-bold  mt-2 d-flex px-3 justify-content-between" >
+    <div data-field="name" data-value="{{ correspondence.name }}">{{ correspondence.name }}</div>
+    <!-- <div data-field="files" data-value="{{ correspondence.files }}" hidden></div> -->
+
+    <div>
+      
+      {% if view.project|is_admin:view.member %}
+      <button data-bs-toggle="modal" data-bs-target="#deleteCorrespondenceModal" data-action="delete"
+              class="border-0"
+              data-url="{% url 'lms:delete_correspondence' slug=view.project.slug owner=correspondence.owner.id correspondence=correspondence.id %}"
+              data-modal-content="Delete <b> {{ correspondence.name }}</b>?"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+      {% endif %}
+      {% if view.project|is_write:view.member %}
+      <button data-bs-toggle="modal" data-bs-target="#modifyCorrespondenceModal" data-action="modify" class="border-0 ms-2 "
+              data-url="{% url 'lms:modify_correspondence' slug=view.project.slug owner=correspondence.owner.id correspondence=correspondence.id %}">
+              <i class="fa fa-edit"></i>
+      </button>
+      {% endif %}
+
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-text py-0" data-field="content" data-value="{{ correspondence.content }}">{{ correspondence.content }}</div>
+    <!-- <div id="CORRESPONDENCE_ITEM_LIST" class="corresponence-list" data-url="{% url "lms:correspondence" slug=view.project.slug owner=correspondence.owner.id correspondence=correspondence.id %}">
+      
+    </div> -->
+    <div class="corresponence-list">
+      {% for file in correspondence.files.all %}
+      <div class="correspondence-item">     
+        <a href="{% url 'lms:correspondence_download_file' slug=view.project.slug owner=correspondence.owner.id correspondence=correspondence.id file=file.id %}">{{file.filename}}</a>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+  <div class="card-footer py-0">
+    <i>{{ correspondence.date_created|date:"d/m/Y H:i A" }}</i>
+  </div>
+</div>
+{% endfor %}
+
+<script>
+  console.log('Script for owner correspondence');
+</script>
 {% endif %}

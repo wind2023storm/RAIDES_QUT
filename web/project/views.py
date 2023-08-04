@@ -32,10 +32,10 @@ def new_project(request):
             project = form.save(commit=False)
             project.owner = request.user
             project.save()
-
+            print("pr",project.id)
             ProjectMember.objects.create(project=project, user=request.user, permission=Permission.OWNER)
             messages.success(request,"Project Created Successfully")
-            return redirect('project:new_project')
+            return redirect('project:index')
         #messages.success(request, 'Project Created Successfully')
         else:
             #messages.error(request, form.errors)

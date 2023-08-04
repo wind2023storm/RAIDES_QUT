@@ -1,0 +1,62 @@
+{% load project_tags %}
+
+{% if view.instance %}
+    {% with view.instance as history %}
+        <table class="table-bordered">
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>From</th>
+                    <th>To</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for field in history.modified_json %}
+                    <tr>
+                        <td>{{ field.name }}</td>
+                        <td>{{ field.from }}</td>
+                        <td>{{ field.to }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endwith %}
+{% elif view.queryset %}
+    {% for history in view.queryset %}
+        {% if not forloop.last %}
+        <input type="checkbox" data-category="{{ history.id }}"
+               data-url="{% url 'lms:history' slug=view.project.slug model=view.model object=history.object_id history=history.id %}">
+        {% endif %}
+        <label for="details">
+                <span>
+                {% if history.modified_json|length < 1 %}
+                    {# If summary is empty, our object was probably just created so display that instead. #}
+                    Created
+                {% elif history.modified_json|length < 4 %}
+                    {# If we have only a few fields changed, show a short string of which fields have been changed #}
+                    <b>
+                        {% for field in history.modified_json %}
+                            {{ field.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </b> updated
+                {% else %}
+                    {# Otherwise just show a count of how many fields were changed. #}
+                    <b>{{ history.modified_json|length }} Fields</b> updated
+                {% endif %}
+
+                by <i>{{ history.user }}</i> on <i>{{ history.date_created }}</i>
+
+                {% if view.project|is_admin:view.member %}
+                    {% if not forloop.first %}
+                        <button data-bs-toggle="modal" data-bs-target="#revertHistoryModal"
+                                data-url="{% url 'lms:revert_history' slug=view.project.slug model=view.model object=history.object_id history=history.id %}">Rollback Here
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </span>
+        </label>
+        <ol data-category="{{ history.id }}"></ol>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

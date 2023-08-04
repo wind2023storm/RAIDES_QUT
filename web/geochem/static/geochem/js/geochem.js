@@ -1,5 +1,6 @@
+$('form[data-form-group="datacleanMethod"] #btnSubmit').attr("data-bs-dismiss","modal")
+$('form[data-form-group="dataAnalysisMethod"] #btnSubmit').attr("data-bs-dismiss","modal")
 
-  
 function getCSRFToken() {
     let cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -835,7 +836,12 @@ $(document).on('click', 'form[data-form-group="datacleanMethod"] #btnSubmit,form
     
     $(`label[for=${cardId}] .card`).removeClass("borderfunctionNotIncluded")
     $(`label[for=${cardId}] .card`).addClass("borderfunctionIncluded")
-    console.log("submit",includeForm)
+  //  $(this).attr("data-bs-dismiss","modal")
+   // $(this).click()
+  // $(this).parents(".modal").removeClass("show")
+ //  $(this).parents(".modal").css("display","none")
+  // e.target.parentNode.parentNode.parentNode.parentNode.parentNode.style.display="none"
+    console.log("submitss", $(this).parents(".modal"))
 
    // e.target.parent.modal('toggle')
 });

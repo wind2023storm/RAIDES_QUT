@@ -1,0 +1,172 @@
+{% load project_tags %}
+
+{% if view.instance %}
+    {% with view.instance as owner %}
+        <table class="table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>
+                        <button data-bs-toggle="modal" data-bs-target="#modifyOwnerModal" data-action="modify"
+                                data-url="{% url 'lms:modify_owner' slug=view.project.slug owner=owner.id %}">Modify
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>Full Name:</th>
+                <td>
+                    <span data-field="title" data-value="{{ owner.title }}">{% if owner.title %}{{ owner.get_title_display }}{% endif %}</span>
+                    <span data-field="first_name" data-value="{{ owner.first_name }}">{{ owner.first_name }}</span>
+                    <span data-field="last_name" data-value="{{ owner.last_name }}">{{ owner.last_name }}</span>
+                </td>
+            </tr>
+            <tr>
+                <th>Preferred Name:</th>
+                <td data-field="preferred_name"
+                    data-value="{{ owner.preferred_name }}">{{ owner.preferred_name }}</td>
+            </tr>
+            <tr>
+                <th>Gender:</th>
+                <td data-field="gender" data-value="{{ owner.gender }}">{{ owner.get_gender_display }}</td>
+            </tr>
+            <tr>
+                <th>DOB:</th>
+                <td data-field="date_birth"
+                        {% if owner.date_birth %} data-value="{{ owner.date_birth|date:'Y-m-d' }}"{% endif %}
+                >{{ owner.date_birth }}</td>
+            </tr>
+            <tr>
+                <th>Street Address:</th>
+                <td data-field="address_street"
+                        {% if owner.address_street %} data-value="{{ owner.address_street }}"{% endif %}
+                >{{ owner.address_street }}</td>
+            </tr>
+            <tr>
+                <th>Postal Address:</th>
+                <td data-field="address_postal"
+                        {% if owner.address_postal %} data-value="{{ owner.address_postal }}"{% endif %}
+                >{{ owner.address_postal }}</td>
+            </tr>
+            <tr>
+                <th>Email Address:</th>
+                <td data-field="contact_email"
+                        {% if owner.contact_email %} data-value="{{ owner.contact_email }}"{% endif %}
+                >{{ owner.contact_email }}</td>
+            </tr>
+            <tr>
+                <th>Phone No:</th>
+                <td data-field="contact_phone"
+                        {% if owner.contact_phone %} data-value="{{ owner.contact_phone }}"{% endif %}
+                >{{ owner.contact_phone }}</td>
+            </tr>
+            <tr>
+                <th>Mobile No:</th>
+                <td data-field="contact_mobile"
+                        {% if owner.contact_mobile %} data-value="{{ owner.contact_mobile }}"{% endif %}
+                >{{ owner.contact_mobile }}</td>
+            </tr>
+            <tr>
+                <th>Fax No:</th>
+                <td data-field="contact_fax"
+                        {% if owner.contact_fax %} data-value="{{ owner.contact_fax }}"{% endif %}
+                >{{ owner.contact_fax }}</td>
+            </tr>
+            <tr>
+                <th>Date Created:</th>
+                {# READONLY #}
+                <td>{{ owner.date_created }} by {{ owner.user_created }}</td>
+            </tr>
+            <tr>
+                <th>Last Modified:</th>
+                {# READONLY #}
+                <td>{{ owner.date_updated }} by {{ owner.user_updated }}</td>
+            </tr>
+            <tr>
+                <th>Parcels:</th>
+                {# READONLY #}
+                <td>{{ owner.parcel_count }}</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endwith %}
+{% elif view.queryset %}
+    {% for owner in view.queryset %}
+        <b>
+            {{ owner.get_full_name|title }}
+
+            {% if view.project|is_admin:view.member %}
+            <button data-bs-toggle="modal" data-bs-target="#deleteOwnerModal" data-action="delete"
+                    data-url="{% url 'lms:delete_owner' slug=view.project.slug owner=owner.id %}">Delete
+            </button>
+            {% endif %}
+        </b>
+        <li data-type="owner">
+            <input type="checkbox" data-category="owner" data-url="{% url 'lms:owner' slug=view.project.slug owner=owner.id %}">
+            <label for="owner">
+                <b>Info</b>
+            </label>
+            <ol data-category="owner"></ol>
+
+            <input type="checkbox" data-category="note"
+               data-url="{% url 'lms:notes' slug=view.project.slug owner=owner.id %}">
+            <label for="note">
+                <b>Notes</b>
+                <button data-bs-toggle="modal" data-bs-target="#newNoteModal" data-action="new"
+                        data-url="{% url 'lms:notes' slug=view.project.slug owner=owner.id %}">New +
+                </button>
+            </label>
+            <ol data-category="note"></ol>
+
+            <input type="checkbox" data-category="correspondence"
+                   data-url="{% url 'lms:correspondences' slug=view.project.slug owner=owner.id %}">
+            <label for="correspondence">
+                <b>Correspondence</b>
+                <button data-bs-toggle="modal" data-bs-target="#newCorrespondenceModal" data-action="new"
+                        data-url="{% url 'lms:correspondences' slug=view.project.slug owner=owner.id %}">New +
+                </button>
+            </label>
+            <ol data-category="correspondence"></ol>
+
+            <input type="checkbox" data-category="task"
+                   data-url="{% url 'lms:tasks' slug=view.project.slug owner=owner.id %}">
+            <label for="task">
+                <b>Tasks</b>
+                <button data-bs-toggle="modal" data-bs-target="#newTaskModal" data-action="new"
+                        data-url="{% url 'lms:tasks' slug=view.project.slug owner=owner.id %}">New +
+                </button>
+            </label>
+            <ol data-category="task"></ol>
+
+            <input type="checkbox" data-category="reminder"
+                   data-url="{% url 'lms:reminders' slug=view.project.slug owner=owner.id %}">
+            <label for="reminder">
+                <b>Reminders</b>
+                <button data-bs-toggle="modal" data-bs-target="#newReminderModal" data-action="new"
+                        data-url="{% url 'lms:reminders' slug=view.project.slug owner=owner.id %}">New +
+                </button>
+            </label>
+            <ol data-category="reminder"></ol>
+
+            <input type="checkbox" data-category="files"
+                   data-url="{% url 'lms:files' slug=view.project.slug owner=owner.id %}">
+            <label for="files">
+                <b>Files</b>
+                <button data-bs-toggle="modal" data-bs-target="#newFileModal" data-action="new"
+                        data-url="{% url 'lms:files' slug=view.project.slug owner=owner.id %}">New +
+                </button>
+            </label>
+            <ol data-category="files"></ol>
+
+            <input type="checkbox" data-category="history"
+                   data-url="{% url 'lms:histories' slug=view.project.slug model='owner' object=owner.id %}">
+            <label for="history">
+                <b>History</b>
+            </label>
+            <ol data-category="history"></ol>
+        </li>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

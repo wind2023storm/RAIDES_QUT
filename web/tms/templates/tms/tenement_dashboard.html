@@ -337,10 +337,6 @@ id="flash-message" class="text-sm ms-4">
                                             onclick="window.location.href='{% url 'project:dashboard' slug=tenement.project.slug %}';">
                                         {{ tenement.project.name }} <span class="fa fa-chalkboard"/>
                                     </button>
-                                    <button class="btn btn-sm btn-ofx-blue" type="button">KMS <span
-                                            class="fa fa-comment"/>
-                                    </button>
-
                                     {# Owner Only #}
                                     {% if tenement.project|is_admin:member %}
                                         <button class="btn btn-sm btn-ofx-gray" type="button"

@@ -41,6 +41,7 @@
             <br/>
             <text class="attributeName">Last name:</text>
             <input class="account-input" name="last_name"  id="id_last_name" value="{{ user.last_name }}" required>
+            <button type="reset" class="btn-edit" id="edit-name-cancel-button">Cancel</button>
             <button type="submit" class="btn-edit bg-ofx-blue" id="edit-name-confirm-button" >Confirm</button>
             <span class="col-12 col-sm-2 ms-2 alert alert-danger p-1 align-items-center justify-content-center" id="name-error">
          
@@ -58,7 +59,7 @@
             {% csrf_token %}    
             <text class="attributeName">Email:</text>
             <input type="email" class="account-input" name="email" id="id_email" value="{{ user.email }}" required>
-        
+            <button type="reset" class="btn-edit" id="edit-email-cancel-button">Cancel</button>
             <button type="submit" class="btn-edit" id="edit-email-confirm-button">Confirm</button>
             <span class="col-12 col-sm-2 ms-2 alert alert-danger p-1 align-items-center justify-content-center" id="email-error">
             </span>
@@ -79,6 +80,8 @@
             {% csrf_token %}
             <text class="attributeName">Company:</text>
             <input class="account-input" name="company" id="id_company" value="{{ user.company }}" required>
+            <button type="reset" class="btn-edit" id="edit-company-cancel-button">Cancel</button>
+
             <button type="submit" class="btn-edit bg-ofx-blue" id="edit-company-confirm-button">Confirm</button>
             <span class="col-12 col-sm-2 ms-2 alert alert-danger p-1 align-items-center justify-content-center" id="company-error">
       
@@ -112,7 +115,7 @@
            <div class="col-12 col-sm-3 "><button type="reset" class="btn-edit" id="edit-passwd-cancel-button">Cancel</button></div>
 
             <div class="col-12 col-sm-3 "><button type="submit" class="btn-edit" id="edit-passwd-confirm-button">Confirm</button></div>
-            <div class="col-12 col-sm-9 mt-2 mt-sm-0 alert alert-danger p-0 align-items-center justify-content-center" id="client-error">
+            <div class="col-12 col-sm-9  mt-sm-2 alert alert-danger p-0 align-items-center justify-content-center" id="client-error">
             </div>
         </form>
     </div>

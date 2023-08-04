@@ -51,9 +51,9 @@ $('#addTenementForm').on('submit', function (e) {
         beforeSend: function (){
             $form.clearFormErrors();
             $submitBtn.addSpinner();
-            const overlay = document.createElement('div');
-            overlay.classList.add('overlay');
-            document.body.appendChild(overlay);
+            // const overlay = document.createElement('div');
+            // overlay.classList.add('overlay');
+            // document.body.appendChild(overlay);
         },
         success: function (data) {
             window.location.href = data['url'];
@@ -64,8 +64,8 @@ $('#addTenementForm').on('submit', function (e) {
         },
         complete: function () {
             $submitBtn.removeSpinner(submitHtml);
-            const overlay = document.querySelector('.overlay');
-            document.body.removeChild(overlay); 
+            // const overlay = document.querySelector('.overlay');
+            // document.body.removeChild(overlay); 
         }
     });
 });

@@ -157,6 +157,7 @@
     background-color: var(--ofx-green);
 }
 
+
 .bd-ofx-green {
     border-style: solid;
     border-color: var(--ofx-green);
@@ -183,8 +184,8 @@
 }
 
 .btn-ofx-orange:hover:enabled {
-    color: var(--ofx-orange);
-    background-color: var(--ofx-light);
+    color: var(--ofx-light);
+    background-color: var(--ofx-gray);
 }
 
 .btn-ofx-blue, .btn-ofx-blue:hover:disabled {
@@ -194,8 +195,8 @@
 }
 
 .btn-ofx-blue:hover:enabled {
-    color: var(--ofx-blue);
-    background-color: var(--ofx-light);
+    color: var(--ofx-light);
+    background-color: var(--ofx-gray);
 }
 
 .btn-ofx-red, .btn-ofx-red:hover:disabled {
@@ -205,8 +206,8 @@
 }
 
 .btn-ofx-red:hover:enabled {
-    color: var(--ofx-red);
-    background-color: var(--ofx-light);
+    color: var(--ofx-light);
+    background-color: var(--ofx-gray);
 }
 
 .btn-ofx-green, .btn-ofx-green:hover:disabled {
@@ -216,8 +217,8 @@
 }
 
 .btn-ofx-green:hover:enabled {
-    color: var(--ofx-green);
-    background-color: var(--ofx-light);
+    color: var(--ofx-light);
+    background-color: var(--ofx-gray);
 }
 
 .btn-ofx-gray, .btn-ofx-gray:hover:disabled {
@@ -227,8 +228,8 @@
 }
 
 .btn-ofx-gray:hover:enabled {
-    color: var(--ofx-gray);
-    background-color: var(--ofx-light);
+    color: var(--ofx-blue);
+    background-color: var(--ofx-gray);
 }
 
 /* FontAwesome Buttons */
@@ -363,9 +364,6 @@ div.card.shadow {
     flex: 1 0 auto;
 }
 
-#sidebar {
-    min-height: 100vh;
-}
 
 header {
     position: fixed;

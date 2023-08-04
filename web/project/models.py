@@ -4,6 +4,7 @@ import django.core.validators as validators
 
 from http import HTTPStatus
 
+from django.contrib.gis.db.models import Union
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -83,6 +84,10 @@ class Project(models.Model):
 
     def __str__(self):
         return self.slug
+
+    def get_geometry(self):
+        """Returns the geometry of a project which is an aggregation of all tenement polygons."""
+        return self.tenements.all().aggregate(Union('area_polygons')).get('area_polygons__union')
 
     def get_absolute_url(self) -> str:
         return reverse('project:dashboard', kwargs={'slug': self.slug})

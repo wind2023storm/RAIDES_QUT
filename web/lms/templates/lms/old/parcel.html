@@ -1,0 +1,52 @@
+{% if view.instance %}
+
+{% elif view.queryset %}
+    {% for parcel in view.queryset %}
+        <li data-type="parcel" data-id="{{ parcel.id }}">
+            <table>
+                <tbody>
+                <tr>
+                    <th>Lot/Plan</th>
+                    <td>{{ parcel.parcel.lot_plan }}
+                        <button data-action="modify" disabled>Modify Not Required Here</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Tenure</th>
+                    <td>{{ parcel.parcel.tenure }}</td>
+                </tr>
+                <tr>
+                    <th>Area</th>
+                    <td>{{ parcel.parcel.area }} sqm</td>
+                </tr>
+                <tr>
+                    <th>Mail Targets</th>
+                    <td>{{ parcel.mail_targets }}</td>
+                    {# It's a queryset so just get first entry #}
+                </tr>
+                </tbody>
+            </table>
+
+            <input type="checkbox" data-category="relationship" data-url="{% url "lms:relationships" slug=view.project.slug parcel=parcel.id %}">
+            <label for="relationship">
+                <b>Parcel Owners</b>
+                <button data-bs-toggle="modal" data-bs-target="#newRelationshipModal"
+                        data-url="{% url 'lms:relationships' slug=view.project.slug parcel=parcel.id %}">Add Existing +
+                </button>
+                <button data-bs-toggle="modal" data-bs-target="#newOwnerRelationshipModal"
+                        data-url="{% url 'lms:relationships' slug=view.project.slug parcel=parcel.id %}">Create New +
+                </button>
+            </label>
+            <ol data-category="relationship"></ol>
+
+            <input type="checkbox" data-category="history"
+                   data-url="{% url 'lms:histories' slug=view.project.slug model='parcel' object=parcel.id %}">
+            <label for="history">
+                <b>History</b>
+            </label>
+            <ol data-category="history"></ol>
+        </li>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

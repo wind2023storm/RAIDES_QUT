@@ -1,0 +1,37 @@
+{% load project_tags %}
+
+{% if view.instance %}
+    {% with view.instance as item %}
+        <table class="table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>A</th>
+                <td>A Value</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endwith %}
+
+{% elif view.queryset %}
+    {% for item in view.queryset %}
+        <b>
+            {{ item }}
+        </b>
+        <li data-type="list">
+            <input type="checkbox" data-category="category" data-url="">
+            <label for="category">
+                <b>Category</b>
+            </label>
+            <ol data-category="category"></ol>
+        </li>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}
+
+

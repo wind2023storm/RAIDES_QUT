@@ -219,10 +219,10 @@
     border-color: var(--ofx-orange-light);
   }
 
-  .btn-ofx-orange:hover:enabled {
+  /* .btn-ofx-orange:hover:enabled {
     color: var(--ofx-orange);
     background-color: var(--ofx-light);
-  }
+  } */
 
   .btn-ofx-blue,
   .btn-ofx-blue:hover:disabled {
@@ -231,10 +231,10 @@
     border-color: var(--ofx-blue);
   }
 
-  .btn-ofx-blue:hover:enabled {
+  /* .btn-ofx-blue:hover:enabled {
     color: var(--ofx-blue);
     background-color: var(--ofx-light);
-  }
+  } */
 
   .btn-ofx-fa-blue {
     color: var(--ofx-blue);
@@ -278,6 +278,7 @@
     color: var(
       --ofx-blue
     ) !important; /* How can I do this without using !important */
+    
   }
 
   /* Modal/Card Styles */

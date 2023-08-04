@@ -1,0 +1,77 @@
+{% comment %}
+
+PARENT FILE: base.html
+PARENT DIV: PROJECT_BAR
+
+{% endcomment %}
+
+{% load project_tags %}
+
+{% if view.project %}
+{% with view.project as project %}
+  <div class="d-flex justify-content-between w-100 mb-3">
+    <div class=" d-sm-block mb-0 ">
+      
+      <h4 class = "text-ofx-blue "> 
+        <button class="ms-2 btn btn-sm btn-ofx-blue"
+                onclick='window.location.href="{% url 'project:dashboard' slug=project.slug %}";'>
+          <&nbsp Back
+        </button> 
+        {{ project.name }} - Landowner Management System <span class="fa fa-earth-oceania" ></span>
+      </h4>
+      <h6 style="color: darkgrey; max-width: 42vw;">  
+        Collect details on landowners/stakeholders who are within their project area.
+      </h6>
+    </div>
+    <div class="project-tool-bar h-50 mt-3 mb-0">
+      <div id="PROJECT_OWNERS_DROPDOWN" class="dropdown" data-container="project_owners">
+        <button id="btn_project_view_owners"
+          class="btn-clear-hover" type="button"
+          data-bs-toggle="dropdown" aria-expanded="false"
+        >
+          View Project Owners
+        </button>
+        <div class="dropdown-menu dropdown-menu-end owner-dropdown-menu">
+          <div class="dropdown-header d-flex flex-row align-items-center justify-content-between flex-wrap">
+            {{ project.name }} | Owners
+            {% if view.project|is_write:view.member %}
+            <button class="btn-project-add-owner btn-clear-hover" data-bs-toggle="modal" data-bs-target="#newOwnerModal" data-action="new"
+                    data-url="{% url 'lms:owners' slug=project.slug %}">Create new owner
+            </button>
+            {% endif %}
+          </div>
+          <div id="PROJECT_OWNERS_CONTENT" class="custom-dropdown-content" style="width:400px">
+            <div class="project-owner-search p-0 search-div">
+              <input type="search" class="form-control search-box" id="owner-search" placeholder="Search Owner..." onchange="filterObjects()" />                   
+            </div>
+            <div class="owner-list">
+              {% for owner in view.owners %}
+                <div class="project-owner-item" data-url="{% url 'lms:owner' slug=project.slug owner=owner.id %}" id = "scrollToBottomButton" 
+                onclick="window.scrollTo(500,500)">
+                  <span style="width:150px" class="me-1 wrap-text">{{owner.get_full_name}}</span>
+                  {% if owner.contact_email != None %} <span class="text-muted wrap-text" style="width:200px;font-size:12px"> {{owner.contact_email}} </span> {% endif %}
+                  <!-- <div class="dropdown" style="background-color: aqua;">
+                    <button class="btn-clear-hover" data-bs-toggle="dropdown">
+                      <i class="fa fa-ellipsis-h"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+                      <button style="text-align: center;" class="dropdown-item">Remove
+                      </button>
+                    </div>
+                  </div> -->
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="vr"></div>
+      <button class="btn-clear-hover">Get Reports</button>
+    </div>
+  </div>    
+{% endwith %}
+{% else %}
+
+
+{% endif %}
+ 

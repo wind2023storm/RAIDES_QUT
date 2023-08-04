@@ -1,0 +1,57 @@
+{% if view.instance %}
+    {% with view.instance as reminder %}
+        <table class="table-bordered">
+            <tbody>
+            <tr>
+                <th>Title:</th>
+                <td>
+                    <span data-field="name" data-value="{{ reminder.name }}">{{ reminder.name }}</span>
+                    <button data-bs-toggle="modal" data-bs-target="#deleteReminderModal" data-action="delete"
+                            data-url="{% url 'lms:delete_reminder' slug=view.project.slug owner=reminder.owner.id reminder=reminder.id %}">Delete
+                    </button>
+                    <button data-bs-toggle="modal" data-bs-target="#modifyReminderModal" data-action="modify"
+                            data-url="{% url 'lms:modify_reminder' slug=view.project.slug owner=reminder.owner.id reminder=reminder.id %}">Modify
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <th>Content:</th>
+                <td data-field="content" data-value="{{ reminder.content }}">{{ reminder.content }}</td>
+            </tr>
+            <tr>
+                <th>Date Due:</th>
+                <td data-field="date_due" data-value="{{ reminder.date_due|date:'Y-m-d' }}">{{ reminder.date_due }}</td>
+            </tr>
+            <tr>
+                <th>Date Created:</th>
+                {# READONLY #}
+                <td>{{ reminder.date_created }} by {{ reminder.user }}</td>
+            </tr>
+            <tr>
+                <th>Last Modified:</th>
+                {# READONLY #}
+                <td>{{ reminder.date_updated }} by {{ reminder.user_updated }}</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endwith %}
+
+{% elif view.queryset %}
+    {% for reminder in view.queryset %}
+        <li data-type="reminder" data-id="{{ reminder.id }}">
+
+            <input type="checkbox" data-category="reminder"
+                   data-url="{% url "lms:reminder" slug=view.project.slug owner=reminder.owner.id reminder=reminder.id %}">
+            <label for="reminder">
+                <b>{{ reminder.name }}</b>
+                <i>{{ reminder.date_created }}</i>
+            </label>
+            <ol data-category="reminder">
+                {# OWNER NOTES #}
+            </ol>
+
+        </li>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

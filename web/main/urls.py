@@ -16,7 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import spirit.urls
 
 from django.conf.urls.static import static
 
@@ -37,8 +36,8 @@ urlpatterns = [
     path('geochem/', include('geochem.urls'), name='geochem'),
     path('project/', include('project.urls'), name='project'),
     path('lms/', include('lms.urls'), name='lms'),
+    path('nms/', include('native_title_management.urls'), name='nms'),
     path('tms/', include('tms.urls'), name='tms'),
-    path('forum/', include(spirit.urls), name='forum'),
     path('user/', include('user.urls'), name='user'),
     path('interactive_map/', include('interactive_map.urls'), name='interactive_map'),
     path('gis/', include('geodesk_gis.urls'), name='gis'),

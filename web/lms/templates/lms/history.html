@@ -1,0 +1,75 @@
+{% load project_tags %}
+
+<!-- {% comment %}
+owner.html
+id=HISTORY_DROPDOWN_CONTENT
+{% endcomment %} -->
+
+{% if view.instance %}
+    {% with view.instance as history %}
+    <ul>
+        {% for field in history.modified_json %}
+            <li> 
+                <b>{{ field.name }}</b>: 
+                {% if field.from is not None %}
+                    <span class="history-from">{{ field.from }}</span>
+                {% endif %} 
+                <span class="history-to {% if field.from is None %} created {% endif %}">{{ field.to }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endwith %}
+
+<!-- HISTORY_DROPDOWN_CONTENT -->
+{% elif view.queryset %}
+    {% for history in view.queryset %}
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex flex-row align-items-center">
+                    <i class="fa fa-circle me-2"></i>
+                    <div class="d-flex flex-column">
+                    {% if history.modified_json|length < 1 %}
+                        <span>Created by {{ history.user }}</span>
+                    {% else  %}
+                        <span>{{ history.modified_json|length}} fields updated</span>
+                    {% endif %}
+                    {% if not forloop.last %}
+                        <small style="color: gainsboro;">{{ history.user }}</small>
+                    {% endif %}
+                    <small style="color: gainsboro;">{{ history.date_created|date:"d/m/Y H:i A" }}</small>
+                    </div>
+                </div>
+            </div>
+            {% if history.modified_json|length >= 1 %}
+            <div class="card-body">
+                <div>
+                {% if not forloop.last %}
+                    <ul>
+                        {% for field in history.modified_json %}
+                            <li> 
+                                <b>{{ field.name }}</b>: 
+                                {% if field.from is not None %}
+                                    <span class="history-from">{{ field.from }}</span>
+                                {% endif %} 
+                                <span class="history-to {% if field.from is None %} created {% endif %}">{{ field.to }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            <div class="card-footer">
+            {% if view.project|is_admin:view.member %}
+                {% if not forloop.first %}
+                    <button data-bs-toggle="modal" data-bs-target="#revertHistoryModal"
+                            data-url="{% url 'lms:revert_history' slug=view.project.slug model=view.model object=history.object_id history=history.id %}">Rollback Here
+                    </button>
+                {% endif %}
+            {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

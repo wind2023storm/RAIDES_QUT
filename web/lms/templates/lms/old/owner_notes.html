@@ -1,0 +1,52 @@
+{% if view.instance %}
+    {% with view.instance as note %}
+    <table class="table-bordered">
+        <tbody>
+        <tr>
+            <th>Title:</th>
+            <td>
+                <span data-field="name" data-value="{{ note.name }}">{{ note.name }}</span>
+                <button data-bs-toggle="modal" data-bs-target="#deleteNoteModal" data-action="delete"
+                        data-url="{% url 'lms:delete_note' slug=view.project.slug owner=note.owner.id note=note.id %}">Delete
+                </button>
+                <button data-bs-toggle="modal" data-bs-target="#modifyNoteModal" data-action="modify"
+                        data-url="{% url 'lms:modify_note' slug=view.project.slug owner=note.owner.id note=note.id %}">Modify
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <th>Content:</th>
+            <td data-field="content" data-value="{{ note.content }}">{{ note.content }}</td>
+        </tr>
+        <tr>
+            <th>Date Created:</th>
+            {# READONLY #}
+            <td>{{ note.date_created }} by {{ note.user }}</td>
+        </tr>
+        <tr>
+            <th>Last Modified:</th>
+            {# READONLY #}
+            <td>{{ note.date_updated }} by {{ note.user_updated }}</td>
+        </tr>
+        </tbody>
+    </table>
+    {% endwith %}
+
+{% elif view.queryset %}
+    {% for note in view.queryset %}
+        <li data-type="note" data-id="{{ note.id }}">
+
+            <input type="checkbox" data-category="owner"
+                   data-url="{% url "lms:note" slug=view.project.slug owner=note.owner.id note=note.id %}">
+            <label for="owner">
+                <b>{{ note.name }}</b>
+                <i>{{ note.date_created }}</i>
+            </label>
+            <ol data-category="owner">
+                {# OWNER NOTES #}
+            </ol>
+        </li>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

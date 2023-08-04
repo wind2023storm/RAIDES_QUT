@@ -1,9 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-
-from spirit.topic.forms import TopicForm
-from spirit.category.models import Category
-from spirit.topic.models import Topic
 from tms.models import Tenement, TenementTask, WorkProgramReceipt, Target
 from django.db import models
 from django.dispatch import receiver
@@ -44,25 +40,3 @@ def auto_add_complaince_tasks(sender, instance: Tenement, **kwargs):
     if old_project is None and instance_project:
         # TODO: Attach a media file if we have to
         TenementTask.objects.generate_complaince_documents(instance)
-
-@receiver(models.signals.post_save, sender=Target)
-def set_category(sender, instance, created, **kwargs):
-    if created:
-        category = Category.objects.get(project_id=instance.project.pk)
-        print(category.id)
-        data = {
-            'title': instance.name,
-            'category': category,
-            'target_id':instance.id
-
-        }
-        topicForm = TopicForm(user=instance.created_user, data=data, current="TargetCreationForm")
-        print(topicForm.is_valid())
-        print(topicForm.errors)
-        if (topicForm.is_valid()):
-            topicForm.save()
-
-@receiver(models.signals.pre_delete, sender=Target)
-def delete_target(sender, instance, **kwargs):
-        topic = Topic.objects.filter(target_id=instance.id)
-        topic.update(is_removed=True)

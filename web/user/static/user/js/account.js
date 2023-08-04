@@ -58,6 +58,36 @@ $(document).ready(
         $("#new-password2-cross-marker").css('display','none')
 
     }))
+    $("#edit-company-cancel-button").on('click',(function(e) {
+        $("#change-company").resetForm()
+        $("#company-button").css('display','inline-block')
+       
+        $("#show-company").css('display','inline-block')
+        $("#change-company").css('display','none')
+        $("#company-error").css('display','none')
+     
+
+    }))
+    $("#edit-email-cancel-button").on('click',(function(e) {
+        $("#change-email").resetForm()
+        $("#email-button").css('display','inline-block')
+        
+        $("#show-email").css('display','inline-block')
+        $("#change-email").css('display','none')
+        $("#email-error").css('display','none')
+     
+
+    }))
+    $("#edit-name-cancel-button").on('click',(function(e) {
+        $("#change-name").resetForm()
+        $("#name-button").css('display','inline-block')
+     
+        $("#show-name").css('display','inline-block')
+        $("#change-name").css('display','none')
+        $("#name-error").css('display','none')
+     
+
+    }))
     }
   );
   

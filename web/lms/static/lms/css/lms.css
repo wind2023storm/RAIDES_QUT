@@ -1,0 +1,989 @@
+
+.search-box {
+  border: 1px solid var(--ofx-blue)
+}
+div::-webkit-scrollbar {
+  opacity: 0;
+  width: 4px;
+  height: 4px;
+}
+
+div:hover::-webkit-scrollbar{
+  opacity: 1;
+}
+
+div:hover::-webkit-scrollbar-thumb {
+  background-color: #9c9c9c;
+  border-radius: 5px;
+}
+
+div:hover::-webkit-scrollbar-track {
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+.text-truncated {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: break-all;
+}
+
+.dark-hover:hover {
+  background-color: rgb(185, 185, 185) !important;
+}
+
+.btn:hover{
+  background-color: var(--ofx-orange) !important;
+  color : #fff !important;
+}
+.btn-clear-hover {
+  background-color: transparent;
+  border: 0px;
+  padding: 1px;
+
+  border-radius: 4px;
+}
+
+.btn-clear-hover:hover {
+  background-color: gainsboro !important;
+  color: black !important;
+}
+
+.lms-dropdown .dropdown-menu {
+  max-width: 200px;
+  
+}
+.owner-dropdown-menu.show{
+  transform: translate3d(130px, 42px, 0px) !important;
+}
+.wrap-text {
+  display: inline-block;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.lms-dropdown .dropdown-item {
+  cursor: pointer;
+
+  margin: 5px;
+  padding: 5px;
+
+  background-color: white;
+  color: black;
+
+  border: 0.1px solid gainsboro;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.lms-dropdown .dropdown-item-hover {
+  border: 0;
+}
+
+.lms-dropdown .dropdown-item-hover:hover {
+  background-color: gainsboro;
+}
+
+.tooltip-wrap {
+  position: relative;
+}
+
+.tooltip-wrap .tooltip {
+  font-size: x-small;
+
+  visibility: hidden;
+  /* width: 30%; */
+  width:max-content;
+  background-color: white;
+  color: #000000;
+  text-align: center;
+  
+  bottom: 15%;
+  right: 105%;
+  
+  margin-left: -60px;
+  padding: 5px;
+
+  border-radius: 6px;
+  border: 0.1px solid gainsboro;
+  position: absolute;
+  z-index: 100000;
+
+  opacity: 0;
+  transition: opacity 0.3s;
+  
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+
+  display: inline;
+}
+
+
+.tooltip-wrap:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ----Project ----- */
+
+.main-content {
+  width: 100%;
+  height: 100%;
+}
+
+.project-bar {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+  align-items: start;
+
+  padding-top: 5px;
+}
+
+.project-tool-bar {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: end;
+
+  padding: 4px;
+
+  border: 0.2px solid gainsboro;
+  border-radius: 4px;
+}
+
+.project-tool-bar button {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.project-tool-bar .dropdown-menu {
+  z-index: 99999;
+}
+
+
+.btn-project-add-owner {
+
+  margin: 10px;
+  text-align: center;
+
+  border: 0.1px solid gainsboro;
+  border-radius: 5px;
+}
+.project-owner-search{
+  margin: 5px;
+  padding: 5px;
+}
+.project-owner-item {
+  cursor: pointer;
+
+  margin: 5px;
+  padding: 5px;
+
+  background-color: white;
+  color: black;
+
+  border: 0.1px solid gainsboro;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.project-owner-item:hover {
+  background-color: gainsboro;
+}
+
+/* ------ Lot ------ */
+
+.lot-dropdown {
+  /* min-width: 60%;
+  width: 100%; */
+  display: flex;
+
+  padding: 4px;
+
+  border: 0.1px solid transparent;
+  border-radius: 5px;
+
+  transition: border 0.1s ease-in;
+
+  cursor: pointer;
+}
+
+.lot-dropdown .bar {
+  padding: 5px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.lot-dropdown:hover {
+  border: solid 0.1px gainsboro;
+  background-color: rgb(251, 251, 251);
+}
+.lot-dropdown-menu{
+  width: 580px;
+  margin-left:0;
+  height: 400px;
+  overflow-y: auto;
+  transform: translate3d(0px, 55px, 0px) !important;
+  border:2px solid #cccccc;
+ 
+}
+.parcel-list {
+  height: 1000px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.parcel-details > div{
+
+ padding: 8px ;
+} 
+.parcel-details > .even{
+background-color: #b0dafa !important;
+ } 
+.lot-dropdown-content{
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-x: hidden;
+  overflow-y: inherit
+}
+
+.lot-item {
+  margin-bottom: 10px;
+  padding: 5px;
+
+  background-color: white;
+  border: solid 0.2px gainsboro;
+  border-radius: 5px;
+
+  color: black;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+
+  cursor: pointer;
+  scroll-behavior: smooth;
+}
+
+.lot-item.selected {
+  background-color: #ebebeb;
+  border: solid 1px var(--ofx-blue);
+}
+.lot-item.selected:hover {
+  background-color: #ebebeb;
+  border: solid 1px var(--ofx-blue);
+}
+
+.lot-item:hover {
+  background-color: #ebebeb;
+  border: solid 0.2px grey;
+}
+.leaflet-tooltip {
+  z-index: 10000;
+}
+/* ------ End Lot ------ */
+
+.map-content {
+  width: 100%;
+  min-height: 200px;
+  height: 450px;
+  background-color:gray;
+}
+
+.modal.leaflet-modal[aria-hidden='true'] {
+  visibility: hidden;
+  display: block !important;
+}
+
+.modal.leaflet-modal[aria-hidden='false'] {
+  visibility: visible;
+  display: block !important;
+}
+
+
+
+div.vr {
+  padding: 1px;
+  border-left: 1px solid gainsboro;
+}
+
+/* Parcel Owners */
+
+.owners-view {
+  /* min-height: 20%; */
+  /* height: max-content; */
+
+  max-height: 300px;
+  width: 100%;
+  
+  display: flex;
+  overflow-x: scroll;
+
+  flex-direction: column;
+  flex-wrap: wrap;
+  scroll-margin-top: 10px;
+  scrollbar-width: thin;
+
+  justify-content: start;
+  align-content: start ;
+  align-items: stretch;
+}
+
+.owner-item {
+  cursor: pointer;
+  
+
+  width: 49%;
+  height: 28%;
+  /* max-height: 40px; */
+
+  margin-right: 10px;
+  margin-bottom: 10px;
+
+  padding: 10px;
+
+  color: black;
+  background-color: rgb(239, 239, 239);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: start;
+
+  border-radius: 5px;
+}
+
+.owner-item:hover {
+  color: white;
+  background-color: var(--ofx-blue-light);
+}
+
+.owner-item-dropdown-menu {
+  width: 20px !important;
+  max-width: 30px !important;
+}
+
+.relationship-toolbar {
+  display: flex;
+  flex-direction: column;
+}
+
+.relationship-toolbar-content {
+  height: 0;
+
+  display: none;
+  transition: height 0.2s ease-out;
+}
+
+.relationship-toolbar-content.show {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+
+  transition: height 0.2s ease-in;
+}
+
+.add-btn {
+  cursor: pointer;
+ 
+  border-radius: 5px;
+  justify-content: center;
+  display: flex;
+  align-items: center;;
+  background-color: var(--ofx-blue);
+  color: #fff;
+  transition: all 0.15s ease-in-out;
+  padding: 5px 10px;
+}
+.add-btn:hover {
+  background-color: gainsboro !important;
+  color: black !important;
+}
+.parcel-owner-add:hover {
+  background-color: var(--ofx-blue-light);
+  color: white;
+}
+
+.owner-main-bar {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  position: relative;
+
+  justify-content: space-between;
+
+}
+
+/* .head-bar .right-tool-bar {
+  position: absolute;
+  right: 0px;
+
+  padding: 2px;
+} */
+
+
+
+p.section-heading {
+  font-size: 18px;
+  color: var(--ofx-blue);
+  font-weight: 600;
+  text-decoration: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+}
+
+.custom-dropdown-content{
+  width: 350px;
+  height: fit-content;
+  max-height: 350px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-x: hidden;
+  overflow-y: scroll;
+ 
+
+  /* align-items: center; */
+}
+
+/* -------- Dropdown ---------- */
+
+@media screen and (max-width: 768px) {
+
+}
+.custom-dropdown-content .card {
+  margin-bottom: 8px;
+
+  border-radius: 5px;
+}
+
+.correspondence-dropdown-menu.dropdown-menu.show,
+.history-dropdown-menu.dropdown-menu.show,
+.files-dropdown-menu.dropdown-menu.show,
+.reminders-dropdown-menu.dropdown-menu.show
+{
+  /* width: 400px; */
+  position: absolute;
+  /* inset: 100px -1000px auto -500px !important; */
+  inset: 35px auto auto 0px !important;
+  /* left: -60% !important; */
+  /* right: 40px !important; */
+  transform: translate(0px, 0px) !important;
+}
+
+@media screen and (max-width: 768px) {
+  .reminders-dropdown-menu.dropdown-menu.show {
+    transform: translate(-57%, 0px) !important;
+  }
+
+  .files-dropdown-menu.dropdown-menu.show {
+    transform: translate(-68%, 0px) !important;
+  }
+
+  .correspondence-dropdown-menu.dropdown-menu.show {
+    transform: translate(-78%, 0px) !important;
+  }
+
+  .history-dropdown-menu.dropdown-menu.show {
+    transform: translate(-87%, 0px) !important;
+  }
+
+}
+
+@media screen and (min-width: 768px) {
+  .reminders-dropdown-menu.dropdown-menu.show {
+    transform: translate(-31%, 0px) !important;
+  }
+
+  .files-dropdown-menu.dropdown-menu.show {
+    transform: translate(-42%, 0px) !important;
+  }
+
+  .correspondence-dropdown-menu.dropdown-menu.show {
+    transform: translate(-52%, 0px) !important;
+  }
+
+  .history-dropdown-menu.dropdown-menu.show {
+    transform: translate(-61%, 0px) !important;
+  }
+}
+
+
+.dropdown-menu.show {
+  /* background-color: rebeccapurple; */
+}
+
+/* --------- Correspondence ------ */
+
+.correspondence-item {
+  border-radius: 5px;
+  padding: 5px;
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.correspondence-item:hover {
+  background-color: gainsboro;
+}
+
+.correspondence-item a {
+  color: black;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow-x: hidden;
+}
+
+.correspondence-item a:hover {
+  color: grey
+}
+
+.correspondence-item button {
+  background-color: transparent;
+  border: 0;
+  border-radius: 5px;
+}
+
+.correspondence-item button:hover {
+  background-color: gainsboro;
+}
+
+/* --------- End Correspondence ------ */
+
+
+/* ------- History DropDown --------- */
+
+.history .card-footer {
+  background-color: transparent;
+  
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.history .card-footer button {
+  border: 0;
+  border-radius: 5px;
+  
+  padding: 2px;
+  
+  background-color: transparent;
+  color: gray;
+}
+
+.history .card-footer button:hover {
+  background-color: gainsboro;
+}
+
+.history .history-from {
+  text-decoration: line-through;
+  color: gray;
+
+  border-radius: 2px;
+  background-color: gainsboro;
+
+  padding: 1px;
+}
+
+.history .history-to {
+  border-radius: 2px;
+
+  padding: 1px;
+}
+
+.history .history-to.created {
+  background-color: rgb(156, 172, 255);
+  
+}
+/* --------- End History DropDown ----------- */
+
+/* ---------- End Dropdown ---------- */
+
+/* --------Reminders------------- */
+
+.info-reminders-main {
+  min-height: 200px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  /* height: inherit; */
+}
+
+.info-reminders-bar {
+  display: flex;
+  align-items: center;
+  align-content: center;
+
+  margin-bottom: 5px;
+}
+
+div.info-reminders-content {
+  height: inherit;
+
+  display: flex;
+  overflow-x: scroll;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  scroll-margin-top: 10px;
+  scrollbar-width: thin;
+
+  justify-content: start;
+  align-content: start ;
+  align-items: stretch;
+}
+
+.reminder-item {
+  height: auto;
+  max-height: 120px;
+
+  padding: 4px;
+  margin-bottom: 10px;
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  border: 1px solid gainsboro;
+  border-radius: 4px;
+
+  cursor:pointer;
+}
+
+.reminder-item:hover {
+  background-color: gainsboro;
+}
+
+.reminders-dropdown {
+  min-width: auto;
+  max-width: 300px;
+  max-height: 150px;
+
+  margin: 5px;
+
+
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: scroll;
+}
+
+.reminders-dropdown a {
+  color: black;
+  border-radius: 2px;
+  padding: 2px;
+
+  margin-bottom: 10px;
+  border-bottom: 0.2px solid gray;
+}
+
+.reminders-dropdown a:hover {
+  background-color: gainsboro;
+}
+
+/* -------- End Reminders------------- */
+
+
+/* -------- Task ------- */
+.tasks-box {
+  max-height: 50vh;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tasks-bar {
+  display: flex;
+  align-items: center;
+  align-content: center;
+
+  margin-bottom: 5px;
+}
+
+.tasks-bar .section-heading {
+  margin-bottom: 0px;
+  margin-right: 4px;
+}
+
+.tasks-box .tasks-content {
+
+  display: flex;
+  overflow-x: scroll;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  justify-content: start;
+  align-content: start ;
+  align-items: stretch;
+}
+
+.tasks-content .task-item {
+  min-width: 30%;
+  max-width: 50%;
+  flex: 1;
+  background-color: white;
+  color: black;
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-right: 10px;  
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  /* overflow: hidden; */
+  border: 2px solid gainsboro;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.task-item .left-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  overflow: hidden;
+  padding-right: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .tasks-content .task-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .right-content {
+    align-items: start !important;
+    border-left: 0px !important;
+    border-top: solid 0.1px gainsboro !important;
+
+  }
+}
+
+.task-item .left-content .title, .task-item .left-content .description {
+  word-wrap: break-word;
+  word-break: break-all;
+  flex-wrap: wrap;
+  text-overflow: ellipsis;
+}
+
+.task-item .left-content .title, .note-item .title {
+  font-size: medium;
+  font-weight: 700;
+}
+
+.task-item .left-content .date {
+  color: #0ba837;
+}
+
+.task-item .right-content {
+  min-width:fit-content;
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+
+  padding-left: 8px;
+  padding-right: 4px;
+
+  border-left: solid 2px gainsboro;
+  border-top: 0px;
+  --red: #ff0000;
+  --green: #0ba837;
+  --orange: #dba137;
+
+}
+
+.task-item .right-content .priority {
+  color: var(--red);
+}
+
+.task-item .right-content .status {
+  color: var(--green);
+}
+
+.task-item .right-content .last-updated {
+  font-weight: 600;
+  color: rgb(96, 96, 96);
+}
+
+.task-item .right-content .date {
+  color: gray;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.date .date-tooltip {
+  visibility: hidden;
+  /* width: 30%; */
+  width: 300px;
+  background-color: white;
+  color: #000000;
+  text-align: center;
+  
+  bottom: 10%;
+  right: -10%;
+  
+  margin-left: -60px;
+  padding: 5px 0;
+
+  border-radius: 6px;
+  border: 0.1px solid gainsboro;
+  position: absolute;
+  z-index: 100000;
+
+  opacity: 0;
+  transition: opacity 0.3s;
+  
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+
+  font-size: small;
+  text-align: left;
+}
+
+/* .date .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #000000 transparent transparent transparent;
+} */
+
+.date:hover .date-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+
+/* -------- End Tasks -------- */
+
+
+/* ------- Notes ------ */
+.notes-box {
+  display: flex;
+  flex-direction: column;
+}
+.notes-bar {
+  display: flex;
+  align-items: center;
+  align-content: center;
+
+  margin-bottom: 5px;
+}
+
+.notes-content {
+  max-height: clamp(200px, 20vh, 300px);
+  margin-bottom: 2px;
+
+  display: flex;
+  overflow-x: scroll;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  justify-content: start;
+  /* align-content: end ; */
+  align-items: stretch;
+}
+
+.notes-content .note-item {
+  /* min-width: 30%;
+  max-width: 60%; */
+  width: 48%;
+
+  flex: 1;
+
+  background-color: white;
+  color: black;
+
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  overflow: hidden;
+
+  border: 1px solid gainsboro;
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+
+.notes-content .note-item:hover {
+  background-color: gainsboro;
+}
+
+@media screen and (max-width: 768px) {
+  /* .notes-content .note-item {
+    max-width: 80% !important;
+  } */
+}
+
+/* ------- End Notes ------ */
+
+/*Legend specific*/
+.lms-legend {
+  padding: 6px 8px;
+  font: 14px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+  /*border-radius: 5px;*/
+  line-height: 24px;
+  color: #555;
+}
+.lms-legend h4 {
+  text-align: center;
+  font-size: 16px;
+  margin: 2px 12px 8px;
+  color: #777;
+}
+
+.lms-legend span {
+  position: relative;
+  bottom: 3px;
+}
+
+.lms-legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin: 0 8px 0 0;
+
+  border-radius: 2px;
+}

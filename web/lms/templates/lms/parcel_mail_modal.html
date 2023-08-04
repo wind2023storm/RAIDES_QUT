@@ -1,0 +1,300 @@
+{% load project_tags %}
+{% load static %}
+
+{% block extra_head %}
+  <style>
+    .recipients-div {
+      border: none; 
+      border-bottom: 0.5px solid gainsboro; 
+
+      padding-bottom: 5px; 
+      margin-bottom: 15px;
+
+    }
+    .subject-input {
+      width: 100%;
+      box-sizing: border-box;
+
+      padding: 2px;
+      padding-bottom: 5px;
+
+      margin-bottom: 10px;
+
+      border: none;
+      border-bottom: 0.5px solid gainsboro;
+      border-radius: 0px;
+
+      outline: none;
+    }
+
+    .body-textarea {
+      width: 100%;
+      height: 100px;
+      box-sizing: border-box;
+
+      border: none;
+      outline: none;
+
+      padding: 2px;
+    }
+
+    .recipient-display-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      padding: 5px;
+    }
+
+    .recipient-display {
+      padding: 2px;
+
+      border: 0.8px solid rgb(191, 191, 191);
+      border-radius: 5px;
+
+      margin-right: 7px;
+      margin-bottom: 7px;
+
+      display: flex;
+      justify-content:space-around;
+    }
+
+    .form-text.error {
+      color: var(--ofx-red);
+    }
+
+    .form-error {
+      color: var(--ofx-red);
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      padding: 4px;
+
+      border: 1px solid var(--ofx-red);
+      border-radius: 5px;
+    }
+
+  </style>
+{% endblock %}
+
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title fs-5">Bulk Mail Message </h1>
+    </div>
+    <form id="parcel_mail_form" class="parcel-mail-form">
+      <div class="modal-body">
+          <div class="recipients-div">
+            
+            <label style="color: grey;">Recipients</label>
+            <select id="recipient_select" class="form-select" aria-label="Recipients" disabled aria-disabled="true">
+              <option value="">+ Add mail target</option>
+            </select>
+            <div id="recipient_select_error" class="form-text error"></div>
+            <select hidden aria-hidden name="recipient_select_hidden" id="recipient_select_hidden" multiple required>
+              {% if view.queryset %} {% for relationship in view.queryset %}
+                <!-- Select all owners relationship when first render -->
+                <option name="{{relationship.owner.get_full_name}}" value="{{relationship.id}}" 
+                  {% if relationship.is_mail_target %}
+                    selected
+                  {% endif %}
+                  data-email="{% if relationship.owner.contact_email %}
+                                {{ relationship.owner.contact_email }}
+                              {% else %}
+                                No Mail
+                              {% endif %}
+                                "
+                >
+                  {{relationship.owner.get_full_name}}
+                </option>
+              {% endfor %}{% endif %}
+            </select>
+
+            <div class="recipient-display-container">
+            </div>
+
+          </div>
+          <div class="mb-3">
+            <input id="mail_subject" class="subject-input" placeholder="Subject (Default: Mail from Parcel {{ view.parcel.parcel.lot_plan }})" type="text">
+            <p>Dear Owners of Parcel {{view.parcel.parcel.lot_plan}},</p>
+            <textarea id="mail_body" class="body-textarea" placeholder="Content" required></textarea>
+            <p>King Rgards,<br>Orefox</p>
+            <input class="form-control form-control-sm" id="mail_attachment" name="mail_attachment" type="file" multiple>
+          </div>
+          <div id="mail_form_error" class="form-error visually-hidden">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+            <div id="mail_form_text"></div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-ofx-blue" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-sm btn-ofx-green">Send Bulk Message</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% block extra_body%}
+<script>
+    renderMailTargetsDisplay()
+    renderUnselectedRecipientList()
+
+    // #recipient_select_hidden is used to save multiple data
+    // #recipient_select is used to find and select unselected recipient
+
+    // Remove recipient from mail target
+    $('#parcel_mail_form').on('click', 'button.recipient-remove', function (e) {
+      console.log('On remove recipient');
+
+      const buttonOptionValue=$(this).attr('option-value')
+      $('#recipient_select_hidden').find(`option[value=${buttonOptionValue}]`).removeAttr('selected')
+
+      renderMailTargetsDisplay()
+      renderUnselectedRecipientList()
+    })
+
+    $('#recipient_select').on('focus', function (e) {
+      renderUnselectedRecipientList()
+    })
+
+    $('#recipient_select').on('change', function (e) {
+      const value = e.target.value
+
+      $('#recipient_select_hidden').find(`option[value="${value}"]`).attr('selected', 'true')
+
+      renderMailTargetsDisplay()
+      renderUnselectedRecipientList()
+    })
+
+      /**
+     * Find unselected recipients for adding recipeints select
+     */
+    function renderUnselectedRecipientList() {
+      const $visible_single_select = $('#recipient_select')
+      const $hidden_multiple_select = $('#recipient_select_hidden')
+
+      console.log('Hidden value' + $hidden_multiple_select.val().length);
+      console.log('Length' + '{{ view.queryset|length }}');
+
+      if ($hidden_multiple_select.val().length == '{{view.queryset|length}}') {
+        $visible_single_select.attr('disabled', 'true')
+        $visible_single_select.html(`<option value="" disabled selected>All owners selected</option>`)
+      } else {
+        $visible_single_select.removeAttr('disabled')
+        $visible_single_select.html(`<option value="">+ Add mail target</option>`)
+      }
+
+      $hidden_multiple_select.find('option').each(function(i ,e) {
+        if ($(e).attr('selected')) {
+          return
+        }
+
+        $visible_single_select.append($(e).clone())
+      })
+
+      // Remove existing error
+      if ($hidden_multiple_select.val().length != 0) {
+        $('#recipient_select_error').html('')
+      }
+    }
+
+    function renderMailTargetsDisplay() {
+      const $hidden_select = $('#recipient_select_hidden')
+      var selectedTargets = $('#recipient_select_hidden').val()
+
+      const htmlString = selectedTargets.map(value => {
+        const $option = $hidden_select.find(`option[value=${value}]`).first()
+        return `
+          <div class="recipient-display btn-clear-hover">
+              <span class="me-2">
+                ${$option.attr('name')} - ${$option.data('email')}
+              </span>
+              <button class="recipient-remove btn-clear-hover" option-value="${value}" type="button">X</button>
+          </div>
+        `
+      }).join("")
+
+      $('.recipient-display-container').html(htmlString)
+    }
+
+    /**
+     * Handle form submit for bulk mail to Parcel Mail Targets
+     * 
+     * Function location: parcel_mail_modal.html
+     * 
+    */
+    function onParcelMailFormSubmit(e) {
+      console.log('On parcel Submit');
+
+      const $form = $('#parcel_mail_form')
+      const $modal = $('#PARCEL_MAIL_MODAL')
+      
+      // Array of ID of selected mail targets
+      const selectedMailTargetsOptions = $('#recipient_select_hidden').val();
+
+      // Validation
+      if (selectedMailTargetsOptions.length == 0) {
+        $('#recipient_select_error').html('Please add mail targets.')
+        return
+      } else {
+        $('#recipient_select_error').html('')
+      }
+
+      // --
+
+      const $submitBtn = $('#parcel_mail_form button[type="submit"]')
+      const originalSubmitBtnHtml = $submitBtn.html()
+      const $cancelBtn = $('#parcel_mail_form button[type="button"]')
+
+      const spinnerHtmlString = '<span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>'
+
+      // FORM
+      const postForm = new FormData()
+      postForm.append('mail_targets', JSON.stringify(selectedMailTargetsOptions))
+      postForm.append('mail_subject', $('#mail_subject').val())
+      postForm.append('mail_body', $('#mail_body').val())
+      const files = $('#parcel_mail_form input[type=file]')[0].files
+    
+      $.each(files,function(j, file){
+        postForm.append('attachment_'+j, file);
+      })
+
+      $.ajax({
+        headers: {"X-CSRFToken": '{{ csrf_token }}'},
+        type: "POST",
+        url: $('#PARCEL_MAIL_MODAL').data('url'),
+        data: postForm,
+        processData: false,
+        contentType:false,
+        enctype: "multipart/form-data",
+        beforeSend: function () {
+          $submitBtn.attr('disabled', '')
+          $submitBtn.append(spinnerHtmlString)
+
+          $cancelBtn.addClass('visually-hidden')
+
+          $('#mail_form_error').addClass('visually-hidden')
+        },
+        success: function (response) {
+          console.log('Submit mail target');
+          console.log(response);  
+
+          $form.resetForm()
+          $modal.modal('hide');
+        },
+        error: function (xhr, text, error) {
+          const errorText = JSON.parse(xhr.responseText).error ?? 'Unable to send bulk email. Please try again.'
+          $('#mail_form_error').removeClass('visually-hidden')
+          $('#mail_form_text').html(errorText)
+        },
+        complete: function () {
+          $submitBtn.removeAttr('disabled')
+          $submitBtn.html(originalSubmitBtnHtml)
+
+          $cancelBtn.removeClass('visually-hidden')
+        },
+      });
+    }
+</script>
+{% endblock %}

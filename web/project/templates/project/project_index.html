@@ -32,7 +32,7 @@
                     {# Project Tab #}
                     <div class="card-header">
                         <div class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
-                            <a class="nav-link active" id="nav-projects-tab" data-bs-toggle="tab"
+                            <a class="nav-link " id="nav-projects-tab" data-bs-toggle="tab"
                                data-bs-target="#nav-projects" aria-controls="nav-projects" aria-selected="true">
                                 My Projects
                             </a>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="card-body tab-content overflow-auto" id="nav-tabContent">
                         {# Projects Tab #}
-                        <div class="tab-pane active" id="nav-projects" role="tabpanel"
+                        <div class="tab-pane " id="nav-projects" role="tabpanel"
                              aria-labelledby="nav-projects-tab">
                             <table id="project-table" class="table table-sm dt-responsive w-100">
                                 <thead>
@@ -77,12 +77,6 @@
                                 <tbody>
                                 </tbody>
                             </table>
-                            <a href="{% url 'spirit:index' %}">
-                                <button class="btn btn-ofx-blue">                                                
-                                    KMS Projects
-                                </button>
-                            </a>
-                            
                         </div>
                         {# Tenements Tab #}
                         <div class="tab-pane" id="nav-tenements" role="tabpanel" aria-labelledby="nav-tenements-tab">
@@ -222,6 +216,29 @@
     {{ deleteReportForm.media }}
 
     <script type="text/javascript" src="{% static 'project/js/project_index.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+            const tabCon = urlParams.get('tabContent');
+            if (tab && tabCon) {
+                // Assuming you are using Bootstrap tabs
+                const tabElement = document.getElementById(tab);
+                const tabContent = document.getElementById(tabCon);
+                if (tabElement && tabContent) {
+                    tabElement.classList.add('active');
+                    tabContent.classList.add("active")
+                    tabContent.classList.add("show")
+                    tabElement.click()
+                }
+            }
+            else{
+                document.getElementById("nav-projects-tab").classList.add("active");
+                document.getElementById("nav-projects").classList.add("active")
+                document.getElementById("nav-projects").classList.add("show")
+            }
+        });
+    </script>
     <script>
         $(document).ready(function () {
 

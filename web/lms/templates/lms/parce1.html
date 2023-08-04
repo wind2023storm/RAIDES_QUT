@@ -1,0 +1,180 @@
+
+<!-- {% comment %}
+  FROM URL: {% url 'lms:parcels' slug=project.slug %}
+
+  PARENT FILE: lms_base.html
+  PARENT DIV: id=LOTS_VIEW
+{% endcomment %} -->
+
+{% load project_tags %}
+{% load static %}
+<div  >
+  
+<div class="lot-dropdown dropdown mb-2 border-bottom">
+
+  <div id="lots_dropdown_button" class="w-100 d-flex justify-content-between" data-bs-toggle="dropdown">
+     <h5 style="margin-bottom: -5px; color: grey;"><i class="fa-regular fa-square-caret-down me-1"></i>Parcel</h5>
+   
+    {% if view.instance %}
+    <div class="flex flex-column text-align-end">
+   <h5 id="lot_name" class="mb-0">{{ view.instance.parcel.lot_plan }}</h5>
+  {% if   view.instance.parcel.feature_name != None %}
+     <h6 class="mb-0">"{{view.instance.parcel.feature_name  }}" 
+  {% endif %}
+   </div>
+    {% else %}
+ 
+    <h5 id="lot_name">No Parcel Selected</h5>
+    
+    {% endif %}
+  </div>
+  <div id="LOTS_DROPDOWN" class="dropdown-menu lot-dropdown-menu bg-light"  style="box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);"
+  data-url="{% url 'lms:parcels' slug=view.project.slug %}" propagation="true">
+    <div class="bar m-0 d-flex justify-content-between pe-3">
+      <p class="dropdown-header  m-0 fs-5 align-items-center align-middle">Parcels List</p>
+      <div class="d-flex">
+          <div class="parcel-search-div p-0 search-div me-2">
+            <input type="search" class="form-control search-box" id="parcel-search" placeholder="Search Parcel..."
+            onchange="filterObjects('parcel-search','lot-item','span', 0)" />                   
+          </div>
+          <div class="dropdown text-align-center d-flex p-0" id="parcelSortDropdown">
+            <button style="color: rgb(117, 117, 117);" 
+              class="btn-clear-hover dropdown-toggle mb-1 p-1 py-0" type="button"
+              data-bs-toggle="dropdown" aria-expanded="false"
+            >
+              sort
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#" id="sortParcelByName">Name</a></li>
+              <li><a class="dropdown-item" href="#" ID="sortParcelByArea">Area Size</a></li>
+            </ul>
+          </div>
+      </div>
+    </div>
+    <div id="LOTS_DROPDOWN_CONTENT" class="lot-dropdown-content">
+      {% for project_parcel in view.project_parcels %}
+        <div class="lot-item" data-id="{{ project_parcel.id }}" data-url="{% url 'lms:parcel' slug=view.project.slug parcel=project_parcel.id %}">
+          <span class="text-break fs-6 parcel-lot-plan">{{ project_parcel.parcel.lot_plan }}</span>
+          <span>{{ project_parcel.parcel.tenure}}</span>
+          <span class="text-break fs-6 fw-bold ">Area: <span class="parcel-area">{{ project_parcel.parcel.area}}</span>sqm</span>
+        </div>  
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% if view.instance %}
+<div class="row " style="height:250px">
+      <div class="d-flex flex-column parcel-details col-md-6 col-sm-12 h-100 py-2 mt-2 text-align-center">
+    <div class="d-flex justify-content-between even"> <span class="fw-bold">Tenure</span><span> {{ view.instance.parcel.tenure}}</span></div>
+      <div class="d-flex justify-content-between odd">  <span class="fw-bold">Area</span> <span id="lot_area">{{ view.instance.parcel.area }}&nbsp;&nbsp;sqm</span></div>
+      <div class="d-flex justify-content-between even">  <span class="fw-bold">Shire</span><span>{{ view.instance.parcel.shire_name }} </span></div>
+      <div class="d-flex justify-content-between odd">  <span class="fw-bold">Locality</span><span>{{ view.instance.parcel.locality }}</span></div>
+        <div class="d-flex justify-content-between even">  <span class="fw-bold">Parcel Type</span><span>{{ view.instance.parcel.parcel_type }} </span></div>
+        <div class="d-flex justify-content-between odd">  <span class="fw-bold">Cover Type</span><span>{{ view.instance.parcel.cover_type }} </span></div>
+    
+      </div>
+    <div class="col-md-6 col-sm-12 d-flex justify-content-end h-100 m-0">
+      <div id="lot_map" class="map-content">
+      </div>
+    </div>
+</div>
+{% endif %}
+{% if view.instance %} {% with view.instance as project_parcel %}
+<hr />
+<div >
+
+  <div id="OWNERS_RELATIONSHIP_VIEW" class="" data-url="{% url 'lms:relationships' slug=view.project.slug parcel=project_parcel.id %}" data-container="owners_relationship">
+   
+  </div>
+  <div class="d-flex justify-content-between  mb-2">
+  <div class="d-flex align-items-center">
+    <h6 style="color: grey;" class="align-items-center justify-content-center">Parcel Owners</h6>
+    {% if view.project|is_write:view.member %}
+    <div class="add-btn ms-2"style="border: solid 0.1px gainsboro;" 
+      data-bs-toggle="modal" data-bs-target="#newRelationshipModal" data-action="new"
+      data-url="{% url 'lms:relationships' slug=view.project.slug parcel=project_parcel.id %}"
+    >
+       + Add Owner to Parcel
+    </div>
+   
+    {% endif %}
+  </div>
+  <div class="parcel-owner-search-div p-0 search-div me-3">
+    <input type="search" class="form-control search-box" id="parcel-owner-search" placeholder="Search Parcel Owner..."
+     onchange="filterObjects('parcel-owner-search','owner-item','span', 0)" />                   
+  </div>
+  </div>
+
+  <div id="OWNERS_RELATIONSHIP_CONTENT" class="owners-view" data-container-content="owners_relationship">
+    <!-- owner_relationship.html -->
+  </div>
+</div>
+</div>
+
+
+
+{% block extra_body %}  
+<script src="{% static 'lms/js/lms_map.js' %}"></script>
+
+<script>
+  // Get references to the button, dropdown menu, and task list
+  sortDropdown = document.getElementById('parcelSortDropdown');
+  sortByNameButton = document.getElementById('sortParcelByName');
+  sortByDateButton = document.getElementById('sortParcelByArea');
+  parcelList = document.getElementById('LOTS_DROPDOWN_CONTENT');
+
+  // Add event listener to prevent task dropdown from closing when interacting with sort dropdown
+  sortDropdown.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+
+  // Add click event listeners
+  sortByNameButton.addEventListener('click', sortByName);
+  sortByDateButton.addEventListener('click', sortByDate);
+  function sortByName(event) {
+    event.stopPropagation();
+    // Convert the task list items to an array
+    const items = Array.from(parcelList.getElementsByClassName('lot-item'));
+
+    // Sort the items by their text content (task name)
+    items.sort((a, b) => {
+      const nameA = a.getElementsByClassName('parcel-lot-plan')[0].textContent;
+      const nameB = b.getElementsByClassName('parcel-lot-plan')[0].textContent;
+      return nameA.localeCompare(nameB);
+    });
+
+    // Reattach the sorted items to the task list
+    for (const item of items) {
+      parcelList.appendChild(item);
+    }
+  }
+
+  function sortByDate(event) {
+    event.stopPropagation();
+    // Convert the task list items to an array
+    const items = Array.from(parcelList.getElementsByClassName('lot-item'));
+
+    // Sort the items by their text content (task date)
+    items.sort((a, b) => {
+      const areaA = a.getElementsByClassName('parcel-area')[0].textContent;
+      const areaB = b.getElementsByClassName('parcel-area')[0].textContent;
+      return areaA - areaB;
+    });
+
+    // Reattach the sorted items to the task list
+    for (const item of items) {
+      parcelList.appendChild(item);
+    }
+  }
+
+  // Helper function to extract date from task item text
+  function extractDate(text) {
+    const regex = /Date: (\d{4}-\d{2}-\d{2})/;
+    const match = regex.exec(text);
+    return match ? new Date(match[1]) : new Date();
+  }
+
+</script>
+{% endblock %}
+{% endwith %}{% endif %}
+

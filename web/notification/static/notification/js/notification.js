@@ -63,7 +63,7 @@ function connectNotificationSocket() {
         const liCount = $notificationArea.find('li').length;
         $notificationArea.toggle(liCount > 0);
         $notificationActions.css('pointer-events', liCount > 0 ? 'auto' : 'none');
-        $notificationEmptyDisplay.toggle(liCount === 0);
+        $notificationEmptyDisplay.toggle(total_count === 0);
         $notificationShowMore.toggle(total_count - liCount > 0);
     };
 

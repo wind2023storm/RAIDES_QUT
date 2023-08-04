@@ -1,0 +1,54 @@
+{% if view.instance %}
+    {% with view.instance as file %}
+    <table class="table-bordered">
+        <tbody>
+        <tr>
+            <th>Filename:</th>
+            <td>
+                <span>{{ file.filename }}</span>
+                <button data-bs-toggle="modal" data-bs-target="#deletefileModal" data-action="delete"
+                        data-url="{% url 'lms:delete_file' slug=view.project.slug owner=view.owner.id file=file.id %}">Delete
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <th>Link:</th>
+            <td>
+                <a href="{% url 'lms:download_file' slug=view.project.slug owner=view.owner.id file=file.id %}" download>
+                    Download
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>Size:</th>
+            <td>{{ file.file_size_str }}</td>
+        </tr>
+        <tr>
+            <th>Date Created:</th>
+            <td>{{ file.date_created }}</td>
+        </tr>
+        </tbody>
+    </table>
+    {% endwith %}
+
+{% elif view.queryset %}
+    {% for file in view.queryset %}
+        <li data-type="file" data-id="{{ file.id }}">
+
+            <input type="checkbox" data-category="owner"
+                   data-url="{% url "lms:file" slug=view.project.slug owner=view.owner.id file=file.id %}">
+            <label for="owner">
+                <b>{{ file.filename }}</b>
+                <i>{{ file.file_size_str }} - {{ file.date_created }}</i>
+                <button data-bs-toggle="modal" data-bs-target="#deletefileModal" data-action="delete"
+                        data-url="{% url 'lms:delete_file' slug=view.project.slug owner=view.owner.id file=file.id %}">Delete
+                </button>
+            </label>
+            <ol data-category="owner">
+                {# OWNER fileS #}
+            </ol>
+        </li>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

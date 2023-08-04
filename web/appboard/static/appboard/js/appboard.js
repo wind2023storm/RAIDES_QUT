@@ -150,6 +150,8 @@ $(function ($) {
                 // Django form errors won't have the 'message' key
                 let message = (typeof error === 'object' && 'message' in error) ? error.message : error
 
+                console.log(key === '__all__');
+
                 if ($errorElement.length) {
                     $errorElement.text(message);
                 } else {

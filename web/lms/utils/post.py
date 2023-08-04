@@ -21,7 +21,7 @@ from django.contrib.gis.geos import GEOSGeometry, Polygon, MultiPolygon
 
 
 def create_debug_objects(request, project):
-    LandParcel.objects.all().delete()
+    Parcel.objects.all().delete()
 
     def M(geom):
         if isinstance(geom, Polygon):
@@ -29,9 +29,9 @@ def create_debug_objects(request, project):
 
         return geom
 
-    # LandParcel
+    # Parcel
     new_parcels = [
-        LandParcel(name="a", lot=73, plan="GEORGE WAY", tenure="Beetles", geometry=M(
+        Parcel(name="a", lot=73, plan="GEORGE WAY", tenure="Beetles", geometry=M(
             GEOSGeometry(
                 '{"type": "Polygon", "coordinates": [ [ [ 152.802046115000053, -27.371197363999954 ], '
                 '[ 152.802128377000031, -27.371642565999935 ], [ 152.80042878800009, -27.372242642999936 ], '
@@ -40,8 +40,8 @@ def create_debug_objects(request, project):
                 '[ 152.802046115000053, -27.371197363999954 ] ] ]}'
             )
         )
-                   ),
-        LandParcel(name="b", lot=42, plan="POTATO VILLAGE", tenure="Starch Free", geometry=M(
+               ),
+        Parcel(name="b", lot=42, plan="POTATO VILLAGE", tenure="Starch Free", geometry=M(
             GEOSGeometry(
                 '{"type": "Polygon", "coordinates": [ [ [ 152.802013161000104, -27.371019309999951 ], '
                 '[ 152.802046115000053, -27.371197363999954 ], [ 152.801704268000094, -27.371277628999962 ], '
@@ -59,14 +59,14 @@ def create_debug_objects(request, project):
                 '[ 152.800956319000079, -27.371485194999934 ], [ 152.802013161000104, -27.371019309999951 ] ] ]}'
             )
         )
-                   ),
+               ),
     ]
 
-    LandParcel.objects.bulk_create(new_parcels)
+    Parcel.objects.bulk_create(new_parcels)
 
     # We don't do this with bulk create since bulk create bypasses the save method and won't run signals
-    for parcel in LandParcel.objects.all():
-        LandParcelProject.objects.create(parcel=parcel, project=project, user_updated=request.user)
+    for parcel in Parcel.objects.all():
+        ProjectParcel.objects.create(parcel=parcel, project=project, user_updated=request.user)
 
 
 @django_query_analyze
@@ -74,8 +74,8 @@ def render_lms_data(request, project):
     """Renders all the LMS data for a particular project as HTML."""
     # TODO: Make it prettier in the "demo_interface" or change how it's done altogether.
 
-    # parcels = LandParcelProject.objects.filter_project_area(project=project)\
-    parcels = LandParcelProject.objects.filter(project=project) \
+    # parcels = ProjectParcel.objects.filter_project_area(project=project)\
+    parcels = ProjectParcel.objects.filter(project=project) \
         .select_related('parcel', 'user_updated') \
         .prefetch_related(
         'history',
@@ -102,13 +102,9 @@ def render_lms_data(request, project):
         'owners__reminders__files',
         Prefetch('owners',
                  # Returns either the bulk mail target for the parcel or the first available owner
-                 queryset=LandParcelOwner.objects.filter(
-                     id__in=Subquery(
-                         LandParcelOwner.objects.filter(
-                             parcel_id=OuterRef('parcel_id')
-                         ).order_by('-bulk_mail_target', '-date_created').values('id')[:1]
-                     )
-                 ), to_attr='mail_target')
+                 queryset=ParcelProjectOwnerRelationship.objects.filter(
+                     Q(parcel_id=OuterRef('parcel_id'), is_mail_target=True))
+                 )
     ).annotate(
         area=Area("parcel__geometry"),
     ).all()
@@ -125,21 +121,28 @@ def render_lms_data(request, project):
 def lms_project(request, project, slug):
     """View specific to a kind of project"""
 
-    # LandParcel.objects.filter_project_area(project)
+    # Parcel.objects.filter_project_area(project)
     # create_debug_objects(request, project)
 
-    land_parcels = LandParcelProject.objects.filter(project=project).select_related('parcel').prefetch_related(
+    land_parcels = ProjectParcel.objects.filter(project=project).select_related('parcel').prefetch_related(
         Prefetch('owners',
                  # Returns either the bulk mail target for the parcel or the first available owner
-                 queryset=LandParcelOwner.objects.filter(
-                     id__in=Subquery(
-                         LandParcelOwner.objects.filter(
-                             parcel_id=OuterRef('parcel_id')
-                         ).order_by('-bulk_mail_target', '-date_created').values('id')[:1]
-                     )
-                 ), to_attr='mail_target'
+                 queryset=ParcelProjectOwnerRelationship.objects.filter(
+                     Q(parcel_id=OuterRef('parcel_id'), is_mail_target=True)
+                 ), to_attr='mail_targets'
                  )
     )
+    #     Prefetch('owners',
+    #              # Returns either the bulk mail target for the parcel or the first available owner
+    #              queryset=ParcelOwner.objects.filter(
+    #                  id__in=Subquery(
+    #                      ParcelOwner.objects.filter(
+    #                          parcel_id=OuterRef('parcel_id')
+    #                      ).order_by('-bulk_mail_target', '-date_created').values('id')[:1]
+    #                  )
+    #              ), to_attr='mail_target'
+    #              )
+    # )
 
     parcel_context = render_to_string("lms/parcel.html", {
         'project': project,
@@ -150,10 +153,10 @@ def lms_project(request, project, slug):
         'project': project,
         # 'land_parcel': render_lms_data(request, project),
         'parcel_content': parcel_context,
-        'owner_form': LandParcelOwnerForm(request, project),
-        'note_form': LandParcelOwnerNoteForm(request, project),
-        'correspondence_form': LandParcelOwnerCorrespondenceForm(request, project),
-        'task_form': LandParcelOwnerTaskForm(request, project),
+        'owner_form': ParcelOwnerForm(request, project),
+        'note_form': LandOwnerNoteForm(request, project),
+        'correspondence_form': LandOwnerCorrespondenceForm(request, project),
+        'task_form': LandOwnerTaskForm(request, project),
         'reminder_form': LandParcelOwnerReminderForm(request, project),
     }
 
@@ -162,13 +165,13 @@ def lms_project(request, project, slug):
 
 @has_project_permission(Permission.ADMIN)
 def modify_parcel(request, project, slug):
-    """Modifying the LandParcelProject. Takes a POST request where the contents of the dictionary are fields to in the
+    """Modifying the ProjectParcel. Takes a POST request where the contents of the dictionary are fields to in the
     model to be updated."""
     action = request.META.get('HTTP_ACTION', None)
     parcel_id = request.POST.get('parcel', None)
 
     try:
-        parcel = LandParcelProject.objects.get(project=project, id=parcel_id)
+        parcel = ProjectParcel.objects.get(project=project, id=parcel_id)
     except ObjectDoesNotExist:
         return JsonResponse({}, status=HTTPStatus.BAD_REQUEST)
     else:
@@ -194,7 +197,7 @@ def handle_lms_request(request, action: str, project: Project, model_class, mode
         model_class
             LMS model class used e.g., `LandParcelOwnerProject` or `LandParcelOwnerNote`
         model_form
-            LMS ModelForm used to create/modify e.g., `LandParcelOwnerForm`
+            LMS ModelForm used to create/modify e.g., `ParcelOwnerForm`
         model_query_dict : dict
             query dictionary used to find a specific model for use in actions
         template : str
@@ -296,12 +299,12 @@ def handle_lms_request(request, action: str, project: Project, model_class, mode
 
 @has_project_permission()
 def handle_parcel(request, project, slug, action):
-    """Reactions to be had with a particular LandParcelOwner Task"""
+    """Reactions to be had with a particular ParcelOwner Task"""
     return handle_lms_request(
         request,
         action,
         project,
-        LandParcel,
+        Parcel,
         None,  # No new/modify form yet
         {
             'id': request.POST.get('parcel', None) or request.GET.get('parcel', None),
@@ -314,13 +317,13 @@ def handle_parcel(request, project, slug, action):
 
 @has_project_permission()
 def handle_owner(request, project, slug, action):
-    """Reactions to be had with a particular LandParcelOwner Task"""
+    """Reactions to be had with a particular ParcelOwner Task"""
     return handle_lms_request(
         request,
         action,
         project,
-        LandParcelOwner,
-        LandParcelOwnerForm,
+        ParcelOwner,
+        ParcelOwnerForm,
         {
             'id': request.POST.get('owner', None) or request.GET.get('owner', None),
             'parcel': request.POST.get('parcel', None) or request.GET.get('parcel', None),
@@ -332,13 +335,13 @@ def handle_owner(request, project, slug, action):
 
 @has_project_permission()
 def handle_task(request, project, slug, action):
-    """Reactions to be had with a particular LandParcelOwner Task"""
+    """Reactions to be had with a particular ParcelOwner Task"""
     return handle_lms_request(
         request,
         action,
         project,
         LandParcelOwnerTask,
-        LandParcelOwnerTaskForm,
+        LandOwnerTaskForm,
         {
             'id': request.POST.get('task', None) or request.GET.get('task', None),
             'owner': request.POST.get('owner', None) or request.GET.get('owner', None),
@@ -350,13 +353,13 @@ def handle_task(request, project, slug, action):
 
 @has_project_permission()
 def handle_correspondence(request, project, slug, action):
-    """Reactions to be had with a particular LandParcelOwner Correspondence"""
+    """Reactions to be had with a particular ParcelOwner Correspondence"""
     return handle_lms_request(
         request,
         action,
         project,
         LandParcelOwnerCorrespondence,
-        LandParcelOwnerCorrespondenceForm,
+        LandOwnerCorrespondenceForm,
         {
             'id': request.POST.get('correspondence', None) or request.GET.get('correspondence', None),
             'owner': request.POST.get('owner', None) or request.GET.get('owner', None),
@@ -368,7 +371,7 @@ def handle_correspondence(request, project, slug, action):
 
 @has_project_permission()
 def handle_reminder(request, project, slug, action):
-    """Reactions to be had with a particular LandParcelOwner Reminder"""
+    """Reactions to be had with a particular ParcelOwner Reminder"""
     return handle_lms_request(
         request,
         action,
@@ -386,13 +389,13 @@ def handle_reminder(request, project, slug, action):
 
 @has_project_permission()
 def handle_note(request, project, slug, action):
-    """Reactions to be had with a particular LandParcelOwner Note"""
+    """Reactions to be had with a particular ParcelOwner Note"""
     return handle_lms_request(
         request,
         action,
         project,
         LandParcelOwnerNote,
-        LandParcelOwnerNoteForm,
+        LandOwnerNoteForm,
         {
             'id': request.POST.get('note', None) or request.GET.get('note', None),
             'owner': request.POST.get('owner', None) or request.GET.get('owner', None),
@@ -413,11 +416,11 @@ def handle_history(request, project, slug, action):
 
     # Prepare the model related stuff depending on what history we're after
     if action == 'parcel':
-        model_class = LandParcel
+        model_class = Parcel
         model_history_class = LandParcelHistory
         model_query_dict = {'id': history_id, 'target_id': parent_id, 'target__project_id': project.id}
     elif action == 'owner':
-        model_class = LandParcelOwner
+        model_class = ParcelOwner
         model_history_class = LandParcelOwnerHistory
         model_query_dict = {'id': history_id, 'target_id': parent_id, 'target__parcel__project_id': project.id}
     else:

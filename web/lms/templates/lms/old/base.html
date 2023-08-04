@@ -1,0 +1,314 @@
+{% extends 'appboard/base.html' %}
+{% load project_tags %}
+{% load modal_tags %}
+
+{% block head_title %}
+    LMS - {{ project.name }}
+{% endblock %}
+
+{% block extra_head %}
+    <style>
+        #LMS_CONTENT li {
+            border-left: 1px var(--ofx-blue) dotted;
+            margin-left: 1em;
+            padding-left: 1em;
+            width: auto;
+        }
+
+        #LMS_CONTENT li:last-child {
+            margin-bottom: 2em;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1>{{ project.name }} - Lot/Plan Management System</h1>
+
+    <button data-bs-toggle="modal" data-bs-target="#newOwnerModal" data-action="new"
+            data-url="{% url 'lms:owners' slug=project.slug %}">New Owner +
+    </button>
+
+    <div id="LMS_CONTENT" class="row">
+        <i>Opening any of the checkbox menus will refresh the content inside them.</i>
+
+        <ol data-category="project">
+            {# PROJECT CONTENT HERE #}
+        </ol>
+        {% comment %}
+        A series of model forms for all the various actions. Would be worthwhile considering merging the new and modify
+        forms together since they essentially perform the same function.
+
+        Also consider who has permission to do what exactly.
+        {% endcomment %}
+        <div id="LMS_FORMS">
+
+        {% if project|is_write:member %}
+            {% modalform id="newOwner" title="New Owner" %}
+                {% csrf_token %}
+                {{ owner_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="newRelationship" title="New Relationship" %}
+                {% csrf_token %}
+                {{ relationship_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="newOwnerRelationship" title="New Parcel Owner" %}
+                {% csrf_token %}
+                {{ owner_form.as_p }}
+                <hr>
+                {{ modify_relationship_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="newNote" title="New Note" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ note_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="newCorrespondence" title="New Correspondence" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ correspondence_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="newTask" title="New Task" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ task_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="newReminder" title="New Reminder" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ reminder_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="newFile" title="New File" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ file_form.as_p }}
+            {% endmodalform %}
+
+            {% modalform id="modifyOwner" title="Modify Owner" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                <input id="id_parcel" type="text" name="parcel" hidden>
+                <input id="id_owner" type="text" name="owner" hidden>
+                {{ owner_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="modifyRelationship" title="Modify Relationship" %}
+                {% csrf_token %}
+                {{ modify_relationship_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="modifyNote" title="Modify Note" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ note_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="modifyCorrespondence" title="Modify Correspondence" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ correspondence_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="modifyTask" title="Modify Task" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ task_form.as_p }}
+            {% endmodalform %}
+            {% modalform id="modifyReminder" title="Modify Reminder" enctype="multipart/form-data" %}
+                {% csrf_token %}
+                {{ reminder_form.as_p }}
+            {% endmodalform %}
+
+        {% endif %}
+        {% if project|is_admin:member %}
+
+            {% modalform id="deleteOwner" title="Delete Owner" %}
+                {% csrf_token %}
+                Delete the owner <b name="first_name" type="plaintext"></b> <b name="last_name" type="plaintext"></b> from project?
+            {% endmodalform %}
+            {% modalform id="deleteRelationship" title="Delete Relationship" %}
+                {% csrf_token %}
+                Remove Owner <b name="first_name" type="plaintext"></b> <b name="last_name" type="plaintext"></b> from parcel?
+            {% endmodalform %}
+            {% modalform id="deleteNote" title="Delete Note" %}
+                {% csrf_token %}
+                Delete Note?
+            {% endmodalform %}
+            {% modalform id="deleteCorrespondence" title="Delete Correspondence" %}
+                {% csrf_token %}
+                Delete Correspondence?
+            {% endmodalform %}
+            {% modalform id="deleteTask" title="Delete Task" %}
+                {% csrf_token %}
+                Delete Task?
+            {% endmodalform %}
+            {% modalform id="deleteReminder" title="Delete Reminder" %}
+                {% csrf_token %}
+                Delete Reminder?
+            {% endmodalform %}
+
+            {% modalform id="revertHistory" title="Revert to Here" %}
+                {% csrf_token %}
+                <i>This only updates the history tab currently. The owner/parcel is changed in the database though. Refresh the content and you'll see.</i>
+                <input id="id_owner" type="text" name="owner" hidden>
+                <input id="id_parcel" type="text" name="parcel" hidden>
+                <input id="id_history" type="text" name="history" hidden>
+            {% endmodalform %}
+
+            {% modalform id="deleteFile" title="Delete File" %}
+                {% csrf_token %}
+                Delete <b name="file_name" type="plaintext"></b>?
+            {% endmodalform %}
+
+        {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_body %}
+    <script>
+        let $LMS = $('#LMS_CONTENT');
+
+        $.ajax({
+            url: "{% url 'lms:project' slug=project.slug %}",
+            method: "GET",
+            success: function (response) {
+                $('ol[data-category="project"]').html(response.html)
+            }
+        });
+
+        {% comment %}
+        This code is specific to how the base template and the other templates are put together
+        the code will likely require changing should you wish to change how this page is viewed.
+        {% endcomment %}
+        $LMS.on('click', 'input[type="checkbox"][data-category]', function (e) {
+            {% comment %}
+            Just used to open/close each section. We perform queries for each section in case we
+            end up having hundreds of queries all at once. Each section has its own template which is loaded
+            into the container div as HTML rather than raw data.
+            {% endcomment %}
+            let $checkbox = $(this);
+            let $li = $checkbox.parent('li[data-type][data-id]');
+
+            let url = $checkbox.data('url');
+            let category = $checkbox.data('category');
+
+            {% comment %}
+            Janky way to check if we're searching for the container in a list or a table.
+            {% endcomment %}
+            let $container = $checkbox.siblings(`ol[data-category="${category}"]`);
+
+            if ($container.length === 0) {
+                $container = $checkbox.closest('tr').find(`ol[data-category="${category}"]`);
+            }
+
+            {# If checkbox is checked populate, otherwise empty the container #}
+            if ($checkbox.is(':checked')) {
+                $.ajax({
+                    method: "GET",
+                    url: url,
+
+                    beforeSend: function () {
+                        $container.html('<i>Loading...</i>');
+                    },
+                    success: function (response) {
+                        $container.html(response.html);
+                    },
+                    error: function () {
+                        $container.html('<i style="color: red;">Error!</i>');
+                    },
+                });
+            } else {
+                $container.html('');
+            }
+
+            return true;
+
+        })
+            .on('submit', 'form', function (e) {
+            e.preventDefault();
+
+            let $form = $(this);
+            let formData = new FormData($form[0]);
+            let $btn = $form.find(`button[type="submit"]`);
+            let $modal = $form.closest('.modal');
+            let originalBtnHTML = $btn.html();
+
+            console.log('formData', formData);
+
+            $.ajax({
+                method: "POST",
+                url: $form.prop('action'),
+                data: formData,
+                processData: false,
+                contentType: false,
+                enctype: "multipart/form-data",
+                beforeSend: function () {
+                    $btn.addSpinner();
+                },
+                success: function (response) {
+                    console.log('success', response);
+                    $form.data('container').html(response.html);
+                    $form.resetForm();
+                    $modal.modal('hide');
+                },
+                error: function (response) {
+                    console.log('error', response);
+                    $form.displayFormErrors(response['responseJSON']);
+                },
+                complete: function () {
+                    $btn.removeSpinner(originalBtnHTML);
+                }
+            });
+        })
+            .on('hide.bs.modal', '.modal', function (e) {
+            {% comment %}
+            This is just to stop the modalforms from closing if the form is invalid upon submission.
+            {% endcomment %}
+            let $modal = $(this);
+            let $form = $modal.find('form');
+            let $trigger = $(document.activeElement);
+
+            if ($trigger.prop('type') === 'submit') {
+                if (!$form[0].checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }
+        })
+            .on('show.bs.modal', '.modal', function (e) {
+            let $modal = $(this);
+            let $form = $modal.find('form');
+            let $e = $(document.activeElement);
+            {# Actual button action #}
+            let action = $e.data('action');
+
+            {# Container section for the button, this is a sibling of the 'new' button and a parent of the 'delete' and 'modify' buttons#}
+            let $container;
+            if (action === 'new') {
+                let category = $e.closest('label').attr('for');
+                $container = $e.closest('li').find(`ol[data-category="${category}"]`);
+            } else {
+                $container = $e.closest('ol[data-category]');
+            }
+
+            {# Set some form properties #}
+            $form.prop('action', $e.data('url'));
+            $form.data('container', $container);
+
+            {# Fill the input for the parent id/type #}
+            $e.parentsUntil($LMS, 'li').each(function(i, element) {
+                let data = $(element).data();
+                let $field = $form.find(`[name="${data.type}"`);
+
+                $field.val(data.id);
+            });
+
+            {# Now populate the fields if we're modifying or deleting #}
+            if (action !== 'new') {
+
+                $e.closest('table').find('[data-field][data-value]').each(function (i, element) {
+                    let data = $(element).data();
+                    let $field = $form.find(`[name="${data.field}"`);
+
+                    if ($field.prop('type') === 'checkbox') {
+                        $field.prop('checked', data.value);
+                    } else if ($field.attr('type') === 'plaintext') {
+                        $field.text(data.value);
+                    } else {
+                        $field.val(data.value);
+                    }
+                });
+            }
+
+        });
+    </script>
+{% endblock %}

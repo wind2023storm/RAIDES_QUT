@@ -1,0 +1,29 @@
+{% load project_tags %}
+
+{% if view.project %}
+    {% with view.project as project %}
+        <input type="checkbox" data-category="owner" data-url="{% url 'lms:owners' slug=project.slug %}">
+        <label for="owner">
+            <b>Project Owners</b>
+
+            {% if view.project|is_write:view.member %}
+            <button data-bs-toggle="modal" data-bs-target="#newOwnerModal" data-action="new"
+                    data-url="{% url 'lms:owners' slug=project.slug %}">New +
+            </button>
+            {% endif %}
+        </label>
+        <ol data-category="owner">
+            {# PROJECT LAND PARCEL OWNERS GO HERE #}
+        </ol>
+
+        <input type="checkbox" data-category="parcel" data-url="{% url 'lms:parcels' slug=project.slug %}">
+        <label for="parcel">
+            <b>Parcels</b>
+        </label>
+        <ol data-category="parcel">
+            {# PROJECT LAND PARCELS HERE #}
+        </ol>
+    {% endwith %}
+{% else %}
+    <i style="color: red;">Unable to load Project Data</i>
+{% endif %}

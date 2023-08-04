@@ -1,6 +1,6 @@
 /* Base Page Display */
 body, html {
-    height: 100%;
+    height: auto;
     margin: 0;
     padding: 0;
 }
@@ -67,6 +67,17 @@ html {
 .sidetoggle:hover {
     background-color: rgba(170, 170, 170, 0.4);
 }
+
+#sidebar {
+    min-height: 100vh;
+    position: fixed;
+    max-width: 15rem;
+    overflow-y: scroll;
+    top: 0;
+    bottom: 0;
+    z-index: 10000;
+}
+
 
 #sidebar ul > li > a {
     opacity: 0.75;
@@ -253,12 +264,14 @@ table.dataTable .noowrap {
 }
 
 .content-margin-top-offest {
-    margin-top: 30px;
+    margin-top: 20px;
+   
 }
 
 #flash-message {
     position: absolute;
-    margin-top: -10px;
+    margin-top: 0px;
+    margin-left: 250px !important;
 }
 
 .overlay {
@@ -284,4 +297,21 @@ table.dataTable .noowrap {
     border-radius: 0.3rem;
     outline: 0;
     z-index: 3000
+}
+.dataTables_filter {
+   
+    text-align: end;
+    margin-bottom: 10px;
+    
+}
+.dataTables_filter > label{
+   
+    text-align: start;
+   
+    
+}
+.dataTable .child .dtr-data{
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
 }

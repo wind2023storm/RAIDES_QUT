@@ -1,46 +1,30 @@
-{% if not items %}
-    <div><i>None</i></div>
-{% else %}
-    {% for note in items %}
-        <li data-type="note" data-id="{{ note.id }}">
-            <table>
-                <tbody>
-                <tr>
-                    <th>Title:</th>
-                    <td>
-                        <span data-field="name" data-value="{{ note.name }}">{{ note.name }}</span>
-                        <button data-bs-toggle="modal" data-bs-target="#deleteNoteModal" data-action="delete"
-                                data-url="{% url 'lms:handle_note' slug=project.slug action="delete" %}">Delete
-                        </button>
-                        <button data-bs-toggle="modal" data-bs-target="#modifyNoteModal" data-action="modify"
-                                data-url="{% url 'lms:handle_note' slug=project.slug action="modify" %}">Modify
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Content:</th>
-                    <td data-field="content" data-value="{{ note.content }}">{{ note.content }}</td>
-                </tr>
-                <tr>
-                    <th>Date Created:</th>
-                    {# READONLY #}
-                    <td>{{ note.date_created }} by {{ note.user }}</td>
-                </tr>
-                <tr>
-                    <th>Last Modified:</th>
-                    {# READONLY #}
-                    <td>{{ note.date_updated }} by {{ note.user_updated }}</td>
-                </tr>
-                <tr>
-                    <th>Files:</th>
-                    <td>
-                        <ol>
-                            {% include 'lms/files.html' with project=project files=note.files %}
-                        </ol>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
-    {% endfor %}
+<!-- {% comment %}
+owner.html
+id=NOTES_CONTENT
+{% endcomment %} -->
+
+{% load project_tags %}
+
+{% if view.queryset %}
+  {% for note in view.queryset %}
+  <div class="note-item form-data" 
+      {% if view.project|is_write:view.member %}
+      data-bs-toggle="modal" data-bs-target="#modifyNoteModal" data-action="modify"
+      data-url="{% url 'lms:modify_note' slug=view.project.slug owner=note.owner.id note=note.id %}"
+      {% endif %}
+  >
+    <span class="title text-break" data-field="name" data-value="{{ note.name }}">{{ note.name }}</span>
+    <span class="text-break" data-field="content" data-value="{{ note.content }}">{{ note.content }}</span>
+    {% if view.project|is_admin:view.member %}
+    <button class="position-absolute top-0 end-0 m-1 btn-clear-hover dark-hover"
+          data-bs-toggle="modal" data-bs-target="#deleteNoteModal" data-action="delete"
+          data-url="{% url 'lms:delete_note' slug=view.project.slug owner=note.owner.id note=note.id %}"
+          data-modal-content="Delete <b> {{ note.name }}</b>?"
+    >
+          <i class="fa fa-trash"></i>
+    </button>
+    {% endif %}
+  </div>
+  {% endfor%}
+
 {% endif %}

@@ -1,0 +1,94 @@
+<!-- {% comment %}
+parcel.html
+id=OWNERS_RELATIONSHIP_CONTENT
+{% endcomment %} -->
+{% load project_tags %}
+{% load modal_tags %}
+
+{% if view.form_instance %}
+  {% modalform id="newRelationship" title="Add Existing Owner to Parcel" %}
+    {% csrf_token %}
+    <div class="d-flex flex-row">
+      <div class="pe-3" style="border-right: 1px gainsboro solid; width: 350px;" name="modal-content"></div>
+      <div class="d-flex flex-column ms-3">
+        {{ view.form_instance.as_p }}
+      </div>
+    </div>
+  {% endmodalform %}
+{% endif %}
+
+{% if view.queryset %}
+  {% for relation in view.queryset %}
+    {% with relation.owner as owner %}
+      <div class="owner-item form-data" data-url="{% url 'lms:owner' slug=view.project.slug owner=owner.id %}">
+        <div class="d-flex flex-column flex-grow-1">
+          <span class="me-2">
+            {% if relation.is_mail_target %}
+            <i class="fa fa-envelope" data-field="is_mail_target" data-value="checked" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Onwer is Mail Target"></i>
+            {% endif %}
+             {{ owner.get_full_name }} 
+          </span>
+          <span data-field="date_ownership_start" {% if relation.date_ownership_start %} data-value="{{ relation.date_ownership_start|date:'Y-m-d' }}"{% endif %}>
+            <b>Ownership Start:</b> {{ relation.date_ownership_start}}
+          </span>
+          <span data-field="date_ownership_ceased" {% if relation.date_ownership_ceased %} data-value="{{ relation.date_ownership_ceased|date:'Y-m-d' }}"{% endif %}> 
+            <b>Ownership Ceased:</b> {{relation.date_ownership_ceased}}
+          </span>
+          <span></span>
+        </div>
+        {% if view.project|is_admin:view.member %}
+        <div style="width: 20px; min-width: 12px;" class="relationship-toolbar">
+          <button class="btn-clear-hover relationship-toolbar-btn" >
+            <i class="fa fa-ellipsis-h"></i>
+          </button>
+          <div class="relationship-toolbar-content" hidden="true">
+            <button class="btn-clear-hover" data-bs-toggle="modal" data-bs-target="#modifyRelationshipModal" data-action="modify"
+                    data-url="{% url 'lms:modify_relationship' slug=view.project.slug parcel=relation.parcel.id relationship=relation.id %}"
+                    {% with relation.parcel.parcel as parcel%}
+                      data-modal-content="
+                        <div class='d-flex flex-column'>
+                          <h4>{{owner.get_full_name}}</h4>
+                          <span><b>Parcel: </b>{{parcel.lot_plan}}</span>
+                          <span><b>Tenture: </b>{{parcel.tenure}}</span>
+                          <span><b>Shire: </b>{{parcel.shire_name}}</span>
+                          <span><b>Locality: </b>{{parcel.locality}}</span>
+                          <span><b>Parcel type: </b>{{parcel.parcel_type}}</span>
+                          <span><b>Cover type: </b>{{parcel.cover_type}}</span>
+                        </div>
+                      "
+                    {% endwith %}
+            >
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button class="btn-clear-hover" data-bs-toggle="modal" data-bs-target="#deleteRelationshipModal" data-action="delete"
+                    data-url="{% url 'lms:delete_relationship' slug=view.project.slug parcel=relation.parcel.id relationship=relation.id %}"
+                    data-modal-content="
+                      <div class='d-flex flex-column'>
+                        <div class='mb-3' style='border: 0.5px solid gainsboro; border-radius: 5px; padding: 4px;''>
+                          <i class='fa-solid fa-circle-info'></i> 
+                          <i>Removing <b>{{ owner.get_full_name }}</b> from parcel <b>{{ relation.parcel.parcel.lot_plan }}</b>. This won't delete the owner from the LMS project <b>{{ view.project.name }}</b>.</i>
+                        </div>
+                        <span>Proceed to remove <b>{{ owner.get_full_name }}</b> from parcel <b>{{ relation.parcel.parcel.lot_plan }}</b>? </span
+                      </div>
+                    "
+            >
+              <i class="fa-solid fa-user-minus"></i>
+            </button>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- {% comment %}
+      {% if view.project|is_admin:member %}
+      <button data-bs-toggle="modal" data-bs-target="#deleteOwnerModal" data-action="delete"
+              data-url="{% url 'lms:delete_owner' slug=view.project.slug owner=owner.id %}">Delete
+      </button>
+      {% endif %}
+      <button data-bs-toggle="modal" data-bs-target="#modifyOwnerModal" data-action="modify"
+              data-url="{% url 'lms:modify_owner' slug=view.project.slug owner=owner.id %}">Modify
+      </button>
+      {% endcomment %} -->
+    {% endwith %}
+  {% endfor %}
+{% endif %}

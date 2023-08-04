@@ -1,60 +1,110 @@
-# project_orefox_d4
-django 4 upgrade for project_orefox
+# PLATFORM SETUP INSTRUCTIONS
+Company Guidelines for Programming: https://drive.google.com/drive/folders/1zdl1Sj5JfqQgwdTPyQeEQtGngYgkfSun?usp=drive_link
 
-## How to run this app in Local Machine (Linux Recommended)  
-- Clone this project
-- Create and activate virtual environment (venv)
-- Goto 'web' directory and install requirements with through pip ```pip install -r requirements.txt```
-- Goto your virtual environment and find the following file, `(venv)/Lib/site-packages/djconfig/admin.py` and change `from django.conf.urls import url` to `from django.urls import re_path as url`
-- Create a .env file in 'web' directory and put all the default variables from .env.structure.txt
-- In the 'web' directory, install GDAL using `pip install GDAL-3.3.3-cp38-cp38-win_amd64.whl`
-- Clone this fork of the Spirit package outside of this repo: https://github.com/GeorgeKandamkolathy/Spirit
-- Within this repo take the spirit file and replace the installed spirit folder within the `(venv)/lib/python3.8/site-packages`.
-- Then install tensorflow using `pip install tensorflow`
-- Run `python manage.py makemigrations`
-- Make sure you have the latest project version and run `python manage.py spiritinstall`
-- Migrate the database with `python manage.py migrate`
-- Now start the application with `python manage.py runserver` and visit this link http://127.0.0.1:8000/
-- Change the url to `http://127.0.0.1:8000/debug/` to load dummy data. It will take around 30 seconds for the data to load.
-- Log into the platform using `username: admin@email.com` and `password: admin`
-- Now you are ready to use the application
+## Contents
 
-# Windows Installation Guide for GDAL
-If installing gdal via pip either doesn't work or isnt recognized, doing the following will work on both Windows 10 and 11:
+* [Install PostGIS Database](#install-postgis-database)
+* [Using Terminal](#using-terminal)
+* [VS CODE EXPLORER](#vs-code-explorer)
+* [MacOS GDAL Installation](#macos-gdal-installation)
+* [Errors Installing Requirements](#errors-installing-requirements)
+* [MacOS Installation Issues](#macos-installation-issues)
 
-- Run `pip debug --verbose`  and look for compatible tags, e.g., *cp38-cp38-win_amd64*
-- First, download the GDAL wheel from [Christoph Gohlke's Unofficial Windows Binaries for Python Extension Packages](https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal). Use the tags found above to determine which wheel you download.
-- Install via `pip install '/path/to/GDAL-3.3.3‑cp38-cp38-win_amd64.whl'` (or whatever wheel it was you downloaded)
-- Navigate to `/path/to/venv/Lib/site-packages/osgeo/` and take note of the gdalXXX.dll files name e.g., gdal304.dll
-- The version name of the dll found above needs to be added to the `/path/to/venv/lib/site-packages/django/contrib/gis/gdal/libgdal.py` file here:
-```python
-elif os.name == 'nt':
-    # Windows NT shared libraries
-    lib_names = ['gdal304', 'gdal300', 'gdal204', 'gdal203', 'gdal202', 'gdal201', 'gdal20']
-	# ^ add dll name to this array if its not there
+## Install PostGIS Database
+1. Install the latest version of PostgreSQL from https://www.postgresql.org/download/
+2. Go with the default settings for everything except for things mentioned below.
+3. Check “ADD TO PYTHON PATH” or something similar on one of the pages.
+4. When on this page, select PostGIS in spatial extensions:
+
+![gisExtension](https://github.com/OreFox/project_orefox_d4/assets/92376489/d99aa759-81ab-4218-a292-c6a34283aca2)
+
+5. After the page above, you might encounter a checkbox to create a spatial database, no need to check that.
+6. SQL Shell and pgAdmin4 will be installed automatically once the installation above finishes.
+7. Open `SQL Shell`. Everything in square brackets is the default value. Hit enter to keep the default values. Only change the default value of Database to `django` and Password to `pass`.
+
+  ![Untitled](https://github.com/OreFox/project_orefox_d4/assets/92376489/b3e91702-cd51-4690-898d-77572643c2a6)
+
+8. Open `pgAdmin4` and log in with the password from above
+9. Go to `Servers -> PostgreSQL 15 -> Databases -> django -> extensions`
+10. Right-click on extensions and select `create -> extension`
+ 
+ ![Screenshot (3)](https://github.com/OreFox/project_orefox_d4/assets/92376489/54b48055-914b-42f6-a4a7-64f2ad9c0b76)
+
+11. Search and select `postgis` extension from the options(option not available in the image as already added)
+  
+  ![Screenshot 2023-08-02 171834](https://github.com/OreFox/project_orefox_d4/assets/92376489/434a7042-ab8e-490f-9290-a9e4db27cba7)
+
+
+## Using Terminal
+1. Clone this repo and change directory in the terminal to where the repo is stored. Install Python version 3.8 from https://www.python.org/downloads/release/python-3810/.
+2. Use `py -0`	to check if Python version 3.8 is installed.
+3. Execute the following (use command prompt in Windows):
+ ```shell
+py -3.8 -m venv venv
+.\venv\Scripts\activate.bat
+py -m pip install --upgrade pip
+pip install -U setuptools
+pip install -U wheel
+pip install -r requirements.txt
+cd web
+pip install GDAL-3.3.3-cp38-cp38-win_amd64.whl
+pip install pyopenssl --upgrade
+pip install daphne
+pip install --upgrade attrs
+pip install --upgrade channels
+pip install psycopg2 
+python manage.py makemigrations
+python manage.py migrate
 ```
-- Add the following code block to your django settings.py (within the main folder project folder, not site-packages) before the initialization of any packages:
-```python
-if os.name == 'nt':
-    VENV_BASE = os.environ['VIRTUAL_ENV']
-    os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
-    os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
+4. The second last command might give some yellow warnings that you can ignore.
+5. Use `pip list` to check if packages are installed in the virtual environment created using the first two commands above.
+6. Install `Firefox` web browser		(contains drivers needed for the platform)
+
+Do the next steps after the steps mentioned below
+1. `python manage.py runserver`
+2. Visit this link http://127.0.0.1:8000/ and register for a new account.
+
+Now you are ready to use the application
+
+## VS CODE EXPLORER
+1. Navigate to the project's web folder and rename `.env_defaults` to `.env` file.
+2. Make the below changes in .env
+  
+![Screenshot 2023-08-03 093340](https://github.com/OreFox/project_orefox_d4/assets/92376489/96889e36-eea9-4e87-b3e8-0356d3d3eca7)
+
+3. Then go to your virtual environment folder (venv) outside the web folder and move to `venv -> Lib -> djconfig -> admin.py` and edit line 29.
+  	Change
+                  `from django.conf.urls import url`
+        to
+                  `from django.urls import re_path as url`
+
+## MacOS GDAL Installation
+1. Install brew (https://brew.sh/)
+2. Run the following command in your terminal: `brew install gdal`
+3. Open web/main/settings.py and add the following lines at the end of the file:
+
+```shell
+GDAL_LIBRARY_PATH = '/opt/homebrew/Cellar/gdal/3.5.3/lib/libgdal.31.dylib'
+GEOS_LIBRARY_PATH = '/opt/homebrew/Cellar/geos/3.11.0/lib/libgeos_c.1.dylib'
 ```
-- Finished! Now continue with the regular setup of django.
 
-Note: If there are still issues, it's possible you might need to install GDAL on windows. As there aren't any binaries available on the GDAL website and you have to build it yourself. The easiest way to install it is by using the network installer for [OSGeo4W](https://trac.osgeo.org/osgeo4w/), just do an express installation but make sure to select GDAL as an additional package.
+4. Replace the version numbers with the versions you have installed
 
-# Migration Error
+# Installation Errors
+The following are solutions to the most common problems with the setup.
+In case you are still unable to set up the platform, email sahaj@orefox.com with a screenshot of the issue to help you out.
 
-In case you are facing some kind of migration error, 
-- Go to web directory
-- Delete db.sqlite3(only within web)
-- Delete __pycache__ folders in each folder
-- Delete all files and folders (except __init__.py) within migration folder present in most app folders 
-- Run `python manage.py makemigrations`
-- Then run `python manage.py spiritinstall`
-- Migrate the database with `python manage.py migrate`
-- Now start the application with `python manage.py runserver` and visit this link http://127.0.0.1:8000/
-- Change the url to `http://127.0.0.1:8000/debug/` to load dummy data. It will take around 30 seconds for the data to load.
-- Log into the platform using `username: admin@email.com` and `password: admin`
-- Now you are ready to use the application
+## Errors Installing Requirements
+In case you are having issues with particular packages:
+- get the name of the package from the error displayed in the terminal
+- final that package name in the requirements.txt file
+- add `#` to the left of the package name (this comments the package out of the installation process)
+- save the requirements.txt file using `ctrl + s`
+- install the requirements file again `pip install -r requirements.txt`
+- repeat the process for all packages that give errors
+- Install the packages that have been commented out using `pip install <package name and version from the requirements.txt file`, e.g. `pip install Pillow==8.4.0`
+
+## MacOS Installation Issues
+In case you are facing an issue installing gssapi
+- try fixing the missing GSSAPI_MAIN_LIB variable using the command: `export GSSAPI_MAIN_LIB=/System/Library/Frameworks/GSS.framework/Versions/Current/GSS`
+- Install Pillow package: `pip install Pillow==8.4.0`

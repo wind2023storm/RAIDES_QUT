@@ -1,0 +1,24 @@
+.data-dropdown{
+    display:none;
+    margin-bottom: 0.7rem;
+    padding-left: 0.5rem;
+}
+
+.exploration-dropdown{
+    display:none;
+    margin-bottom: 0.7rem;
+    max-width: 15rem;
+    padding-left: 0.5rem;
+}
+
+ul {
+    padding-left: 10px;
+}
+
+.unlinked{
+    color:gray
+}
+
+span{
+    white-space:initial;
+}

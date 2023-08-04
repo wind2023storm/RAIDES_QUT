@@ -1,58 +1,113 @@
-{% if not items %}
-    <div><i>None</i></div>
+<!-- {% comment %}
+owner.html
+id=TASKS_CONTENT
+{% endcomment %} -->
+{% load project_tags %}
+{% load static %}
+
+{% if view.queryset %}
+{% for task in view.queryset %}
+<div class="task-item form-data" 
+  {% if view.project|is_write:view.member %}
+  data-bs-toggle="modal" data-bs-target="#modifyTaskModal" data-action="modify"
+  data-url="{% url 'lms:modify_task' slug=view.project.slug owner=task.owner.id task=task.id %}"
+  {% endif %}
+>
+  <div class="left-content">
+    <span class="title" data-field="name" data-value="{{ task.name }}">{{ task.name }}</span>
+    <span class="date" data-field="date_due" data-value="{{ task.date_due|date:'Y-m-d' }}">{{ task.date_due }}</span>
+    <span class="description" data-field="content" data-value="{{ task.content }}">
+      {{ task.content }}
+    </span>
+  </div>
+  <div class="right-content">
+    {% if view.project|is_admin:view.member %}
+    <button class="btn-clear-hover"
+            data-bs-toggle="modal" data-bs-target="#deleteTaskModal" data-action="delete"
+            data-url="{% url 'lms:delete_task' slug=view.project.slug owner=task.owner.id task=task.id %}"
+            data-modal-content="Delete <b> {{ task.name }}</b>?"
+    >
+        <i class="fa fa-trash"></i>
+    </button>
+    {% endif %}
+    <span class="priority" data-field="priority" data-value="{{ task.priority }}">{{ task.get_priority_display }}</span>
+    <span class="status" data-field="status" data-value="{{ task.status }}">{{ task.get_status_display }}</span>
+    <span class="date">
+      <span class="last-updated">Last updated:</span>
+      <span>{{ task.date_updated|date }}</span>
+      <div class="date-tooltip">
+        <span><span class="fw-bold">Updated:</span> <span> {{ task.user_updated}}, {{task.date_updated}}</span></span>
+        <span><span class="fw-bold">Created:</span> <span>{{task.user}}, {{task.date_created}}</span></span>
+      </div>
+    </span>
+    <!-- Files -->
+  </div>
+</div>
+{% endfor %}
+<script>
+  $(function () {
+    console.log('Init task');
+    document.querySelectorAll('.task-item').forEach(function(e) {
+      console.log(e);
+      const $task = $(e)
+
+      const $priority = $task.find('.priority:first')
+      const priority_value = $priority.data('value')
+
+      console.log('Priority ', priority_value);
+
+      
+      if (priority_value== '0') {
+        $priority.addClass('text-secondary')
+      } else if (priority_value == '1') {
+        $priority.addClass('text-secondary')
+      } else if (priority_value == '2') {
+        $priority.addClass('text-warning')
+      } else if (priority_value == '3') {
+        $priority.addClass('text-danger')
+      } else if (priority_value== '4') {
+        $priority.addClass('text-danger-emphasis fw-bold')
+      } else if (priority_value == '5') {
+        $priority.addClass('text-bg-danger fw-bold')
+      }
+
+      const $status = $task.find('.status:first')
+      const status_value = $status.data('value')
+
+      if (status_value== '0') {
+        $status.addClass('text-secondary')
+      } else if (status_value == '1') {
+        $status.addClass('text-success-emphasis')
+        
+      } else if (status_value == '2') {
+        $status.addClass('text-warning')
+        
+      } else if (status_value == '3') {
+        $status.addClass('text-success')
+        
+      } else if (status_value == '4') {
+        $status.addClass('text-warning')
+      }
+
+      const $date = $task.find('.date:first')
+      const task_date_value = $date.data('value') // YYYY-mm-dd
+      console.log('Date:', $date.data('value'));
+      
+      const taskDate= new Date(task_date_value)
+      const currentDate = new Date()
+
+      console.log('Current date: ', currentDate);
+
+      if (taskDate <= currentDate) {
+        $date.addClass('text-danger')
+      } else if (taskDate > currentDate) {
+        $date.addClass('text-success')
+      }
+
+
+    });
+  })
+</script>
 {% else %}
-    {% for task in items %}
-        <li data-type="task" data-id="{{ task.id }}">
-            <table>
-                <tbody>
-                <tr>
-                    <th>Title:</th>
-                    <td>
-                        <span data-field="name" data-value="{{ task.name }}">{{ task.name }}</span>
-                        <button data-bs-toggle="modal" data-bs-target="#deleteTaskModal" data-action="delete"
-                                data-url="{% url 'lms:handle_task' slug=project.slug action="delete" %}">Delete
-                        </button>
-                        <button data-bs-toggle="modal" data-bs-target="#modifyTaskModal" data-action="modify"
-                                data-url="{% url 'lms:handle_task' slug=project.slug action="modify" %}">Modify
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Content:</th>
-                    <td data-field="content" data-value="{{ task.content }}">{{ task.content }}</td>
-                </tr>
-                <tr>
-                    <th>Status:</th>
-                    <td data-field="status" data-value="{{ task.status }}">{{ task.get_status_display }}</td>
-                </tr>
-                <tr>
-                    <th>Priority:</th>
-                    <td data-field="priority" data-value="{{ task.priority }}">{{ task.get_priority_display }}</td>
-                </tr>
-                <tr>
-                    <th>Date Due:</th>
-                    <td data-field="date_due" data-value="{{ task.date_due|date:'Y-m-d' }}">{{ task.date_due }}</td>
-                </tr>
-                <tr>
-                    <th>Date Created:</th>
-                    {# READONLY #}
-                    <td>{{ task.date_created }} by {{ task.user }}</td>
-                </tr>
-                <tr>
-                    <th>Last Modified:</th>
-                    {# READONLY #}
-                    <td>{{ task.date_updated }} by {{ task.user_updated }}</td>
-                </tr>
-                <tr>
-                    <th>Files:</th>
-                    <td>
-                        <ol>
-                            {% include 'lms/files.html' with project=project files=task.files %}
-                        </ol>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
-    {% endfor %}
+
 {% endif %}

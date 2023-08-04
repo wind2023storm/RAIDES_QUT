@@ -11,16 +11,16 @@ $(window).on("map:init", function (event) {
 });
 
 $(document).ready(function () {
-  map.flyTo([-26,135],3)
+  map.flyTo([-33,147],6)
 
-    $("#dropdownMenuButton1").prop("disabled", true);
-  
-    $("#upload_button").click(function(e) {
-         $('#file_uploader_modal').modal("show");
-      });
-      $(".close").click(function(e) {
-         $('#file_uploader_modal').modal("hide");
-      });
+  $("#dropdownMenuButton1").prop("disabled", true);
+
+  $("#upload_button").click(function(e) {
+        $('#file_uploader_modal').modal("show");
+    });
+    $(".close").click(function(e) {
+        $('#file_uploader_modal').modal("hide");
+    });
   ////////////////// popover ///////////////////////
   $('body').on('click', function (e) {
     $('.options-desc-btn').each(function () {

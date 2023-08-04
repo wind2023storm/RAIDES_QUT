@@ -12,7 +12,7 @@ from project.utils.decorators import has_project_permission
 from tms.models import Tenement
 
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
-from lms.models import LandParcel
+from lms.models import Parcel
 from datetime import datetime, date
 
 JSON_DIRECTORY = 'interactive_map/static/interactive_map/json/'
@@ -42,7 +42,7 @@ def get_tenements_data():
     return load_json(os.path.join(JSON_DIRECTORY, 'tenements.json'))
 
 def process_cadastre_json(file_path):
-    """Inserts cadastre data from a JSON file into the LandParcel model in the database.
+    """Inserts cadastre data from a JSON file into the Parcel model in the database.
 
     Args:
         file_path (str): The path to the JSON file containing the cadastre data.
@@ -59,7 +59,7 @@ def process_cadastre_json(file_path):
         if geometry.geom_type == 'Polygon':
             geometry = MultiPolygon(geometry)
 
-        LandParcel.objects.update_or_create(
+        Parcel.objects.update_or_create(
             lot=feature['properties'].get('LOT'),
             plan=feature['properties'].get('PLAN'),
             geometry=geometry

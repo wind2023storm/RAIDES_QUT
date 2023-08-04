@@ -47,6 +47,7 @@ PROJECT_APPS = [
     'project',
     'tms',
     'lms',
+    'native_title_management',
     'geochem',
     'interactive_map',
     'geodesk_gis',
@@ -56,41 +57,9 @@ PROJECT_APPS = [
     'notification'
 ]
 
-SPIRIT_APPS = [
-    'spirit.core',
-    'spirit.admin',
-    'spirit.search',
-
-    'spirit.user',
-    'spirit.user.admin',
-    'spirit.user.auth',
-
-    'spirit.category',
-    'spirit.category.admin',
-
-    'spirit.topic',
-    'spirit.topic.admin',
-    'spirit.topic.favorite',
-    'spirit.topic.moderate',
-    'spirit.topic.notification',
-    'spirit.topic.private',
-    'spirit.topic.unread',
-
-    'spirit.comment',
-    'spirit.comment.bookmark',
-    'spirit.comment.flag',
-    'spirit.comment.flag.admin',
-    'spirit.comment.history',
-    'spirit.comment.like',
-    'spirit.comment.poll',
-
-    'djconfig',
-    'haystack',
-]
-
-
 INSTALLED_APPS = [
     'daphne',
+    'attrs',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -103,7 +72,7 @@ INSTALLED_APPS = [
     'leaflet',
 
     'channels'
-] + PROJECT_APPS + SPIRIT_APPS
+] + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -114,12 +83,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'spirit.user.middleware.TimezoneMiddleware',
-    'spirit.user.middleware.LastIPMiddleware',
-    'spirit.user.middleware.LastSeenMiddleware',
-    'spirit.user.middleware.ActiveUserMiddleware',
-    'spirit.core.middleware.PrivateForumMiddleware',
-    'djconfig.middleware.DjConfigMiddleware',
 ]
 
 ROOT_URLCONF = 'main.urls'
@@ -286,21 +249,23 @@ HAYSTACK_CONNECTIONS = {
         'PATH': os.path.join(BASE_DIR, 'st_search'),
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'spirit.search.signals.RealtimeSignalProcessor'
+# TODO: What is this?
+# HAYSTACK_SIGNAL_PROCESSOR = 'spirit.search.signals.RealtimeSignalProcessor'
 
 ST_SITE_URL = 'http://127.0.0.1:8000/'
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'spirit_cache',
-    },
-    'st_rate_limit': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'spirit_rl_cache',
-        'TIMEOUT': None
-    }
-}
+# TODO: Is this needed post spirit removal?
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+#         'LOCATION': 'spirit_cache',
+#     },
+#     'st_rate_limit': {
+#         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+#         'LOCATION': 'spirit_rl_cache',
+#         'TIMEOUT': None
+#     }
+# }
 
 
 LOGIN_URL = 'user:login'

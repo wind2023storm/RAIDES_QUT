@@ -1,0 +1,182 @@
+{% load static %}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'appboard/css/sidebar.css' %}"/>
+</head>
+
+<div id="sidebar" class="bg-ofx-blue">
+    <nav class="sticky-top position-sticky">
+        <ul class="navbar-nav flex-column text-ofx-light px-3">
+            <li class="nav-item py-3 text-center">
+                <img class="img-profile" style="height: 44px; width: 44px; transform: rotate(345deg);"
+                     src="{% static 'website/images/icons/counter-center-new.png' %}">
+                <span class="text-of-light ms-2 pt-1 side-orefox">OREFOX</span>
+            </li>
+            <hr class="text-ofx-gray my-2">
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'appboard:home' %}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span class="ms-1 side-item">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-store"></i>
+                    <span class="ms-1 side-item unlinked">App Store</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'project:new_project' %}">
+                    <i class="fas fa-fw fal fa-folder-plus "></i>
+                    <span class="ms-1 side-item">Create New Project</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'project:index' %}">
+                    <i class="fas fa-fw fal fa-project-diagram"></i>
+                    <span class="ms-1 side-item">My Projects</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fal fa-list"></i>
+                    <span class="ms-1 side-item unlinked">My Apps</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'project_management:kanban' %}">
+                    <i class="fas fa-fw fal fa-list-check"></i>
+                    <span class="ms-1 side-item">Task List</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-clipboard"></i>
+                    <span class="ms-1 side-item unlinked">Task Master</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'interactive_map:home' %}">
+                    <i class="fas fa-fw fal fa-map"></i>
+                    <span class="ms-1 side-item">Interactive Map</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a id="data-management" class="nav-link dropdown-toggle">
+                    <i class="fas fa-fw fa-globe"></i>
+                    <span class="ms-1 side-item">Data Management</span>
+                </a>
+                <a class="dropdown-item data-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">ExploreDB</span>
+                </a>
+                <a class="dropdown-item data-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">EasyLoader</span>
+                </a>
+                <a class="dropdown-item data-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">ExtractDB</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a id="EMS" class="nav-link dropdown-toggle">
+                    <i class="fas fa-fw fal fa-globe"></i>
+                    <span class="ms-1 side-item">Exploration Management System</span>
+                </a>
+                <a class="dropdown-item nav-link exploration-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Tenement Management System </span>
+                </a>
+                <a class="dropdown-item exploration-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Team Management</span>
+                </a>
+                <a class="dropdown-item exploration-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Compliance Management System</span>
+                </a>
+                <a class="dropdown-item exploration-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Equipment management</span>
+                </a>
+                <a class="dropdown-item exploration-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Journey Management</span>
+                </a>
+                <a class="dropdown-item exploration-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Site safety register</span>
+                </a>
+                <a class="dropdown-item exploration-dropdown" href="">
+                    <i class="fas fa-fw fal fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Incident management</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fal fa-cogs"></i>
+                    <span class="ms-1 side-item unlinked">Research Tools</span>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    <i class="fas fa-fw fal fa-cogs"></i>
+                    <span class="ms-1 side-item">Tools</span>
+                </a>
+                <ul class="dropdown-menu tools-link">
+                    <a class="dropdown-item" href="{% url 'autoform:home' %}">
+                        <i class="fas fa-fw fal fa-envelope"></i>
+                        <span class="ms-1 side-item">Queensland Exploration Permit Application Template</span>
+                    </a>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Industry News</span>
+                </a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link" href="">
+                    <i class="fas fa-fw fa-envelope"></i>
+                    <span class="ms-1 side-item unlinked">Partner Program</span>
+                </a>
+            </li>
+            <hr class="my-1 pb-3">
+            <div class="text-center">
+                <button
+                        id="sidebarToggleButton"
+                        class="rounded-circle border-0 sidetoggle"
+                        type="button"
+                        data-bs-toggle="sidebar-colapse"
+                        data-bs-target="#sidebar"
+                        aria-controls="sidebar"
+                        aria-expanded="true"
+                        aria-label="Toggle navigation"
+                >
+                    <i id="collapse-icon" class="fas fa-angle-left text-ofx-gray"></i>
+                </button>
+            </div>
+        </ul>
+    </nav>
+</div>
+
+<script>
+
+    const dropdowns = [["data-management", 'data-dropdown'], ["EMS", "exploration-dropdown"]]    
+
+    dropdowns.forEach((pair) => {
+        $("#"+pair[0]).on("click", () => {
+            if($('.'+pair[1]).css('display') == 'block'){
+                $('.'+pair[1]).css({ "display": "none" });
+            }
+            else {
+                $('.'+pair[1]).css({ "display": "block"});
+            }    
+        })
+    })
+
+</script>

@@ -1,0 +1,148 @@
+{% extends 'appboard/base.html' %}
+
+{% block head_title %}Project Intersections{% endblock %}
+
+{% block content %}
+    <h1>Project {{ project }}</h1>
+
+    <div class="m-2 p-2">
+        <h2>Parcels</h2>
+
+        <table class="table-bordered">
+            <thead>
+            <tr>
+                <th>Lot Plan</th>
+                <th>Tenure</th>
+                <th>Local Govt</th>
+                <th>Feature Name</th>
+                <th>Alias Name</th>
+                <th>Locality</th>
+                <th>Parcel Type</th>
+                <th>Cover Type</th>
+                <th>Accuracy Code</th>
+                <th>Smart Map</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for lot_plan in lot_plans %}
+                <tr>
+                    <td>{{ lot_plan.lot }} {{ lot_plan.plan }}</td>
+                    <td>{{ lot_plan.tenure }}</td>
+                    <td>{{ lot_plan.shire_name }}</td>
+                    <td>{{ lot_plan.feature_name }}</td>
+                    <td>{{ lot_plan.alias_name }}</td>
+                    <td>{{ lot_plan.locality }}</td>
+                    <td>{{ lot_plan.parcel_type }}</td>
+                    <td>{{ lot_plan.cover_type }}</td>
+                    <td>{{ lot_plan.accuracy_code }}</td>
+                    <td><a href="{{ lot_plan.smis_map }}">Link</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="m-2 p-2">
+        <h2>Native Title Determinations</h2>
+
+
+        <table class="table-bordered">
+            <thead>
+            <tr>
+                <th>Tribunal No.</th>
+                <th>Name</th>
+                <th>Federal Case No.</th>
+                <th>Federal Case Name</th>
+                <th>Court File</th>
+
+                <th>Determination Date</th>
+                <th>Registration Date</th>
+
+                <th>Method</th>
+                <th>Status</th>
+                <th>Outcome</th>
+                <th>Claimant Type</th>
+
+                <th>RNTBC Name</th>
+                <th>Related NTDA</th>
+                <th>Currency Date</th>
+                <th>NNTT seq no</th>
+
+                <th>Jurisdiction</th>
+                <th>Overlap</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for title in native_title_determinations %}
+                <tr>
+                    <td>{{ title.tribunal_number }}</td>
+                    <td>{{ title.name }}</td>
+                    <td>{{ title.federal_court_number|join:", " }}</td>
+                    <td>{{ title.federal_court_name }}</td>
+                    <td><a href="{{ title.linked_file_no }}">Link</a></td>
+
+                    <td>{{ title.date_determined }}</td>
+                    <td>{{ title.date_registered }}</td>
+
+                    <td>{{ title.get_method_display }}</td>
+                    <td>{{ title.get_status_display }}</td>
+                    <td>{{ title.get_outcome_display }}</td>
+                    <td>{{ title.get_claimant_type_display }}</td>
+
+                    <td>{{ title.RNTBC_name }}</td>
+                    <td>{{ title.related_NTDA|join:", " }}</td>
+                    <td>{{ title.date_currency }}</td>
+                    <td>{{ title.NNTT_seq_no }}</td>
+
+                    <td>{{ title.jurisdiction }}</td>
+                    <td>{{ title.overlap }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="m-2 p-2">
+        <h2>Native Title Applications</h2>
+
+        <table class="table-bordered">
+            <thead>
+            <tr>
+                <th>Tribunal No.</th>
+                <th>Name</th>
+                <th>Federal Case No.</th>
+
+                <th>Lodgement Date</th>
+                <th>Status</th>
+                <th>Sub Status</th>
+                <th>Status Date</th>
+
+                <th>Representative</th>
+                <th>Registration Date</th>
+
+                <th>Jurisdiction</th>
+                <th>Overlap</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for title in native_title_applications %}
+                <tr>
+                    <td>{{ title.tribunal_number }}</td>
+                    <td>{{ title.name }}</td>
+                    <td>{{ title.federal_court_number }}</td>
+
+                    <td>{{ title.date_lodged }}</td>
+                    <td>{{ title.get_status_display }}</td>
+                    <td>{{ title.get_sub_status_display }}</td>
+                    <td>{{ title.date_status_effective }}</td>
+
+                    <td>{{ title.representative }}</td>
+                    <td>{{ title.date_registered }}</td>
+
+                    <td>{{ title.jurisdiction }}</td>
+                    <td>{{ title.overlap }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

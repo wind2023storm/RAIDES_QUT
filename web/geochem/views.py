@@ -313,16 +313,6 @@ def handle_dataanalysis(request):
     for item in request.POST.getlist('data'):
         options.update(json.loads(item))
 
-    # Format the json dicts for use in **kwargs
-    for method, contents in options.items():
-        # Fun way to get the columns from our check groups
-        if contents.get('columnsOption'):
-            # Columns could either be a list or dict depending on the number of items selected
-            try:
-                options[method]['columns'] = [k for d in contents.pop('columnsOption', [{}]) for k, v in d.items()]
-            except AttributeError:
-                options[method]['columns'] = [k for k, v in contents.pop('columnsOption', {}).items()]
-
     if ('Unnamed: 0' in dataset):
         dataset.drop(columns=['Unnamed: 0'], inplace=True)
     for column in dataset.columns:

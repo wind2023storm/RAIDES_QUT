@@ -62,7 +62,7 @@ class Tenement(models.Model):
     area_locality = models.CharField(max_length=256, null=True, blank=True)
     area_local_authority = models.CharField(max_length=256, null=True, blank=True)
     area_mining_district = models.CharField(max_length=256, null=True, blank=True)
-    area_polygons = models.MultiPolygonField(null=True, blank=True)  # Polygonal coordinates of the tenement, not sure if this is capable
+    area_polygons = models.GeometryField(null=True, blank=True)  # Polygonal coordinates of the tenement, not sure if this is capable
 
     # MISC SECTION
     prescribed_minerals = fields.ArrayField(models.CharField(max_length=64), blank=True, null=True)

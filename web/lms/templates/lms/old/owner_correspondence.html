@@ -1,0 +1,53 @@
+{% if view.instance %}
+    {% with view.instance as correspondence %}
+        <table class="table-bordered">
+            <tbody>
+            <tr>
+                <th>Title:</th>
+                <td>
+                    <span data-field="name" data-value="{{ correspondence.name }}">{{ correspondence.name }}</span>
+                    <button data-bs-toggle="modal" data-bs-target="#deleteCorrespondenceModal" data-action="delete"
+                            data-url="{% url 'lms:delete_correspondence' slug=view.project.slug owner=correspondence.owner.id correspondence=correspondence.id %}">
+                        Delete
+                    </button>
+                    <button data-bs-toggle="modal" data-bs-target="#modifyCorrespondenceModal" data-action="modify"
+                            data-url="{% url 'lms:modify_correspondence' slug=view.project.slug owner=correspondence.owner.id correspondence=correspondence.id %}">
+                        Modify
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <th>Content:</th>
+                <td data-field="content" data-value="{{ correspondence.content }}">{{ correspondence.content }}</td>
+            </tr>
+            <tr>
+                <th>Date Created:</th>
+                {# READONLY #}
+                <td>{{ correspondence.date_created }} by {{ correspondence.user }}</td>
+            </tr>
+            <tr>
+                <th>Last Modified:</th>
+                {# READONLY #}
+                <td>{{ correspondence.date_updated }} by {{ correspondence.user_updated }}</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endwith %}
+    
+{% elif view.queryset %}
+    {% for correspondence in view.queryset %}
+        <li data-type="correspondence" data-id="{{ correspondence.id }}">
+
+            <input type="checkbox" data-category="correspondence"
+                   data-url="{% url "lms:correspondence" slug=view.project.slug owner=correspondence.owner.id correspondence=correspondence.id %}">
+            <label for="correspondence">
+                <b>{{ correspondence.name }}</b>
+                <i>{{ correspondence.date_created }}</i>
+            </label>
+            <ol data-category="correspondence">
+                {# OWNER CORRESPONDENCES #}
+            </ol>
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

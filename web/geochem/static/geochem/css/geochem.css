@@ -1,3 +1,8 @@
+#addDatasetModal .nav-link.active{
+    background-color: #fff;
+    color: black;
+    border-bottom: none;
+}
 .file-field-invis {
     opacity: 1;
     position: relative;

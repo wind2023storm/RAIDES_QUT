@@ -1,50 +1,48 @@
-{% if not items %}
-    <div><i>None</i></div>
-{% else %}
-    {% for reminder in items %}
-        <li data-type="reminder" data-id="{{ reminder.id }}">
-            <table>
-                <tbody>
-                <tr>
-                    <th>Title:</th>
-                    <td>
-                        <span data-field="name" data-value="{{ reminder.name }}">{{ reminder.name }}</span>
-                        <button data-bs-toggle="modal" data-bs-target="#deleteReminderModal" data-action="delete"
-                                data-url="{% url 'lms:handle_reminder' slug=project.slug action="delete" %}">Delete
-                        </button>
-                        <button data-bs-toggle="modal" data-bs-target="#modifyReminderModal" data-action="modify"
-                                data-url="{% url 'lms:handle_reminder' slug=project.slug action="modify" %}">Modify
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Content:</th>
-                    <td data-field="content" data-value="{{ reminder.content }}">{{ reminder.content }}</td>
-                </tr>
-                <tr>
-                    <th>Date Due:</th>
-                    <td data-field="date_due" data-value="{{ reminder.date_due|date:'Y-m-d' }}">{{ reminder.date_due }}</td>
-                </tr>
-                <tr>
-                    <th>Date Created:</th>
-                    {# READONLY #}
-                    <td>{{ reminder.date_created }} by {{ reminder.user }}</td>
-                </tr>
-                <tr>
-                    <th>Last Modified:</th>
-                    {# READONLY #}
-                    <td>{{ reminder.date_updated }} by {{ reminder.user_updated }}</td>
-                </tr>
-                <tr>
-                    <th>Files:</th>
-                    <td>
-                        <ol>
-                            {% include 'lms/files.html' with project=project files=reminder.files %}
-                        </ol>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
-    {% endfor %}
+<!-- {% comment %}
+owner.html
+id=REMINDERS_CONTENT
+{% endcomment %} -->
+{% load project_tags %}
+
+{% if view.queryset %}
+<div class=" w-100">
+  <div class="reminder-search-div p-0 search-div me-2 w-100 mb-4">
+    <input type="date" class="form-control search-box" id="reminder-search" placeholder="Search Reminders..."
+    onchange="filterObjects('reminder-search','reminder-item','span', 0, true)" />                   
+  </div>
+</div>
+{% for reminder in view.queryset %}
+  <div class="reminder-item form-data" data-id="{{ reminder.id }}"
+      {% if view.project|is_write:view.member %}
+        data-bs-toggle="modal" data-bs-target="#modifyReminderModal" data-action="modify"
+        data-url="{% url 'lms:modify_reminder' slug=view.project.slug owner=reminder.owner.id reminder=reminder.id %}"
+      {% endif %}
+  >
+    <div class="d-flex flex-column flex-grow-1">
+      <h6 data-field="name" data-value="{{ reminder.name }}" class="text-wrap text-break">{{ reminder.name }}</h6>
+      <span data-field="date_due" data-value="{{ reminder.date_due|date:'Y-m-d'}}" style="color: green">{{ reminder.date_due|date:'Y-m-d'}}</span>
+      <span hidden data-field="content" data-value="{{ reminder.content }}">{{ reminder.content }}</span>
+      
+    </div>
+    <div style="min-width: 10px;" class="d-flex flex-column justify-content-start align-items-start dropdown">
+      <!-- <button class="btn-clear-hover dark-hover"  type="button" data-bs-toggle="dropdown">
+        <i class="fa-solid fa-paperclip"></i>
+      </button> -->
+      {% if view.project|is_admin:view.member %}
+      <button class="btn-clear-hover dark-hover" data-bs-toggle="modal" data-bs-target="#deleteReminderModal" data-action="delete"
+              data-url="{% url 'lms:delete_reminder' slug=view.project.slug owner=reminder.owner.id reminder=reminder.id %}"
+              data-modal-content="Delete <b> {{ reminder.name }}</b>?"
+      >
+          <i class="fa fa-trash"></i>
+      </button>
+      {% endif %}
+      <div class="dropdown-menu dropdown-menu-end">
+        <div class="reminders-dropdown">
+            <!-- <a href="">Attachmet12318283981231 123812391 askjdalsdk askdjlasdk aksdjlaskd askdjlasd</a> <a href="">Attachmet12318283981231 123812391 askjdalsdk askdjlasdk aksdjlaskd askdjlasd</a> -->
+            <!-- Files -->
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
 {% endif %}

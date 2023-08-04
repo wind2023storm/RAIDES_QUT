@@ -1,0 +1,134 @@
+{% load project_tags %}
+
+{% if view.instance %}
+    {% with view.instance as relationship %}
+        {% with relationship.owner as owner %}
+            <table class="table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+
+                        </th>
+                        <th>
+                            <button data-bs-toggle="modal" data-bs-target="#modifyRelationshipModal" data-action="modify"
+                                    data-url="{% url 'lms:modify_relationship' slug=view.project.slug parcel=relationship.parcel.id relationship=relationship.id %}">Modify
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>Bulk Mail Target:</th>
+                    <td data-field="is_mail_target" data-value="{% if relationship.is_mail_target %}checked{% endif %}"
+                    >{{ relationship.is_mail_target }}</td>
+                </tr>
+                <tr>
+                    <th>Ownership Started:</th>
+                    <td data-field="date_ownership_start"{% if relationship.date_ownership_start %} data-value="{{ relationship.date_ownership_start|date:'Y-m-d' }}"{% endif %}
+                    >{{ relationship.date_ownership_start }}</td>
+                </tr>
+                <tr>
+                    <th>Ownership Ceased:</th>
+                    <td data-field="date_ownership_ceased"{% if relationship.date_ownership_ceased %} data-value="{{ relationship.date_ownership_ceased|date:'Y-m-d' }}"{% endif %}
+                    >{{ relationship.date_ownership_ceased }}</td>
+                </tr>
+                </tbody>
+            </table>
+        {% endwith %}
+    {% endwith %}
+{% elif view.queryset %}
+    {% for relationship in view.queryset %}
+        {% with relationship.owner as owner %}
+            <b>
+                {{ owner.get_full_name|title }}
+
+                {% if view.project|is_admin:view.member %}
+                <button data-bs-toggle="modal" data-bs-target="#deleteRelationshipModal" data-action="delete"
+                        data-url="{% url 'lms:delete_relationship' slug=view.project.slug parcel=relationship.parcel.id relationship=relationship.id %}">Remove
+                </button>
+                {% endif %}
+            </b>
+            <li data-type="owner">
+                <input type="checkbox" data-category="owner"
+                       data-url="{% url "lms:owner" slug=view.project.slug owner=owner.id %}">
+                <label for="owner">
+                    <b>Owner Info</b>
+                </label>
+                <ol data-category="owner"></ol>
+
+                <input type="checkbox" data-category="relationship"
+                       data-url="{% url "lms:relationship" slug=view.project.slug parcel=relationship.parcel.id relationship=relationship.id %}">
+                <label for="relationship">
+                    <b>Parcel Info</b>
+                </label>
+                <ol data-category="relationship"></ol>
+
+                <input type="checkbox" data-category="note"
+                   data-url="{% url "lms:notes" slug=view.project.slug owner=owner.id %}">
+                <label for="note">
+                    <b>Notes</b>
+                    <button data-bs-toggle="modal" data-bs-target="#newNoteModal" data-action="new"
+                            data-url="{% url "lms:notes" slug=view.project.slug owner=owner.id %}">New +
+                    </button>
+                </label>
+                <ol data-category="note"></ol>
+
+                <input type="checkbox" data-category="correspondence"
+                       data-url="{% url "lms:correspondences" slug=view.project.slug owner=owner.id %}">
+                <label for="correspondence">
+                    <b>Correspondence</b>
+                    <button data-bs-toggle="modal" data-bs-target="#newCorrespondenceModal" data-action="new"
+                            data-url="{% url "lms:correspondences" slug=view.project.slug owner=owner.id %}">New +
+                    </button>
+                </label>
+                <ol data-category="correspondence"></ol>
+
+                <input type="checkbox" data-category="task"
+                       data-url="{% url "lms:tasks" slug=view.project.slug owner=owner.id %}">
+                <label for="task">
+                    <b>Tasks</b>
+                    <button data-bs-toggle="modal" data-bs-target="#newTaskModal" data-action="new"
+                            data-url="{% url "lms:tasks" slug=view.project.slug owner=owner.id %}">New +
+                    </button>
+                </label>
+                <ol data-category="task"></ol>
+
+                <input type="checkbox" data-category="reminder"
+                       data-url="{% url "lms:reminders" slug=view.project.slug owner=owner.id %}">
+                <label for="reminder">
+                    <b>Reminders</b>
+                    <button data-bs-toggle="modal" data-bs-target="#newReminderModal" data-action="new"
+                            data-url="{% url "lms:reminders" slug=view.project.slug owner=owner.id %}">New +
+                    </button>
+                </label>
+                <ol data-category="reminder"></ol>
+
+                <input type="checkbox" data-category="files"
+                       data-url="{% url "lms:files" slug=view.project.slug owner=owner.id %}">
+                <label for="files">
+                    <b>Files</b>
+                    <button data-bs-toggle="modal" data-bs-target="#newFileModal" data-action="new"
+                            data-url="{% url "lms:files" slug=view.project.slug owner=owner.id %}">New +
+                    </button>
+                </label>
+                <ol data-category="files"></ol>
+
+                <input type="checkbox" data-category="owner-history"
+                       data-url="{% url "lms:histories" slug=view.project.slug model='owner' object=owner.id %}">
+                <label for="owner-history">
+                    <b>Owner History</b>
+                </label>
+                <ol data-category="owner-history"></ol>
+
+                <input type="checkbox" data-category="relationship-history"
+                       data-url="{% url "lms:histories" slug=view.project.slug model='relationship' object=relationship.id %}">
+                <label for="relationship-history">
+                    <b>Parcel History</b>
+                </label>
+                <ol data-category="relationship-history"></ol>
+            </li>
+        {% endwith %}
+    {% endfor %}
+{% else %}
+    <i>None</i>
+{% endif %}

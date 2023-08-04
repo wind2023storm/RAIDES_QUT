@@ -38,12 +38,13 @@
                         </div>
                         <div class="card-body">
                             <ul>
-                                <li>My Projects</li>
-                                <li>My Tenements</li>
-                                <li>My Reports</li>
+                                <li> <a href="{% url 'project:index' %}?tab=nav-projects-tab&tabContent=nav-projects" class="btn">My projects</a></li>
+                                <li><a href="{% url 'project:index' %}?tab=nav-tenements-tab&tabContent=nav-tenements" class="btn">My Tenements</a></li>
+                          
+                                <li><a href="{% url 'project:index' %}?tab=nav-reports-tab&tabContent=nav-reports" class="btn">My Reports</a></li>
                             </ul>
                           
-                            <a href="{% url 'project:index' %}" class="stretched-link"></a>
+                            {% comment %} <a href="{% url 'project:index' %}?tab=nav-tenements-tab" class="stretched-link"></a> {% endcomment %}
                         </div>
                     </div>
                 </div>

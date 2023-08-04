@@ -1,7 +1,10 @@
 import json
 import uuid
+from datetime import datetime
 
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import MultiPolygon
 from django.contrib.gis.db.models.functions import Area
@@ -11,30 +14,42 @@ from django.db.models import UniqueConstraint, CheckConstraint, Q, Sum
 from django.urls import reverse
 from django.utils.text import slugify
 
-from lms.managers import LandParcelManager, LandParcelProjectManager
+from lms.managers import LandParcelManager, ParcelProjectManager
 from media_file.models import MediaFile
 from project.models import Project
+from tms.models import AustraliaStateChoices
 
 User = get_user_model()
 
 
-class LandParcel(models.Model):
+class Parcel(models.Model):
     """A land parcel is described by a lot plan number, the number can be used as lot/plan"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=256)
 
-    # Public information
-    lot = models.IntegerField()
-    plan = models.CharField(max_length=64)
-    tenure = models.CharField(max_length=64)  # tenure or land_use is the category of the land parcel e.g., Freehold, lands lease or state forrest
+    # Roads and stuff don't have a lot plan
+    lot = models.CharField(max_length=5, null=True, blank=True)
+    plan = models.CharField(max_length=10, null=True, blank=True)
+    tenure = models.CharField(max_length=40, null=True, blank=True)  # tenure or land_use is the category of the land parcel e.g., Freehold, lands lease or state forrest
 
-    geometry = models.MultiPolygonField()
+    segment_parcel = models.CharField(max_length=40, null=True, blank=True, verbose_name="Segment Parcel")
+    shire_name = models.CharField(max_length=40, null=True, blank=True, verbose_name="Local Government")
+    feature_name = models.CharField(max_length=60, null=True, blank=True, verbose_name="Name")
+    alias_name = models.CharField(max_length=400, null=True, blank=True, verbose_name="Alias Name")
+
+    locality = models.CharField(max_length=30, null=True, blank=True)
+    parcel_type = models.CharField(max_length=24, null=True, blank=True)
+    cover_type = models.CharField(max_length=10, null=True, blank=True)
+    accuracy_code = models.CharField(max_length=40, null=True, blank=True)
+
+    smis_map = models.CharField(max_length=100, null=True, blank=True)
+
+    geometry = models.GeometryField()
 
     objects = LandParcelManager()
 
     @property
     def lot_plan(self):
-        return f"{self.lot}/{self.plan}"
+        return f"{self.lot}{self.plan}"
 
     def __str__(self):
         return self.lot_plan
@@ -44,17 +59,13 @@ class LandParcel(models.Model):
         self.geometry.transform(3124)
         return self.geometry.area
 
-    # def get_land_size(self):
-    #     """Returns the size of land in Square Metres"""
-    #     # TODO: Test this to make sure it works, wiki says the CRS type might affect results
-    #     return self..annotate(area=Area('mpoly'))
 
-
-class LandParcelProject(models.Model):
+class ProjectParcel(models.Model):
     """This is here in case projects are able to have their own independent instance of a land parcel"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    parcel = models.ForeignKey(LandParcel, on_delete=models.CASCADE, related_name='parcel_projects')
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='parcel_projects')
+    parcel = models.ForeignKey(Parcel, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    owners = models.ManyToManyField('lms.ParcelOwner', through='lms.ParcelOwnerRelationship', related_name='parcels', blank=True)
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
@@ -62,10 +73,13 @@ class LandParcelProject(models.Model):
 
     active = models.BooleanField(default=True)  # For if the lot plan is no longer overlapped by the project.
 
-    # Project files within this LandParcel
+    # Project files within this Parcel
     files = models.ManyToManyField(MediaFile, related_name='land_parcel_files', blank=True)
 
-    objects = LandParcelProjectManager()
+    # Owners who persist in this project parcel
+    objects = ParcelProjectManager()
+
+    history_relation = GenericRelation('LMSHistory')
 
     class Meta:
         unique_together = ('project', 'parcel')
@@ -79,111 +93,137 @@ class LandParcelProject(models.Model):
         return f"lms/{self.id}"
 
     @property
-    def bulk_mail_target(self):
+    def bulk_mail_targets(self):
         """If the user hasn't specified a bulk mail target, just retrieve the most recent entry"""
-        return self.owners.order_by('-bulk_mail_target', '-date_created').first()
+        return self.owners.filter(mail_target=True)
 
 
-class LandParcelOwner(models.Model):
-    """A person whomst owns a Land Parcel. This model is specific to a LandParcelProject, as Owners are only
-    visible/entered by a project owner"""
-    # TODO: Do they have to enter this manually themselves?
+class ParcelOwner(models.Model):
+    """Someone who owns one or many Parcel. The information stored here is specific only to the owner. All
+    relational information is stored in the ParcelProjectOwnerRelationship model"""
+
     GENDER_CHOICES = [
-        ('M', 'Male'),
-        ('F', 'Female'),
-        ('O', 'Other'),
-        ('U', 'Undisclosed'),
-        ('N', 'N/A'),
+        (0, 'N/A'),
+        (1, 'Male'),
+        (2, 'Female'),
+        (3, 'Other'),
+        (4, 'Undisclosed'),
+    ]
+
+    TITLE_CHOICES = [
+        (0, 'N/A'),
+        (1, 'Mr'),
+        (2, 'Ms'),
+        (3, 'Mrs'),
+        (4, 'Miss'),
+        (5, 'Other'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
     # FK Project related stuff
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     user_created = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='created_land_parcel_owners')
     user_updated = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='updated_land_parcel_owners')
 
-    parcel = models.ForeignKey(LandParcelProject, on_delete=models.CASCADE, related_name='owners')
-    bulk_mail_target = models.BooleanField(default=False)  # Whether the owner is included in the mailing list
-
     # Personal Details
+    title = models.PositiveSmallIntegerField(choices=TITLE_CHOICES, default=0)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     preferred_name = models.CharField(max_length=128, null=True, blank=True)
-    gender = models.CharField(choices=GENDER_CHOICES, default='N', max_length=1)
+    gender = models.PositiveSmallIntegerField(choices=GENDER_CHOICES, default=0)
     date_birth = models.DateField(null=True, blank=True)
-
-    # Ownership details
-    date_ownership_start = models.DateField(null=True, blank=True)
-    date_ownership_ceased = models.DateField(null=True, blank=True)
 
     # Contact Details
     address_street = models.CharField(max_length=512, null=True, blank=True)  # They may live elsewhere to the land parcel
     address_postal = models.CharField(max_length=512, null=True, blank=True)  # They may also accept postage from elsewhere as well
+
     contact_email = models.EmailField(null=True, blank=True)
     contact_phone = models.CharField(max_length=32, null=True, blank=True)
     contact_mobile = models.CharField(max_length=32, null=True, blank=True)
     contact_fax = models.CharField(max_length=32, null=True, blank=True)
 
+    # TODO: Does this files field go in the through relationship or not
     files = models.ManyToManyField(MediaFile, related_name='land_parcel_owner_files', blank=True)
 
+    history_relation = GenericRelation('LMSHistory')
+
     class Meta:
-        ordering = ['parcel', '-date_updated']
-        constraints = [
-            # Check to make sure that we only have one owner in the database that is a mail bulk mail target
-            # as per Warwick's instructions
-            UniqueConstraint(fields=['parcel', 'bulk_mail_target'], condition=Q(bulk_mail_target=True), name='unique_bulk_mail_target_field', violation_error_message="There can only be one bulk mail target per parcel."),
-            CheckConstraint(check=Q(bulk_mail_target=True) | ~Q(bulk_mail_target=True), name='valid_bulk_mail_target', violation_error_message="The bulk mail target field must be True or False."),
-        ]
+        ordering = ['-date_updated']
+        unique_together = ['project', 'title', 'first_name', 'last_name', 'date_birth', 'gender']
 
-    # def clean(self):
-    #     if self.bulk_mail_target and self.__class__.objects.filter(parcel=self.parcel, bulk_mail_target=True).exclude(pk=self.pk).exists():
-    #         raise ValidationError({'bulk_mail_target': 'There can only be one bulk mail target per parcel'})
+    def get_full_name(self):
+        return f"{self.get_title_display() + ' ' if self.title > 0 else ''}{self.first_name} {self.last_name}"
 
-    @property
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
+    def get_age(self):
+        """Returns the age of the person in years"""
+        date_start = self.date_birth
+        date_end = datetime.today()
+        years = date_end.year - date_start.year
+
+        # Adjust the difference if the end date hasn't occurred yet in the current year
+        if (date_start.month, date_end.day) < (date_start.month, date_end.day):
+            years -= 1
+
+        return years
 
     def __str__(self):
         preferred_name = f' ({self.preferred_name})' if self.preferred_name else ''
-        return f"{self.full_name}{preferred_name}"
-
-    def get_context(self):
-        return {
-            'id': self.id,
-            'display': self.__str__(),
-            'data': {
-                'correspondence': self.correspondence,
-                'task': self.tasks,
-                'reminder': self.reminders,
-                'self.history': self.history,
-            }
-        }
+        return f"{self.get_full_name()}{preferred_name}"
 
     def file_directory(self):
         """File directory just uses UUID for now."""
-        return self.parcel.file_directory() + f'/{self.id}'
+        return f'lms/{self.project.id}/{self.id}'
+
+
+class ParcelOwnerRelationship(models.Model):
+    """Model that indicates relational information between a Parcel Project and Parcel Owner"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    parcel = models.ForeignKey(ProjectParcel, on_delete=models.CASCADE, related_name="owner_relationships")
+    owner = models.ForeignKey(ParcelOwner, on_delete=models.CASCADE, related_name="parcel_relationships")
+
+    # Relational Information
+    is_mail_target = models.BooleanField(default=False)  # Whether the owner is included in the mailing list
+
+    date_ownership_start = models.DateField(null=True, blank=True)
+    date_ownership_ceased = models.DateField(null=True, blank=True)
+
+    # FK Project related stuff
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+    user_created = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='created_land_parcel_relationships')
+    user_updated = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='updated_land_parcel_relationships')
+
+    history_relation = GenericRelation('LMSHistory')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['parcel', 'owner'], name='unique_parcel_owner', violation_error_message='The Owner already exists within this Parcel.')
+        ]
+
+    def __str__(self):
+        return self.owner.__str__()
 
 
 class AbstractInfo(models.Model):
     """Abstract Note Model for attaching notes to some class."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='%(class)s_created_set')
-    user_updated = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    owner = models.ForeignKey(LandParcelOwner, on_delete=models.CASCADE)
+    owner = models.ForeignKey(ParcelOwner, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
     name = models.CharField(max_length=32)
     content = models.CharField(max_length=512)
-    files = models.ManyToManyField(MediaFile, related_name='%(class)s_files', blank=True)
+
+    # History Related
+    user_created = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='%(class)s_created_set')
+    user_updated = models.ForeignKey(User, on_delete=models.DO_NOTHING)
 
     class Meta:
         abstract = True
         ordering = ['owner', '-date_updated']
-
-    def file_directory(self):
-        return f"{self.owner.file_directory()}/{self._meta.get_field('owner').remote_field.related_name}"
 
     def __str__(self):
         return self.name
@@ -201,7 +241,7 @@ User Story 5: As a user, I want to be able to make notes on landowners, so that 
 
 class LandParcelOwnerNote(AbstractInfo):
     """Notes made on the Land Parcel Owner"""
-    owner = models.ForeignKey(LandParcelOwner, related_name='notes', on_delete=models.CASCADE)
+    owner = models.ForeignKey(ParcelOwner, related_name='notes', on_delete=models.CASCADE)
 
 
 """
@@ -217,7 +257,14 @@ of important documents.
 
 class LandParcelOwnerCorrespondence(AbstractInfo):
     """Correspondence made with the Land Parcel Owner"""
-    owner = models.ForeignKey(LandParcelOwner, related_name='correspondence', on_delete=models.CASCADE)
+    owner = models.ForeignKey(ParcelOwner, related_name='correspondence', on_delete=models.CASCADE)
+
+    # File deleted with correspondence
+    files = models.ManyToManyField(MediaFile, related_name='land_parcel_owner_correspondence_files', blank=True)
+
+    def file_directory(self):
+        """File directory just uses UUID for now."""
+        return f'{self.owner.file_directory()}/{self.id}'
 
 
 """
@@ -237,11 +284,13 @@ important deadlines and events
 class LandParcelOwnerTask(AbstractInfo):
     """Task for a Landowner"""
     TASK_STATUS = [
-        ('N', 'Not Started'),
-        ('I', 'In Progress'),
-        ('R', 'Review'),
-        ('C', 'Completed'),
+        (0, 'Not Started'),
+        (1, 'In Progress'),
+        (2, 'Review'),
+        (3, 'Completed'),
+        (4, 'On hold'),
     ]
+
     TASK_PRIORITY = [
         (0, 'None'),
         (1, 'Low'),
@@ -251,16 +300,18 @@ class LandParcelOwnerTask(AbstractInfo):
         (5, 'Immediate'),
     ]
 
-    owner = models.ForeignKey(LandParcelOwner, related_name='tasks', on_delete=models.CASCADE)
-    status = models.CharField(max_length=1, choices=TASK_STATUS)
-    priority = models.IntegerField(choices=TASK_PRIORITY)
+    owner = models.ForeignKey(ParcelOwner, related_name='tasks', on_delete=models.CASCADE)
+    status = models.PositiveSmallIntegerField(choices=TASK_STATUS, default=0)
+    priority = models.PositiveSmallIntegerField(choices=TASK_PRIORITY, default=2)
     date_due = models.DateField()
-    # completed = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-status', '-priority', 'owner', '-date_updated']
 
 
 class LandParcelOwnerReminder(AbstractInfo):
     """Reminder for a Landowner"""
-    owner = models.ForeignKey(LandParcelOwner, related_name='reminders', on_delete=models.CASCADE)
+    owner = models.ForeignKey(ParcelOwner, related_name='reminders', on_delete=models.CASCADE)
     date_due = models.DateField()
 
 """
@@ -275,24 +326,27 @@ information, so that I can keep a record of important changes and updates.
 """
 
 
-class AbstractHistory(models.Model):
+class LMSHistory(models.Model):
     """Abstract model for Model History changes"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='%(class)s_set', unique=False)
-    target = models.ForeignKey('self', on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True, blank=True)
+    object_id = models.CharField(max_length=36, null=True, blank=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
     date_created = models.DateTimeField(auto_now_add=True)
 
     modified_json = models.JSONField()  # Summary of what was changed
     json = models.JSONField()  # Serialized current model
 
     class Meta:
-        abstract = True
         ordering = ['-date_created']
 
     def revert_to_here(self):
         """Reverts the target model to the changes stored within this instance. Target is not saved by default."""
         # Get the history of updates ahead of this point in time and remove them
-        history = self._meta.model.objects.filter(target=self.target, date_created__gt=self.date_created)
+
+        # history = self._meta.model.objects.filter(content_object=self.content_object, date_created__gt=self.date_created)
+        history = self._meta.model.objects.filter(content_type=self.content_type, object_id=self.object_id, date_created__gt=self.date_created)
         history.delete()
 
         # Deserialize and collect the fields and values excluding many to many fields into a dict
@@ -306,15 +360,3 @@ class AbstractHistory(models.Model):
 
     def __str__(self):
         return f"{self.id} ({self.date_created})"
-
-
-class LandParcelHistory(AbstractHistory):
-    """For tracking changes made to the Land Parcel database model."""
-    target = models.ForeignKey(LandParcelProject, related_name='history', on_delete=models.CASCADE)
-    model_type = 'parcel'
-
-
-class LandParcelOwnerHistory(AbstractHistory):
-    """For tracking changes made to the Land Parcel Owner database model."""
-    target = models.ForeignKey(LandParcelOwner, related_name='history', on_delete=models.CASCADE)
-    model_type = 'owner'
