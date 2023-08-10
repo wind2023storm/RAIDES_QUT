@@ -41,7 +41,7 @@ decorator==4.4.2
 defusedxml==0.7.1
 deluge==2.0.3
 distro==1.5.0
-Django==4.1.5
+Django==4.2
 django-admin-sortable==2.2.4
 django-djconfig==0.10.0
 django-haystack==3.2.1

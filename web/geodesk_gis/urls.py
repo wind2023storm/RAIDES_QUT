@@ -10,6 +10,7 @@ urlpatterns = [
     path('upload', views.file_uploader, name="file_uploader"),
     path('map', views.mapplotter, name="mapplotter"),
     path('serve', views.serve_tif, name="serve"),
-    path('crop', views.crop_image, name="crop")
+    path('crop', views.crop_image, name="crop"),
+    path("compare/", views.compare, name="compare")
 ]
  

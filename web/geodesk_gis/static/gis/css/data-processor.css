@@ -107,6 +107,16 @@
 }
 
 
+.radio-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.radio-item {
+    margin-bottom: 5px;
+}
+
+
 /* The side navigation menu */
 .sidenav {
     height: 100%; /* 100% Full-height */
@@ -159,6 +169,8 @@
   }
 
  .similarity-filter{
-    position: relative;
-    margin-top: -20px;
- }
+    /*position: relative;*/
+    /*margin-top: -20px;*/
+    display: flex; /* Add this to make the elements align horizontally */
+    align-items: center; /* Vertically center the elements */
+

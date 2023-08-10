@@ -20,6 +20,7 @@ UserModel = get_user_model()
 
 Image.MAX_IMAGE_PIXELS = 502732897
 
+
 @login_required
 def plotter(request):
     """
@@ -37,14 +38,24 @@ def plotter(request):
 
     return render(request, template_name, context=context)
 
+
 def tmi(request):
-    
     template_name = "gis/tmi_overlay.html"
 
     context = {
     }
 
     return render(request, template_name, context=context)
+
+
+def compare(request):
+    template_name = "gis/compare_tmi.html"
+
+    context = {
+    }
+
+    return render(request, template_name, context=context)
+
 
 @login_required
 def file_uploader(request):
@@ -54,13 +65,13 @@ def file_uploader(request):
         header_row = int(data.get('header_row')) if data.get('header_row') else None
         if data.get('existing_process_file_id'):
             pf_id = int(data.get('existing_process_file_id'))
-            map_file = models.MapFile.objects.get(id = pf_id)
-            map_file.header_row=header_row
-            map_file.save(update_fields=["header_row"]) 
+            map_file = models.MapFile.objects.get(id=pf_id)
+            map_file.header_row = header_row
+            map_file.save(update_fields=["header_row"])
         else:
             uploaded_file = request.FILES.get('uploaded_file')
             map_file = models.MapFile.objects.create(expected_filename=uploaded_file.name,
-                file=uploaded_file, header_row=header_row)
+                                                     file=uploaded_file, header_row=header_row)
 
         filepath = map_file.file.path
 
@@ -72,13 +83,14 @@ def file_uploader(request):
 
         return JsonResponse(data, content_type="application/json")
 
+
 @login_required
 def mapplotter(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         filepath = data.get('filepath')
 
-        prepro=Preprocessor()
+        prepro = Preprocessor()
         df = prepro.preprocessing(filename=filepath)
         latitudeCol, longitudeCol = prepro.get_latitude_and_longitude()
         prepro.create_dataframe()
@@ -98,16 +110,18 @@ def mapplotter(request):
 
         return JsonResponse(data, content_type="application/json")
 
+
 def id_generator(size=10, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
-    
+
+
 @login_required
 def crop_image(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        filename1 = "crop_"+ id_generator() +".png"
-        filename2 = "crop_"+ id_generator() +".png"
-        
+        filename1 = "crop_" + id_generator() + ".png"
+        filename2 = "crop_" + id_generator() + ".png"
+
         if not os.path.isdir('./media_root/media/cropped_tif_files/'):
             os.mkdir('./media_root/media/cropped_tif_files/')
 
@@ -118,41 +132,69 @@ def crop_image(request):
             widthAdjustment2 = 0
             widthAdjustment1 = 0
             if data['polygon1']['geometry']['coordinates'][0][1][0] < 146.9:
-                widthAdjustment1 = 0.4 * (146.9 - data['polygon1']['geometry']['coordinates'][0][1][0])/5.9
+                widthAdjustment1 = 0.4 * (146.9 - data['polygon1']['geometry']['coordinates'][0][1][0]) / 5.9
             if data['polygon2']['geometry']['coordinates'][0][1][0] < 146.9:
-                widthAdjustment2 = 0.4 * (146.9 - data['polygon2']['geometry']['coordinates'][0][1][0])/5.9
+                widthAdjustment2 = 0.4 * (146.9 - data['polygon2']['geometry']['coordinates'][0][1][0]) / 5.9
             if data['polygon1']['geometry']['coordinates'][0][1][0] > 146.9:
-                widthAdjustment1 = -0.37 * ((data['polygon1']['geometry']['coordinates'][0][1][0] - 146.9))/6.6
+                widthAdjustment1 = -0.37 * ((data['polygon1']['geometry']['coordinates'][0][1][0] - 146.9)) / 6.6
             if data['polygon2']['geometry']['coordinates'][0][1][0] > 146.9:
-                widthAdjustment2 = -0.37 * ((data['polygon2']['geometry']['coordinates'][0][1][0]) - 146.9)/6.6
+                widthAdjustment2 = -0.37 * ((data['polygon2']['geometry']['coordinates'][0][1][0]) - 146.9) / 6.6
             widthDiv = 12.7
             height = 28.3
             heightAdj1 = 0
             heightAdj2 = 0
             if data['polygon1']['geometry']['coordinates'][0][1][1] > -32.47:
-                heightAdj1 = 0.146 * (data['polygon1']['geometry']['coordinates'][0][1][1] + 32.47)/4.2
+                heightAdj1 = 0.146 * (data['polygon1']['geometry']['coordinates'][0][1][1] + 32.47) / 4.2
             if data['polygon2']['geometry']['coordinates'][0][1][1] > -32.47:
                 print("OK")
-                heightAdj2 = 0.146 * (data['polygon2']['geometry']['coordinates'][0][1][1] + 32.47)/4.2
+                heightAdj2 = 0.146 * (data['polygon2']['geometry']['coordinates'][0][1][1] + 32.47) / 4.2
             if data['polygon1']['geometry']['coordinates'][0][1][1] < -32.47:
-                heightAdj1 = -0.146 * (-32.47 - data['polygon1']['geometry']['coordinates'][0][1][1])/4.8
+                heightAdj1 = -0.146 * (-32.47 - data['polygon1']['geometry']['coordinates'][0][1][1]) / 4.8
             if data['polygon2']['geometry']['coordinates'][0][1][1] < -32.47:
                 print("OK2")
-                heightAdj2 = -0.146 * (-32.47 - data['polygon2']['geometry']['coordinates'][0][1][1])/4.8
+                heightAdj2 = -0.146 * (-32.47 - data['polygon2']['geometry']['coordinates'][0][1][1]) / 4.8
 
             print(heightAdj2)
             print(heightAdj1)
             heightDiv = 9.1
-            im_crop1 = im.crop((round(((data['polygon1']['geometry']['coordinates'][0][1][0]-width + widthAdjustment1)/widthDiv)*im.width, 2), round(((abs(data['polygon1']['geometry']['coordinates'][0][1][1])-height + heightAdj1)/heightDiv)*im.height, 3), round(((data['polygon1']['geometry']['coordinates'][0][3][0]-width + widthAdjustment1)/widthDiv)*im.width, 2), round(((abs(data['polygon1']['geometry']['coordinates'][0][3][1])-height + heightAdj1)/heightDiv)*im.height, 3)))
+            im_crop1 = im.crop((round(((data['polygon1']['geometry']['coordinates'][0][1][
+                                            0] - width + widthAdjustment1) / widthDiv) * im.width, 2), round(((abs(
+                data['polygon1']['geometry']['coordinates'][0][1][1]) - height + heightAdj1) / heightDiv) * im.height,
+                                                                                                             3), round((
+                                                                                                                                   (
+                                                                                                                                               data[
+                                                                                                                                                   'polygon1'][
+                                                                                                                                                   'geometry'][
+                                                                                                                                                   'coordinates'][
+                                                                                                                                                   0][
+                                                                                                                                                   3][
+                                                                                                                                                   0] - width + widthAdjustment1) / widthDiv) * im.width,
+                                                                                                                       2),
+                                round(((abs(data['polygon1']['geometry']['coordinates'][0][3][
+                                                1]) - height + heightAdj1) / heightDiv) * im.height, 3)))
             print(data['polygon1']['geometry']['coordinates'])
             im_crop1.save(fp=filepath1, format='PNG')
             map_file = models.CropFile.objects.create(expected_filename=filename1,
-                file=filepath1)
-            im_crop2 = im.crop((round(((data['polygon2']['geometry']['coordinates'][0][1][0]-width + widthAdjustment2)/widthDiv)*im.width, 2), round(((abs(data['polygon2']['geometry']['coordinates'][0][1][1])-height + heightAdj2)/heightDiv)*im.height, 3), round(((data['polygon2']['geometry']['coordinates'][0][3][0]-width + widthAdjustment2)/widthDiv)*im.width, 2), round(((abs(data['polygon2']['geometry']['coordinates'][0][3][1])-height + heightAdj2)/heightDiv)*im.height, 3)))
+                                                      file=filepath1)
+            im_crop2 = im.crop((round(((data['polygon2']['geometry']['coordinates'][0][1][
+                                            0] - width + widthAdjustment2) / widthDiv) * im.width, 2), round(((abs(
+                data['polygon2']['geometry']['coordinates'][0][1][1]) - height + heightAdj2) / heightDiv) * im.height,
+                                                                                                             3), round((
+                                                                                                                                   (
+                                                                                                                                               data[
+                                                                                                                                                   'polygon2'][
+                                                                                                                                                   'geometry'][
+                                                                                                                                                   'coordinates'][
+                                                                                                                                                   0][
+                                                                                                                                                   3][
+                                                                                                                                                   0] - width + widthAdjustment2) / widthDiv) * im.width,
+                                                                                                                       2),
+                                round(((abs(data['polygon2']['geometry']['coordinates'][0][3][
+                                                1]) - height + heightAdj2) / heightDiv) * im.height, 3)))
             print(data['polygon2']['geometry']['coordinates'])
             im_crop2.save(fp=filepath2, format='PNG')
             map_file = models.CropFile.objects.create(expected_filename=filename2,
-                file=filepath2)
+                                                      file=filepath2)
             print(filepath1)
         extractor = DataExtractor(filepath1, filepath2)
         similarity = Similarity(extractor)
@@ -164,8 +206,8 @@ def crop_image(request):
 
         return JsonResponse(data, content_type="application/json")
 
+
 def serve_tif(request):
-    
     template_name = "gis/serve_tif.html"
 
     context = {
