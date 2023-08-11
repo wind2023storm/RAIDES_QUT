@@ -1,5 +1,5 @@
 from . import views
-from django.urls import path
+from django.urls import path, include
 
 app_name = 'gis'
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('map', views.mapplotter, name="mapplotter"),
     path('serve', views.serve_tif, name="serve"),
     path('crop', views.crop_image, name="crop"),
-    path("compare/", views.compare, name="compare")
+    path("compare/", views.compare, name="compare"),
+    path("project_area_input_selection/", views.project_area_input_selection, name="project_area_input_selection")
 ]
  

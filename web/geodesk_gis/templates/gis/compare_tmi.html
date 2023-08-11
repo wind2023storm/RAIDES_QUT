@@ -51,32 +51,46 @@
             {% leaflet_map "main" %}
         </div>
 
+            <form id=form_method_selection method="POST" action="{% url 'gis:project_area_input_selection' %}">
+                {% csrf_token %}
+                <div class="radio-container">
+                    <div class="radio-item">
+                        <input type="radio" id="radio1" name="area_selection" value="Upload">
+                        <label for="radio1">Upload .shp</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="radio2" name="area_selection" value="Enter">
+                        <label for="radio2">Enter coordinates</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="radio3" name="area_selection" value="Select">
+                        <label for="radio3">Select area</label>
+                    </div>
+                    <div>
+                        <button class="submit d-none d-sm-inline-block btn bg-ofx-blue text-white shadow-sm " id="submit2" type="submit" form="form_method_selection">Search for similarities</button>
+                    </div>
 
-            <div class="radio-container">
-                <div class="radio-item">
-                    <input type="radio" id="radio1" name="radio-group">
-                    <label for="radio1">Upload .shp</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" id="radio2" name="radio-group">
-                    <label for="radio2">Enter coordinates</label>
-                </div>
-                <div class="radio-item">
-                    <input type="radio" id="radio3" name="radio-group">
-                    <label for="radio3">Select area</label>
-                </div>
-                <div>
-                    <button class="submit d-none d-sm-inline-block btn bg-ofx-blue text-white shadow-sm " id="submit2" name="submit" type="submit">Search for similarities</button>
-                </div>
-            </div>
+
+
+                 </div>
+
+            </form>
+
+                    <div id="selected-option-output">
+                        {% if output_text %}
+                        {{ output_text }}
+                        {% endif %}
+                    </div>
+
+
 
     </div>
 
 
 
 
-    </div>
 </div>
+
 {% endblock %}
 
 {% block extra_body %}
@@ -86,6 +100,6 @@
     var STATIC_URL = "{{ static }}";
 
 </script>
-<script src="{% static 'gis/js/tmi-overlay.js' %}"></script>
-<script src="{% static 'gis/js/data-processor.js' %}"></script>
+
+
 {% endblock %}

@@ -10,6 +10,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from geodesk_gis import models
+from django.http import HttpResponse
 
 from mapplotter.apps.preprocessor import Preprocessor
 from mapplotter.map_plotter import Map_plotter
@@ -55,6 +56,27 @@ def compare(request):
     }
 
     return render(request, template_name, context=context)
+
+
+def project_area_input_selection(request):
+    template_name = "gis/compare_tmi.html"
+    if request.method == "POST":
+        selected_input_method = request.POST.get("area_selection")
+        print("Selected input method:", selected_input_method)
+
+        print("Form data: ", request.POST)
+
+        if selected_input_method == "Upload":
+            output_text = "You have selected to upload .shp file"
+        elif selected_input_method == "Enter":
+            output_text = "You have selected to enter the coordinates"
+        elif selected_input_method == "Select":
+            output_text = "You have selected to select area on the map"
+        else:
+            output_text = "No selection has been made stupid"
+
+        return render(request, template_name, context={"output_text": output_text})
+    return render(request, template_name, context={})
 
 
 @login_required
@@ -161,14 +183,14 @@ def crop_image(request):
                                             0] - width + widthAdjustment1) / widthDiv) * im.width, 2), round(((abs(
                 data['polygon1']['geometry']['coordinates'][0][1][1]) - height + heightAdj1) / heightDiv) * im.height,
                                                                                                              3), round((
-                                                                                                                                   (
-                                                                                                                                               data[
-                                                                                                                                                   'polygon1'][
-                                                                                                                                                   'geometry'][
-                                                                                                                                                   'coordinates'][
-                                                                                                                                                   0][
-                                                                                                                                                   3][
-                                                                                                                                                   0] - width + widthAdjustment1) / widthDiv) * im.width,
+                                                                                                                               (
+                                                                                                                                       data[
+                                                                                                                                           'polygon1'][
+                                                                                                                                           'geometry'][
+                                                                                                                                           'coordinates'][
+                                                                                                                                           0][
+                                                                                                                                           3][
+                                                                                                                                           0] - width + widthAdjustment1) / widthDiv) * im.width,
                                                                                                                        2),
                                 round(((abs(data['polygon1']['geometry']['coordinates'][0][3][
                                                 1]) - height + heightAdj1) / heightDiv) * im.height, 3)))
@@ -180,14 +202,14 @@ def crop_image(request):
                                             0] - width + widthAdjustment2) / widthDiv) * im.width, 2), round(((abs(
                 data['polygon2']['geometry']['coordinates'][0][1][1]) - height + heightAdj2) / heightDiv) * im.height,
                                                                                                              3), round((
-                                                                                                                                   (
-                                                                                                                                               data[
-                                                                                                                                                   'polygon2'][
-                                                                                                                                                   'geometry'][
-                                                                                                                                                   'coordinates'][
-                                                                                                                                                   0][
-                                                                                                                                                   3][
-                                                                                                                                                   0] - width + widthAdjustment2) / widthDiv) * im.width,
+                                                                                                                               (
+                                                                                                                                       data[
+                                                                                                                                           'polygon2'][
+                                                                                                                                           'geometry'][
+                                                                                                                                           'coordinates'][
+                                                                                                                                           0][
+                                                                                                                                           3][
+                                                                                                                                           0] - width + widthAdjustment2) / widthDiv) * im.width,
                                                                                                                        2),
                                 round(((abs(data['polygon2']['geometry']['coordinates'][0][3][
                                                 1]) - height + heightAdj2) / heightDiv) * im.height, 3)))
