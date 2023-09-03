@@ -1,6 +1,7 @@
 import json
 import os
 import random
+from random import randrange
 import string
 from django.http import JsonResponse
 from PIL import Image
@@ -77,6 +78,53 @@ def project_area_input_selection(request):
 
         return render(request, template_name, context={"output_text": output_text})
     return render(request, template_name, context={})
+
+
+def output_model_result(request):
+    template_name = "gis/compare_tmi.html"
+    simulated_result = randrange(0, 100, 1)
+    result_explanation_1 = "A similarity range of 1% to 15% signifies a very low degree of resemblance between the " \
+                           "compared areas."
+    result_explanation_2 = "A similarity range of 16% to 30% indicates a relatively low level of resemblance " \
+                           "between the compared areas."
+    result_explanation_3 = "A similarity range of 31% to 45% signifies a moderate degree of resemblance " \
+                           "between the compared areas."
+    result_explanation_4 = "A similarity range of 46% to 60% indicates a relatively substantial degree of " \
+                           "resemblance between the compared areas."
+    result_explanation_5 = "A similarity range of 61% to 75% signifies a significant degree of resemblance " \
+                           "between the compared areas."
+    result_explanation_6 = "A similarity range of 76% to 90% signifies a very high degree of resemblance " \
+                           "between the compared areas."
+    result_explanation_7 = "A similarity range of 91% to 100% represents an extremely high level of correspondence " \
+                           "and likeness between the compared areas."
+
+    model_result = str(simulated_result) + " %" + " similarity" + " - "
+
+    if simulated_result < 15:
+        model_result = model_result + result_explanation_1
+    elif simulated_result < 30:
+        model_result = model_result + result_explanation_2
+    elif simulated_result < 45:
+        model_result = model_result + result_explanation_3
+    elif simulated_result < 60:
+        model_result = model_result + result_explanation_4
+    elif simulated_result < 75:
+        model_result = model_result + result_explanation_5
+    elif simulated_result < 90:
+        model_result = model_result + result_explanation_6
+    else:
+        model_result = model_result + result_explanation_7
+
+    longitude = -32.37203571087116 + randrange(1, 50)
+    latitude = 143.67483653628386 - randrange(1, 50)
+
+    context = {
+        'longitude': longitude,
+        'latitude': latitude,
+        'model_result': model_result
+    }
+
+    return render(request, template_name, context)
 
 
 @login_required
@@ -158,7 +206,7 @@ def crop_image(request):
             if data['polygon2']['geometry']['coordinates'][0][1][0] < 146.9:
                 widthAdjustment2 = 0.4 * (146.9 - data['polygon2']['geometry']['coordinates'][0][1][0]) / 5.9
             if data['polygon1']['geometry']['coordinates'][0][1][0] > 146.9:
-                widthAdjustment1 = -0.37 * ((data['polygon1']['geometry']['coordinates'][0][1][0] - 146.9)) / 6.6
+                widthAdjustment1 = -0.37 * (data['polygon1']['geometry']['coordinates'][0][1][0] - 146.9) / 6.6
             if data['polygon2']['geometry']['coordinates'][0][1][0] > 146.9:
                 widthAdjustment2 = -0.37 * ((data['polygon2']['geometry']['coordinates'][0][1][0]) - 146.9) / 6.6
             widthDiv = 12.7

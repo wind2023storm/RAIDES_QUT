@@ -14,6 +14,7 @@ $(document).ready(function () {
   map.setView(new L.LatLng(-32.37203571087116,143.67483653628386),12);
 
 
+
   
   $("#process_id").val(0);
   $('#file_uploader_modal').modal('show');
@@ -147,7 +148,7 @@ $(document).ready(function () {
   var size = 0.045;
 	const url =
 		"http://127.0.0.1:8000/static/gis/img/TMI_RTP_1VD_4326.tif";
-        //"http://127.0.0.1:8000/static/gis/img/1.tif";
+        //"http://127.0.0.1:8000/static/gis/img/7.tif";
 
 	L.tileLayer('/static/gis/img/output/{z}/{x}/{y}.png', {
 			minZoom: 2,
@@ -155,11 +156,11 @@ $(document).ready(function () {
 			attribution: 'ESO/INAF-VST/OmegaCAM',
 			tms: true,
       bounds:[
-        new L.LatLng(-37.368002734080335,140.5029985763527),
-        new L.LatLng(-28.145396997322745,153.61338977456407)
+        new L.LatLng(-33,112),
+        new L.LatLng(-13,130)
       ]
 	}).addTo(map);
-	imageBounds = [[-29, 138], [-11.9, 153.6]];
+	imageBounds = [[-33, 112], [-13, 130]];
 	//L.imageOverlay(imageUrl, imageBounds, interactive=true).addTo(map);
 	L.control.scale().addTo(map);
 	map.doubleClickZoom.disable(); 

@@ -1,4 +1,3 @@
-$('button[type="submit"]').removeAttr("data-bs-dismiss")
 var longitude;
 var latitude;
 var map;
@@ -7,14 +6,9 @@ var L;
 $(window).on("map:init", function (event) {
   map = event.detail.map;
   L = L
-
 });
 
 $(document).ready(function () {
-  map.setView(new L.LatLng(-32.37203571087116,143.67483653628386),12);
-
-
-  
   $("#process_id").val(0);
   $('#file_uploader_modal').modal('show');
   function csrfSafeMethod(method) {
@@ -71,7 +65,7 @@ $(document).ready(function () {
         .html(
           `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...`
         )
-        .prop("disabled", true);
+        
       setTimeout(function () {
         let target_tab = $(clicked_item).attr("next-tab");
         let current_tab = $(data_processor).find(".tab-activation.active")
@@ -146,23 +140,21 @@ $(document).ready(function () {
   var polygon2 = null;
   var size = 0.045;
 	const url =
-		"http://127.0.0.1:8000/static/gis/img/TMI_RTP_1VD_4326.tif";
-        //"http://127.0.0.1:8000/static/gis/img/1.tif";
+		"http://127.0.0.1:8000/static/gis/img/1.tif";
 
 	L.tileLayer('/static/gis/img/output/{z}/{x}/{y}.png', {
-			minZoom: 2,
+			minZoom: 1,
 			maxZoom: 18,
 			attribution: 'ESO/INAF-VST/OmegaCAM',
-			tms: true,
-      bounds:[
-        new L.LatLng(-37.368002734080335,140.5029985763527),
-        new L.LatLng(-28.145396997322745,153.61338977456407)
-      ]
+			tms: true
 	}).addTo(map);
-	imageBounds = [[-29, 138], [-11.9, 153.6]];
+
+	var imageUrl = '/static/gis/img/k_crop.png',
+	imageBounds = [[-35, 112], [-25, 129]];
 	//L.imageOverlay(imageUrl, imageBounds, interactive=true).addTo(map);
 	L.control.scale().addTo(map);
 	map.doubleClickZoom.disable(); 
+	map.flyTo([-26, 135], 6)
 	map.on('dblclick', function(ev) {
 			console.log(parseInt($("[name = 'process_id']").val()))
         if (parseInt($("[name = 'process_id']").val())  < 2){
@@ -181,56 +173,26 @@ $(document).ready(function () {
             console.log(map.hasLayer(polygon1))
             })
         }
-        else if (polygon2 == null) {
-            polygon2 = L.polygon(latlngs, {color: 'red'}).addTo(map)
-            polygon2.on('click', function() {
-            polygon2.remove();
-            $("#process_id").val(parseInt($("[name = 'process_id']").val()) - 1);
-            polygon2 = null
-            })
-        }
         $("#process_id").val(parseInt($("[name = 'process_id']").val()) + 1);
 			}
 	})
-  let submitBtn =  $(document).find(".submit");
+	
   $(document).find(".submit").click(function (e) {
-    console.log("enter click function")
-    if(polygon1 == null || polygon2 ==null){
-      $('#flash-message').css('display','block')
-      $('#flash-message').html("<span class='alert alert-danger py-1' >Select Two areas on the map </span>")
-      setTimeout(function () {
-        if( document.getElementById("flash-message") !== null)
-        document.getElementById("flash-message").style.display = "none";
-      }, 3000); 
-  }
-  else{
-    let $submitBtn = $('#submit');
-    let submitHtml = $submitBtn.html();
-    $submitBtn.addSpinner();
-    const overlay = document.createElement('div');
-    overlay.classList.add('overlay');
-    document.body.appendChild(overlay);
-    
     $.ajax({
       url: "http://127.0.0.1:8000/gis/crop",
       data: JSON.stringify({"polygon1":polygon1.toGeoJSON(),
-      "polygon2":polygon2.toGeoJSON(),
+      "comparison":'MSS',
       "csrfmiddlewaretoken":csrf_token}),
       type: "POST",
       contentType: false,
       processData: false,
       dataType: "json",
       cache: false,
-     
       success: function (data) {
-        submitBtn.prop("disabled", false)
-        submitBtn.html('Submit')
-
-        returnStr = Math.round(parseFloat(data['similarity']) * 10000) / 100
-        
+        console.log(data)
         $("#modal-content").empty()
         $("#modal-content").append(`
-          <p> The similarity between the two areas is ` + returnStr + `% </p>
+          <p> The similarity between the two areas is ` + data['similarity'] + ` </p>
         `);
         $('#view_task_modal').modal('show');
         $('#view_task_modal').click(function (event) 
@@ -242,37 +204,23 @@ $(document).ready(function () {
         });
       },
       error: function (data) {
-        submitBtn.prop("disabled", false)
-        submitBtn.html('Submit')
-        console.log("in error"+data['statusText'])
-        $('#flash-message').css('display','block')
-        $('#flash-message').html("<span class='alert alert-danger py-1' >Error : " +data['statusText'] + "</span>")
       },
-      complete: function () {
-        $submitBtn.removeSpinner(submitHtml);
-       const overlay = document.querySelector('.overlay');
-         document.body.removeChild(overlay); 
-        setTimeout(function () {
-          if( document.getElementById("flash-message") !== null)
-          document.getElementById("flash-message").style.display = "none";
-        }, 3000); 
-      }
-    
-    });}
-    })
-
-  $(".sizeSelection").on("change", function (e) {
-    $( "select option:selected" ).each(function() {
-      if ($( this ).attr("value") == "small"){
-        size = 0.045
-      }
-      else if ($( this ).attr("value") == "medium"){
-        size = 0.0675
-      }
-      else if ($( this ).attr("value") == "large"){
-        size = 0.09
-      }
     });
+  })
+
+  $(document).find(".sizeSelection").click(function (e) {
+    if (e.currentTarget.id == "x-small"){
+      size = 0.0225
+    }
+    if (e.currentTarget.id == "small"){
+      size = 0.045
+    }
+    else if (e.currentTarget.id == "medium"){
+      size = 0.0675
+    }
+    else if (e.currentTarget.id == "large"){
+      size = 0.09
+    }
   })
 
 

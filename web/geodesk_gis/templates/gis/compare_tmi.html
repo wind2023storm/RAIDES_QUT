@@ -32,7 +32,7 @@
     {% endif %} {% endfor %} {% endif %}
 </div>
 
-<div class="container-fluid content-margin-top-offest w-100 h-100 mb-5" >
+<div class="container-fluid content-margin-top-offset w-100 h-100 mb-5" >
     <div class="container p-0 h-100 mb-5">
 
         <input id="process_id" type="hidden" class="process_id" name="process_id"/>
@@ -43,17 +43,31 @@
             </div>
         </div>
 
-        <div class="d-flex content-margin-top-offest px-4">
-            <h4 class="mb-2 text-ofx-blue">GIS -Similarity Comparison&nbsp&nbsp  <i class="fas fa-fw fa-globe"></i></h4>
+        <div class="d-flex content-margin-top-offset px-4">
+            <h4 class="mb-2 text-ofx-blue">GIS -Similarity Comparison&nbsp <i class="fas fa-fw fa-globe"></i></h4>
         </div>
 
         <div class="map px-4 mb-5 h-75">
-            {% leaflet_map "main" %}
+            <div class="map-wrapper">
+                {% leaflet_map "main" %}
+            </div>
+
+
+            <form action="{% url 'gis:output_model_result' %}" method="post">
+                {% csrf_token %}
+                <button class="submit d-none d-sm-inline-block btn bg-ofx-blue text-white shadow-sm" id="submit4" type="submit">Simulate model result</button>
+            </form>
+
+
+
         </div>
 
+        <div class="container p-0 h-100 mb-5 d-flex justify-content-between">
             <form id=form_method_selection method="POST" action="{% url 'gis:project_area_input_selection' %}">
                 {% csrf_token %}
+
                 <div class="radio-container">
+
                     <div class="radio-item">
                         <input type="radio" id="radio1" name="area_selection" value="Upload">
                         <label for="radio1">Upload .shp</label>
@@ -70,23 +84,58 @@
                         <button class="submit d-none d-sm-inline-block btn bg-ofx-blue text-white shadow-sm " id="submit2" type="submit" form="form_method_selection">Search for similarities</button>
                     </div>
 
+                </div>
+            </form>
 
+            <div id="selected-option-output">
+                {% if output_text %}
+                {{ output_text }}
+                {% endif %}
+            </div>
+
+
+
+
+            <form id=form_method_selection_js>
+                <div class="radio-container_js">
+                    <div class="radio-item_js">
+                        <input type="radio" id="radio1_js" name="area_selection_js" value="Upload_js">
+                        <label for="radio1">Upload .shp</label>
+                    </div>
+                    <div class="radio-item_js">
+                        <input type="radio" id="radio2_js" name="area_selection_js" value="Enter_js">
+                        <label for="radio2">Enter coordinates</label>
+                    </div>
+                    <div class="radio-item_js">
+                        <input type="radio" id="radio3_js" name="area_selection_js" value="Select_js">
+                        <label for="radio3">Select area</label>
+                    </div>
+                    <div>
+                        <button class="submit d-none d-sm-inline-block btn bg-ofx-blue text-white shadow-sm " id="submit3" type="submit">Search for similarities</button>
+                    </div>
 
                  </div>
 
             </form>
 
-                    <div id="selected-option-output">
-                        {% if output_text %}
-                        {{ output_text }}
+                    <div id="selected-option-output_js">
+                        {% if output_text_js %}
+                        {{ output_text_js }}
                         {% endif %}
                     </div>
 
 
+            {% if longitude and latitude and model_result %}
+            <script>
+                var longitude = "{{ longitude|escapejs }}";
+                var latitude = "{{ latitude|escapejs }}";
+                var modelResult = "{{ model_result|escapejs }}";
+            </script>
+            {% endif %}
+            </div>cd
+
 
     </div>
-
-
 
 
 </div>
@@ -101,5 +150,6 @@
 
 </script>
 
+<script src="{% static 'gis/js/compare_tmi.js' %}"></script>
 
 {% endblock %}
