@@ -53,10 +53,10 @@
             </div>
 
 
-            <form action="{% url 'gis:output_model_result' %}" method="post">
+           <!-- <form action="{% url 'gis:output_model_result' %}" method="post">
                 {% csrf_token %}
                 <button class="submit d-none d-sm-inline-block btn bg-ofx-blue text-white shadow-sm" id="submit4" type="submit">Simulate model result</button>
-            </form>
+            </form>-->
 
 
 
@@ -125,10 +125,8 @@
                     </div>
 
 
-            {% if longitude and latitude and model_result %}
+            {% if model_result %}
             <script>
-                var longitude = "{{ longitude|escapejs }}";
-                var latitude = "{{ latitude|escapejs }}";
                 var modelResult = "{{ model_result|escapejs }}";
             </script>
             {% endif %}
@@ -151,5 +149,6 @@
 </script>
 
 <script src="{% static 'gis/js/compare_tmi.js' %}"></script>
+
 
 {% endblock %}

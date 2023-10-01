@@ -1,24 +1,124 @@
 var map;
 
+function addTileOverlay() {
+    L.tileLayer('/static/gis/img/output/{z}/{x}/{y}.png', {
+        minZoom: 2,
+        maxZoom: 18,
+        attribution: 'ESO/INAF-VST/OmegaCAM',
+        tms: true,
+        bounds: [
+            new L.LatLng(-37.368002734080335, 140.5029985763527),
+            new L.LatLng(-28.145396997322745, 153.61338977456407)
+        ]
+    }).addTo(map);
+    imageBounds = [[-29, 138], [-11.9, 153.6]];
+    L.control.scale().addTo(map);
+
+}
+
+function convertLatLngToTile(lat, lng, zoom) {
+  // Assuming your map has a tileSize of 256 pixels (standard for many tile systems)
+  var tileSize = 256;
+
+  // Calculate the scale factor based on the zoom level
+  var scale = Math.pow(2, zoom);
+
+  // Convert latitude and longitude from degrees to radians
+  var latRad = lat * (Math.PI / 180);
+  var lngRad = lng * (Math.PI / 180);
+
+  // Calculate pixel coordinates
+  var pixelX = ((lng + 180) / 360) * tileSize * scale;
+  var pixelY = (1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) * (tileSize / 2) * scale;
+
+  // Calculate tile coordinates by dividing pixel coordinates by tileSize
+  var tileX = Math.floor(pixelX / tileSize);
+  var tileY = Math.floor(pixelY / tileSize);
+
+  // Adjust tile Y coordinate for TMS (Tile Map Service) convention
+  // In TMS, Y origin is at the bottom, so we need to invert it
+  tileY = (Math.pow(2, zoom) - 1) - tileY;
+
+  return { x: tileX, y: tileY, z: zoom };
+}
+
+
+
+
 $(window).on("map:init", function (event) {
     map = event.detail.map;
+    map.doubleClickZoom.disable();
+    addTileOverlay();
     map.setView(new L.LatLng(-32.37203571087116, 143.67483653628386), 3);
 
-    if (longitude && latitude && modelResult) {
-        var textIcon = L.divIcon({
-        className: 'text-icon',
-        html: '<div class="text-label" ><img src="/static/gis/img/location_marker_2.png" alt="Marker Image">' + modelResult + '</div>'
+
+
+    map.on('dblclick', function(event) {
+        var selected_latitude = event.latlng.lat;
+        var selected_longitude = event.latlng.lng;
+
+        console.log("Lat, Lon : " + selected_latitude + ", " + selected_longitude);
+
+        var lat = selected_latitude;
+        var lng = selected_longitude;
+
+
+        var zoomLevel = 10; // Replace with your map's zoom level
+
+        var tileCoordinates = convertLatLngToTile(selected_latitude, selected_longitude, zoomLevel);
+        console.log('Tile Coordinates - X:', tileCoordinates.x, 'Y:', tileCoordinates.y, 'Z:', tileCoordinates.z);
+
+
+        $.ajax({
+            url: 'http://127.0.0.1:8000/gis/output_model_result',
+            type: 'POST',
+            data: {
+                'latitude': selected_latitude,
+                'longitude': selected_longitude,
+                'csrfmiddlewaretoken': csrf_token
+            },
+            dataType: "json",
+            success: function(response) {
+                var modelResult = response.model_result;
+                console.log("Model Result:", modelResult);
+
+                if (modelResult) {
+                    var textIcon = L.divIcon({
+                        className: 'text-icon',
+                        html: '<div class="text-label" ><img src="/static/gis/img/location_marker_2.png" alt="Marker Image">' + modelResult + '</div>'
+                    });
+
+                    var marker = L.marker([selected_latitude, selected_longitude], { icon: textIcon }).addTo(map);
+                    map.setView(new L.LatLng(selected_latitude, selected_longitude), 10);
+                }
+            },
+            error: function(xhr, errmsg, err) {
+                console.log("Error:", errmsg);
+            }
+        });
+
+        $.ajax({
+            url: 'http://127.0.0.1:8000/gis/extract_image',
+            type: 'POST',
+            data: {
+                'tile_X': tileCoordinates.x,
+                'tile_Y': tileCoordinates.y,
+                'csrfmiddlewaretoken': csrf_token
+            },
+            dataType: "json",
+            success: function(response) {
+                console.log("coordinates are sent");
+            },
+            error: function(xhr, errmsg, err) {
+                console.log("Error:", errmsg);
+            }
+        });
     });
-
-    var marker = L.marker([longitude, latitude], { icon: textIcon }).addTo(map);
-    map.setView(new L.LatLng(longitude, latitude), 7);
-
-    }
-
 });
 
 
 
+////// Dummy input selection
 
 function handleInputSelection() {
     event.preventDefault();

@@ -5,18 +5,18 @@ from random import randrange
 import string
 from django.http import JsonResponse
 from PIL import Image
+import shutil
 
-from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from geodesk_gis import models
-from django.http import HttpResponse
 
 from mapplotter.apps.preprocessor import Preprocessor
-from mapplotter.map_plotter import Map_plotter
 from tmi_similarity.src.dataextract import DataExtractor
 from tmi_similarity.src.similarity import Similarity
+from Orefox_ModelDemo.SampleComparison import runModel
+import math
 
 UserModel = get_user_model()
 
@@ -81,8 +81,12 @@ def project_area_input_selection(request):
 
 
 def output_model_result(request):
+    latitude_selected = request.POST.get('latitude')
+    longitude_selected = request.POST.get('longitude')
+    print(latitude_selected, " ", longitude_selected)
+    similarityResult = runModel() * 100
     template_name = "gis/compare_tmi.html"
-    simulated_result = randrange(0, 100, 1)
+    # simulated_result = randrange(0, 100, 1)
     result_explanation_1 = "A similarity range of 1% to 15% signifies a very low degree of resemblance between the " \
                            "compared areas."
     result_explanation_2 = "A similarity range of 16% to 30% indicates a relatively low level of resemblance " \
@@ -98,34 +102,89 @@ def output_model_result(request):
     result_explanation_7 = "A similarity range of 91% to 100% represents an extremely high level of correspondence " \
                            "and likeness between the compared areas."
 
-    model_result = str(simulated_result) + " %" + " similarity" + " - "
+    model_result = str(similarityResult) + " %" + " similarity" + " - "
 
-    if simulated_result < 15:
+    if similarityResult < 15:
         model_result = model_result + result_explanation_1
-    elif simulated_result < 30:
+    elif similarityResult < 30:
         model_result = model_result + result_explanation_2
-    elif simulated_result < 45:
+    elif similarityResult < 45:
         model_result = model_result + result_explanation_3
-    elif simulated_result < 60:
+    elif similarityResult < 60:
         model_result = model_result + result_explanation_4
-    elif simulated_result < 75:
+    elif similarityResult < 75:
         model_result = model_result + result_explanation_5
-    elif simulated_result < 90:
+    elif similarityResult < 90:
         model_result = model_result + result_explanation_6
     else:
         model_result = model_result + result_explanation_7
 
-    longitude = -32.37203571087116 + randrange(1, 50)
-    latitude = 143.67483653628386 - randrange(1, 50)
+    #longitude = longitude_selected #-32.37203571087116 + randrange(1, 50)
+    #latitude = latitude_selected # 143.67483653628386 - randrange(1, 50)
 
-    context = {
-        'longitude': longitude,
-        'latitude': latitude,
-        'model_result': model_result
-    }
+    # context = {
+    #     'longitude': longitude_selected,
+    #     'latitude': latitude_selected,
+    #     'model_result': model_result
+    # }
+    #
+    # return render(request, template_name, context)
 
-    return render(request, template_name, context)
+    print(model_result)
 
+    response_data = {'model_result' : model_result}
+
+    # Return a JSON response
+    return JsonResponse(response_data)
+
+def extract_image(request):
+
+    tileX = request.POST.get('tile_X')
+    tileY = request.POST.get('tile_Y')
+    print(tileX, tileY)
+    source_file = 'geodesk_gis/static/gis/img/output/10/'+tileX+"/"+tileY+'.png'
+    destination_folder = 'Orefox_ModelDemo/selected_sample/img.png'
+    shutil.copy(source_file, destination_folder)
+
+
+# def extract_image(request):
+#     lat = request.POST.get('latitude')
+#     lng = request.POST.get('longitude')
+#     print(lat, " ", lng )
+#     zoom_level = 10  # Choose the desired zoom level
+#
+#
+#     # Convert latitude and longitude to pixel coordinates
+#     pixel_coordinates = to_pixel_coordinates(lat, lng)
+#
+#     # Convert pixel coordinates to tile coordinates at the chosen zoom level
+#     tile_coordinates = pixel_to_tile_coordinates(pixel_coordinates[0], pixel_coordinates[1], zoom_level)
+#
+#     print(f"Tile Coordinates (Zoom {zoom_level}): {tile_coordinates}")
+#
+# def to_pixel_coordinates(lat, lng):
+#     lat = float(lat)  # Convert to float
+#     lng = float(lng)  # Convert to float
+#     x = (lng + 180) / 360  # Convert longitude to a 0-1 range
+#     lat_rad = lat * math.pi / 180  # Convert latitude to radians
+#     y = (1 - math.log(math.tan(lat_rad) + 1 / math.cos(lat_rad)) / math.pi) / 2  # Convert latitude to a 0-1 range
+#
+#     # Calculate the pixel coordinates at max zoom level
+#     tile_size = 256  # Tile size in pixels at max zoom level
+#     map_size = tile_size * 2 ** 0  # Map size in pixels at max zoom level
+#     pixel_x = int(x * map_size)
+#     pixel_y = int(y * map_size)
+#
+#     return pixel_x, pixel_y
+#
+# def pixel_to_tile_coordinates(pixel_x, pixel_y, zoom):
+#     tile_size = 256  # Tile size in pixels
+#     num_tiles = 2 ** zoom  # Number of tiles at the current zoom level
+#
+#     tile_x = pixel_x / tile_size
+#     tile_y = pixel_y / tile_size
+#
+#     return tile_x, tile_y
 
 @login_required
 def file_uploader(request):
@@ -183,6 +242,7 @@ def mapplotter(request):
 
 def id_generator(size=10, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
 
 
 @login_required
