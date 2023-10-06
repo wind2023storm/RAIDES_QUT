@@ -144,47 +144,13 @@ def extract_image(request):
     print(tileX, tileY)
     source_file = 'geodesk_gis/static/gis/img/output/10/'+tileX+"/"+tileY+'.png'
     destination_folder = 'Orefox_ModelDemo/selected_sample/img.png'
+    display_folder = 'geodesk_gis/static/gis/img/to_display/img.png'
     shutil.copy(source_file, destination_folder)
+    shutil.copy(source_file, display_folder)
+    return JsonResponse({"message": "Image is sent to the model"})
 
-
-# def extract_image(request):
-#     lat = request.POST.get('latitude')
-#     lng = request.POST.get('longitude')
-#     print(lat, " ", lng )
-#     zoom_level = 10  # Choose the desired zoom level
-#
-#
-#     # Convert latitude and longitude to pixel coordinates
-#     pixel_coordinates = to_pixel_coordinates(lat, lng)
-#
-#     # Convert pixel coordinates to tile coordinates at the chosen zoom level
-#     tile_coordinates = pixel_to_tile_coordinates(pixel_coordinates[0], pixel_coordinates[1], zoom_level)
-#
-#     print(f"Tile Coordinates (Zoom {zoom_level}): {tile_coordinates}")
-#
-# def to_pixel_coordinates(lat, lng):
-#     lat = float(lat)  # Convert to float
-#     lng = float(lng)  # Convert to float
-#     x = (lng + 180) / 360  # Convert longitude to a 0-1 range
-#     lat_rad = lat * math.pi / 180  # Convert latitude to radians
-#     y = (1 - math.log(math.tan(lat_rad) + 1 / math.cos(lat_rad)) / math.pi) / 2  # Convert latitude to a 0-1 range
-#
-#     # Calculate the pixel coordinates at max zoom level
-#     tile_size = 256  # Tile size in pixels at max zoom level
-#     map_size = tile_size * 2 ** 0  # Map size in pixels at max zoom level
-#     pixel_x = int(x * map_size)
-#     pixel_y = int(y * map_size)
-#
-#     return pixel_x, pixel_y
-#
-# def pixel_to_tile_coordinates(pixel_x, pixel_y, zoom):
-#     tile_size = 256  # Tile size in pixels
-#     num_tiles = 2 ** zoom  # Number of tiles at the current zoom level
-#
-#     tile_x = pixel_x / tile_size
-#     tile_y = pixel_y / tile_size
-#
-#     return tile_x, tile_y
+def display_image_update(request):
+    return render(request, "selected_image.html")
 
 @login_required
 def file_uploader(request):

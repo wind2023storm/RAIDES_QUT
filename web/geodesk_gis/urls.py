@@ -14,6 +14,6 @@ urlpatterns = [
     path("compare/", views.compare, name="compare"),
     path("project_area_input_selection/", views.project_area_input_selection, name="project_area_input_selection"),
     path("output_model_result", views.output_model_result, name="output_model_result"),
-    path("extract_image", views.extract_image, name="extract_image")
-]
- 
+    path("extract_image", views.extract_image, name="extract_image"),
+    path("display_image_update", views.display_image_update, name="display_image_update")
+ ]

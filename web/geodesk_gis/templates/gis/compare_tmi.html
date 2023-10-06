@@ -60,9 +60,30 @@
 
 
 
+            <div>
+                <h3>Selected Image</h3>
+                <img id="selectedImage" src="" alt="Selected Image">
+<!--                <button onclick="updateImage()">Update Image</button>-->
+
+                <h3>Result</h3>
+                <div id="modelResultText"></div>
+
+                <h3>Location Coordinates </h3>
+                <div>
+                    <p>Latitude: <span id="latitude"></span></p>
+                    <p>Longitude: <span id="longitude"></span></p>
+                </div>
+
+            </div>
+
+
+
         </div>
 
-        <div class="container p-0 h-100 mb-5 d-flex justify-content-between">
+
+
+
+      <!--  <div class="container p-0 h-100 mb-5 d-flex justify-content-between">
             <form id=form_method_selection method="POST" action="{% url 'gis:project_area_input_selection' %}">
                 {% csrf_token %}
 
@@ -87,14 +108,6 @@
                 </div>
             </form>
 
-            <div id="selected-option-output">
-                {% if output_text %}
-                {{ output_text }}
-                {% endif %}
-            </div>
-
-
-
 
             <form id=form_method_selection_js>
                 <div class="radio-container_js">
@@ -118,19 +131,7 @@
 
             </form>
 
-                    <div id="selected-option-output_js">
-                        {% if output_text_js %}
-                        {{ output_text_js }}
-                        {% endif %}
-                    </div>
-
-
-            {% if model_result %}
-            <script>
-                var modelResult = "{{ model_result|escapejs }}";
-            </script>
-            {% endif %}
-            </div>cd
+            </div>-->
 
 
     </div>

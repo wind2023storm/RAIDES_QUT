@@ -42,6 +42,12 @@ function convertLatLngToTile(lat, lng, zoom) {
   return { x: tileX, y: tileY, z: zoom };
 }
 
+function updateImage() {
+    const randomNumber = Math.floor(Math.random() * 1000);
+    const imageUrl = `/static/gis/img/to_display/img.png?rand=${randomNumber}`;
+    document.getElementById('selectedImage').src = imageUrl;
+    }
+
 
 
 
@@ -83,10 +89,18 @@ $(window).on("map:init", function (event) {
                 console.log("Model Result:", modelResult);
 
                 if (modelResult) {
+                    var modelResultTextElement = document.getElementById('modelResultText');
+                    modelResultTextElement.textContent = "Model Result: " + modelResult;
+
                     var textIcon = L.divIcon({
                         className: 'text-icon',
                         html: '<div class="text-label" ><img src="/static/gis/img/location_marker_2.png" alt="Marker Image">' + modelResult + '</div>'
                     });
+
+                    updateImage();
+
+                    document.getElementById('latitude').textContent = selected_latitude;
+                    document.getElementById('longitude').textContent = selected_longitude;
 
                     var marker = L.marker([selected_latitude, selected_longitude], { icon: textIcon }).addTo(map);
                     map.setView(new L.LatLng(selected_latitude, selected_longitude), 10);
@@ -120,6 +134,7 @@ $(window).on("map:init", function (event) {
 
 ////// Dummy input selection
 
+/*
 function handleInputSelection() {
     event.preventDefault();
 
@@ -141,8 +156,9 @@ function handleInputSelection() {
         outputDiv.innerHTML = "No selection has been made";
     }
 }
+*/
 
-document.getElementById("submit3").addEventListener("click", handleInputSelection);
+/*document.getElementById("submit3").addEventListener("click", handleInputSelection);*/
 
 
 
