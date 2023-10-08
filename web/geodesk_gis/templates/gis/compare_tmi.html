@@ -16,7 +16,8 @@
     {% leaflet_js plugins="ALL" %}
     {% leaflet_css %}
     <style>
-      .leaflet-container { height: 100%; }
+      .leaflet-container { height: 100vh; }
+
     </style>
 {% endblock %}
 
@@ -47,7 +48,7 @@
             <h4 class="mb-2 text-ofx-blue">GIS -Similarity Comparison&nbsp <i class="fas fa-fw fa-globe"></i></h4>
         </div>
 
-        <div class="map px-4 mb-5 h-75">
+        <div class="map-wrapper px-4 mb-5 h-80">
             <div class="map-wrapper">
                 {% leaflet_map "main" %}
             </div>
@@ -73,11 +74,7 @@
                     <p>Latitude: <span id="latitude"></span></p>
                     <p>Longitude: <span id="longitude"></span></p>
                 </div>
-
             </div>
-
-
-
         </div>
 
 
@@ -150,6 +147,4 @@
 </script>
 
 <script src="{% static 'gis/js/compare_tmi.js' %}"></script>
-
-
 {% endblock %}

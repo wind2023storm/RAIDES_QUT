@@ -55,7 +55,7 @@ $(window).on("map:init", function (event) {
     map = event.detail.map;
     map.doubleClickZoom.disable();
     addTileOverlay();
-    map.setView(new L.LatLng(-32.37203571087116, 143.67483653628386), 3);
+    map.setView(new L.LatLng(-32.37203571087116, 143.67483653628386), 9);
 
 
 
@@ -69,7 +69,7 @@ $(window).on("map:init", function (event) {
         var lng = selected_longitude;
 
 
-        var zoomLevel = 10; // Replace with your map's zoom level
+        var zoomLevel = 10;
 
         var tileCoordinates = convertLatLngToTile(selected_latitude, selected_longitude, zoomLevel);
         console.log('Tile Coordinates - X:', tileCoordinates.x, 'Y:', tileCoordinates.y, 'Z:', tileCoordinates.z);
@@ -92,17 +92,38 @@ $(window).on("map:init", function (event) {
                     var modelResultTextElement = document.getElementById('modelResultText');
                     modelResultTextElement.textContent = "Model Result: " + modelResult;
 
-                    var textIcon = L.divIcon({
+
+/*                    var textIcon = L.divIcon({
                         className: 'text-icon',
                         html: '<div class="text-label" ><img src="/static/gis/img/location_marker_2.png" alt="Marker Image">' + modelResult + '</div>'
-                    });
+                    });*/
 
                     updateImage();
 
                     document.getElementById('latitude').textContent = selected_latitude;
                     document.getElementById('longitude').textContent = selected_longitude;
 
-                    var marker = L.marker([selected_latitude, selected_longitude], { icon: textIcon }).addTo(map);
+                    var tileMarker = L.icon({
+                        iconUrl: '/static/gis/img/location_marker_4.png',
+                        // need to change
+                        iconSize: [64, 64],
+                        iconAnchor: [16, 32],
+                        popupAnchor: [0, -32]
+                    });
+
+                    var polygon = L.polygon([
+                        [51.509, -0.08],
+                        [51.503, -0.06],
+                        [51.51, -0.047]
+                    ]).addTo(map);
+
+
+                    var marker = L.marker([selected_latitude, selected_longitude], {
+                        icon: tileMarker
+                    }).addTo(map);
+
+                    marker.bindPopup(modelResult).openPopup();
+
                     map.setView(new L.LatLng(selected_latitude, selected_longitude), 10);
                 }
             },
