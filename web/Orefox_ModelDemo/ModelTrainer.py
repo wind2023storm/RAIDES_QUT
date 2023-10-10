@@ -22,6 +22,7 @@ from sklearn.manifold import TSNE
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.ensemble import RandomForestClassifier
+import pandas as pd 
 
 import glob
 import imageio.v2 as iio
@@ -278,6 +279,11 @@ siamese_network.fit(training_gen,
                     epochs= 10,
                     validation_data= (siamese_test_x, siamese_test_y),
                     callbacks= model_checkpoint_callback)
+
+#####  Prepare Positive Embeddings  #####
+embeddings = base_network.predict(positiveSamples, verbose= False)
+embeddings = pd.DataFrame(embeddings)
+embeddings.to_csv("embeddings.csv")
 
 
 

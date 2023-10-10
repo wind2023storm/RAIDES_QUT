@@ -2,7 +2,7 @@
 import os
 #Disable Tensorflow warnings
 #Comment to enable
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import random
 import numpy
@@ -24,6 +24,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.ensemble import RandomForestClassifier
 from math import sqrt
+import pandas as pd
 
 import glob
 import imageio.v2 as iio
@@ -33,19 +34,28 @@ import imageio.v2 as iio
 def loadImagesFromDirectory(filepath):
     #Open an array
     images = []
+    imageDirects = []
     
     #Cycle through filepath and append all images to images array
     for image_path in glob.glob(filepath):
         image = iio.imread(image_path)
         images.append(image)
+        imageDirects.append(image_path)
     
     images = numpy.array(images).astype(numpy.float32)[:, :, :, :3] / 255
-    # images_array = numpy.array(images).astype(numpy.float32)
-    # print(images_array.shape)
     #images = images.astype(numpy.float32)
     #images = images / 255
     #return numpy array of images
-    return images
+    return images, imageDirects
+
+def loadImageDirectories(filepath):
+    #Open an array
+    imageDirects = []
+    
+    #Cycle through filepath and append all images to images array
+    for image_path in glob.glob(filepath):
+        imageDirects.append(image_path)
+    return imageDirects
 
 #generates siamese pairs for training
 def GetSiameseData(imgs, labels, batch_size):
@@ -142,39 +152,27 @@ def contrastive_loss(y_true, y_pred):
     margin_square = K.square(K.maximum(margin - y_pred, 0))
     return K.mean(y_true * square_pred + (1 - y_true) * margin_square)
 
-def cosineSimilarity(embeddingX, embeddingY):
-    sum = 0
-    sumX = 0
-    sumY = 0
-    for x, y in zip(embeddingX, embeddingY):
-        sumX += x * x
-        sumY += y * y
-        sum += x * y
-        
-    sim = sum/(((sumX))*(sqrt(sumY)))
-    return sim
-
 def cosineSimilarityNump(embeddingX, embeddingY):
     sim = numpy.dot(embeddingX, embeddingY)/(norm(embeddingX)*norm(embeddingY))
     return sim
 
-
 def runModel():
     #####  Load Positive Samples  ####
+    directories = []
     #5km
-    positive_samples_5km = loadImagesFromDirectory('Orefox_ModelDemo/positive_samples/5km/*.png')
+    directories = numpy.append(directories, loadImageDirectories('Orefox_ModelDemo/positive_samples/5km/*.png'))
 
     #10km
-    positive_samples_10km = loadImagesFromDirectory('Orefox_ModelDemo/positive_samples/10km/*.png')
+    directories = numpy.append(directories, loadImageDirectories('Orefox_ModelDemo/positive_samples/10km/*.png'))
 
     #20km
-    positive_samples_20km = loadImagesFromDirectory('Orefox_ModelDemo/positive_samples/20km/*.png')
+    directories = numpy.append(directories, loadImageDirectories('/Orefox_ModelDemo/positive_samples/20km/*.png'))
 
     #Load selected sample
-    selected_sample = loadImagesFromDirectory('Orefox_ModelDemo/selected_sample/*.png')
+    selected_sample, sample_directory = loadImagesFromDirectory('Orefox_ModelDemo/selected_sample/*.png')
 
 
-    #####  Reload Model Architechure
+    #####  Reload Model Architechure 
     #use DCNN to reduce number of dimentions to embedding size
     embedding_size = 32
     #Create dummy imput with dimentions matiching sample size
@@ -195,7 +193,7 @@ def runModel():
     embedding_b = base_network(input_b)
 
     #Calculate distance
-    distance = layers.Lambda(euclidean_distance, output_shape=eucl_dist_output_shape)([embedding_a, embedding_b])
+    distance = layers.Lambda(euclidean_distance, output_shape = eucl_dist_output_shape)([embedding_a, embedding_b])
 
     #Feed distance into siamese network
     siamese_network = keras.Model([input_a, input_b], distance)
@@ -204,29 +202,35 @@ def runModel():
 
     #####  Load Pretrained Weights Into Model
     #Load the weights
-    siamese_network.load_weights("Orefox_ModelDemo/training_1/checkPoint.ckpt")
+    siamese_network.load_weights("Orefox_ModelDemo/training_1/checkPoint.ckpt").expect_partial()
 
 
     #####  Create Embeddings  #####
-    demoSamples = numpy.append(selected_sample, positive_samples_10km, axis = 0)
+    sampleEmbedding = base_network.predict(selected_sample, verbose = False)
+    positiveEmbeddings = pd.read_csv("Orefox_ModelDemo/embeddings.csv", sep = ',')
+    positiveEmbeddings = positiveEmbeddings.to_numpy()[:, 1:]
 
-    demoEmbeddings = base_network.predict(demoSamples, verbose = False)
-    Demo1 = demoEmbeddings[0]
-    #For demonstration purposes change this value
-    #from 1 to 6, they corespond to the 10km positive samples
-    #1 is identical to the sample loaded
-    Demo2 = demoEmbeddings[1]
+    #####  Test Similarities  #####
+    similarities = []
+    for positiveSample in positiveEmbeddings:
+        similarity = cosineSimilarityNump(sampleEmbedding[0], positiveSample)
+        if similarity < 0:
+            similarities = numpy.append(similarities, 0)
+        else:
+            similarities = numpy.append(similarities, similarity)
+            
+    #####  Return Max Similarity and Directory
+    index = numpy.argmax(similarities)
+    maxSimilarity = similarities[index]
+    maxDirectory = (directories[index])
+    return round(maxSimilarity * 100, 2) , maxDirectory
 
-    #This is the final similarity
-    return cosineSimilarityNump(Demo1, Demo2)
+##print(runModel())
 
-#
-# def main():
-#     similarityResult = runModel()
-#     print(similarityResult)
-#
-# if __name__ == "__main__":
-#     main()
+
+
+
+
 
 
 

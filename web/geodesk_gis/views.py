@@ -84,7 +84,17 @@ def output_model_result(request):
     latitude_selected = request.POST.get('latitude')
     longitude_selected = request.POST.get('longitude')
     print(latitude_selected, " ", longitude_selected)
-    similarityResult = runModel() * 100
+
+    modelResult = runModel()
+    similarityResult = float(modelResult[0])
+    path_to_compared_image = modelResult[1]
+
+    ## send search data
+    request.session['latitude'] = latitude_selected
+    request.session['longitude'] = longitude_selected
+    request.session['similarity_result'] = similarityResult
+    request.session['path_to_compared_image'] = path_to_compared_image
+
     template_name = "gis/compare_tmi.html"
     # simulated_result = randrange(0, 100, 1)
     result_explanation_1 = "A similarity range of 1% to 15% signifies a very low degree of resemblance between the " \
@@ -132,17 +142,19 @@ def output_model_result(request):
 
     print(model_result)
 
-    response_data = {'model_result' : model_result}
+    response_data = {'model_result' : model_result, "path_to_compared_image" : path_to_compared_image, "similarity_result" : similarityResult}
+    source_file = path_to_compared_image
+    destination_folder = "geodesk_gis/static/gis/img/to_compare/img.png"
+    shutil.copy(source_file, destination_folder)
 
-    # Return a JSON response
     return JsonResponse(response_data)
 
 def extract_image(request):
-
     tileX = request.POST.get('tile_X')
     tileY = request.POST.get('tile_Y')
+    zoomLvl = request.POST.get("zoom_lvl")
     print(tileX, tileY)
-    source_file = 'geodesk_gis/static/gis/img/output/10/'+tileX+"/"+tileY+'.png'
+    source_file = 'geodesk_gis/static/gis/img/output/'+zoomLvl+"/"+tileX+"/"+tileY+'.png'
     destination_folder = 'Orefox_ModelDemo/selected_sample/img.png'
     display_folder = 'geodesk_gis/static/gis/img/to_display/img.png'
     shutil.copy(source_file, destination_folder)
@@ -151,6 +163,29 @@ def extract_image(request):
 
 def display_image_update(request):
     return render(request, "selected_image.html")
+
+
+def store_results(request):
+    latitude = request.POST.get("latitude_to_store")
+    longitude = request.POST.get("longitude_to_store")
+    similarity_result = request.POST.get("similarity_to_store")
+    scale = request.POST.get("scale_to_store")
+    results = request.session.get('search_results', [])
+    results.append({"latitude": latitude, "longitude": longitude, "similarity": similarity_result, "scale": scale})
+    sorted_results = sorted(results, key=lambda x: x["similarity"], reverse=True)
+    print(sorted_results)
+    request.session['search_results'] = sorted_results
+    print("data is stored")
+    search_results = list(sorted_results)
+    return JsonResponse({"message": "Data is stored", "searchResults": search_results})
+
+
+def retrieve_results(request):
+    search_results = request.session.get('search_results', [])
+    print ("data retrieved")
+    print (search_results)
+    return JsonResponse({"searchResults": search_results})
+
 
 @login_required
 def file_uploader(request):

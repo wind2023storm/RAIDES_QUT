@@ -106,6 +106,69 @@
     /* display: block; */
 }
 
+th.column1 {
+    width: 35%;
+}
+
+th.column2 {
+    width: 35%;
+}
+
+th.column3 {
+    width: 15%;
+}
+
+th.column4 {
+    width: 15%;
+}
+
+/*Display image size*/
+.image-container img {
+    width: 200px;
+    height: auto;
+}
+
+
+
+/* Style for the result section */
+.instanceResult {
+    display: none;
+    background-color: #f2f2f2;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+/* Style for result headings */
+.result-heading {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Style for result text */
+.result-text {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Style for coordinates */
+.coordinates {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Style for coordinate labels */
+.coordinate-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Style for coordinate values */
+.coordinate-value {
+    font-weight: normal;
+}
 
 .radio-container{
     display: flex;
