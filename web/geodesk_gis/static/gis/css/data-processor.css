@@ -106,104 +106,6 @@
     /* display: block; */
 }
 
-th.column1 {
-    width: 35%;
-}
-
-th.column2 {
-    width: 35%;
-}
-
-th.column3 {
-    width: 15%;
-}
-
-th.column4 {
-    width: 15%;
-}
-
-/*Display image size*/
-.image-container img {
-    width: 200px;
-    height: auto;
-}
-
-
-
-/* Style for the result section */
-.instanceResult {
-    display: none;
-    background-color: #f2f2f2;
-    padding: 20px;
-    border: 1px solid #ccc;
-}
-
-/* Style for result headings */
-.result-heading {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-/* Style for result text */
-.result-text {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 15px;
-}
-
-/* Style for coordinates */
-.coordinates {
-    font-size: 14px;
-    color: #555;
-}
-
-/* Style for coordinate labels */
-.coordinate-label {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-/* Style for coordinate values */
-.coordinate-value {
-    font-weight: normal;
-}
-
-.radio-container{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.radio-item{
-    margin-bottom: 5px;
-}
-
-.radio-container_js{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.radio-item_js{
-    margin-bottom: 5px;
-}
-
-.text-label {
-    font-size: 10px;!important
-}
-
-.map-container {
-    position: relative;
-    overflow: hidden;
-}
-
-.map-wrapper {
-    position: relative;
-}
-
-
 
 /* The side navigation menu */
 .sidenav {
@@ -257,8 +159,6 @@ th.column4 {
   }
 
  .similarity-filter{
-    /*position: relative;*/
-    /*margin-top: -20px;*/
-    display: flex; /* Add this to make the elements align horizontally */
-    align-items: center; /* Vertically center the elements */
-
+    position: relative;
+    margin-top: -20px;
+ }

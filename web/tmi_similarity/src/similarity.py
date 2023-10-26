@@ -4,12 +4,11 @@ import numpy as np
 from scipy import spatial
 from . import dataextract
 
-
 class Similarity:
-    def __init__(self, dataextract):
+    def __init__(self,dataextract):
         self.ref = dataextract.ref
         self.com = dataextract.com
-        self.sim = None
+        self.sim= None
 
     def cosine_similarity(self):
         """"
