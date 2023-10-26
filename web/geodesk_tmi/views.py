@@ -1,10 +1,6 @@
 from django.http import JsonResponse
 import shutil
-import json
-import os
 from django.shortcuts import render
-from django import forms
-
 from .geodesk_tmi_model.SampleComparison import runModel
 
 

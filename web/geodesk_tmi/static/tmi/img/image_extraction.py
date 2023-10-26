@@ -1,9 +1,7 @@
 import shutil
-import json
-import os
 
-##########Image extraction for the model
 
+##########Image extraction for model Training
 def extract_image(data):
     for entry in data:
         tileX = entry['tile']['x']
@@ -21,23 +19,15 @@ def extract_image(data):
         # Replace spaces with hyphens in the mine_name
         mine_name = mine_name.replace(" ", "-")
 
-
         destination_folder = 'model_samples'
         destination_filename = '{}/{}.png'.format(destination_folder, mine_name)
-
-        # # Create the destination folder if it doesn't exist
-        # os.makedirs(destination_folder, exist_ok=True)
-        #
-        # # Correct the path separator for Windows
-        # source_folder = source_folder.replace("/", "\\")
-        # source_file = source_file.replace("/", "\\")
-        # destination_folder = destination_folder.replace("/", "\\")
-        # destination_filename = destination_filename.replace("/", "\\")
 
         shutil.copy(source_file, destination_filename)
 
 if __name__ == '__main__':
+
     # Define your data here as a list of dictionaries, similar to your previous JSON data
+    ## DATA - 10km
     # data = [
     #     # {"name": "Paddington Gold Mine", "tile": {"x": 857, "y": 420, "z": 10}},
     #     # {"name": "Jundee Mine Site", "tile": {"x": 855, "y": 434, "z": 10}},
@@ -90,6 +80,7 @@ if __name__ == '__main__':
     #     {"name": "Moolarben coal mine", "tile": {"x": 938, "y": 415, "z": 10}}
     # ]
 
+    ## DATA - 20km
     # data = [
     #     # {"name": "Mulgarrie Mine", "tile": {"x": 428, "y": 213, "z": 9}},
     #     # {"name": "Whundo Mine", "tile": {"x": 428, "y": 210, "z": 9}},
@@ -131,6 +122,7 @@ if __name__ == '__main__':
     #     {"name": "Moolarben coal mine", "tile": {"x": 469, "y": 207, "z": 9}},
     # ]
 
+    ## DATA - 5km
     data = [
         # {"name": "Mulgarrie Mine", "tile": {"x": 1713, "y": 852, "z": 11}},
         # {"name": "Whundo Mine", "tile": {"x": 1715, "y": 842, "z": 11}},
