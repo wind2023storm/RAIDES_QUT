@@ -41,7 +41,7 @@
     {% endif %} {% endfor %} {% endif %}
 </div>
 
-<div class="container-fluid content-margin-top-offset w-150 h-100 mb-5">
+<div class="container-fluid content-margin-top-offset w-150 h-150 mb-5">
     <div class="container p-0 h-100 mb-5">
         <input id="process_id" type="hidden" class="process_id" name="process_id" />
         <div class="modal fade" id="view_task_modal" data-keyboard="false">
@@ -60,6 +60,8 @@
                     {% leaflet_map "main" %}
                 </div>
 
+
+
                 <div class="row">
                     <div class="col-md-8">
                         <div id="zoomSelectionButtons">
@@ -67,7 +69,11 @@
                             <button type="button" class="btn btn-primary" id="zoom10km" >10km</button>
                             <button type="button" class="btn btn-primary" id="zoom20km" >20km</button>
                         </div>
+
                     </div>
+
+
+
 
                     <div class="col-md-4">
                         <div id="cycleTroughResultsButtons" class="text-end">
@@ -76,11 +82,8 @@
                         </div>
                     </div>
 
+
                 </div>
-
-
-
-
 
             </div>
 
@@ -167,5 +170,5 @@
 
 </script>
 
-<script src="{% static 'gis/js/compare_tmi.js' %}"></script>
+<script src="{% static 'tmi/js/compare_tmi.js' %}"></script>
 {% endblock %}
