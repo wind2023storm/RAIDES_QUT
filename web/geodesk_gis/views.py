@@ -86,6 +86,7 @@ def output_model_result(request):
     print(latitude_selected, " ", longitude_selected)
 
     modelResult = runModel()
+    print('modelResult:', modelResult)
     similarityResult = float(modelResult[0])
     path_to_compared_image = modelResult[1]
 
@@ -129,19 +130,6 @@ def output_model_result(request):
     else:
         model_result = model_result + result_explanation_7
 
-    #longitude = longitude_selected #-32.37203571087116 + randrange(1, 50)
-    #latitude = latitude_selected # 143.67483653628386 - randrange(1, 50)
-
-    # context = {
-    #     'longitude': longitude_selected,
-    #     'latitude': latitude_selected,
-    #     'model_result': model_result
-    # }
-    #
-    # return render(request, template_name, context)
-
-    print(model_result)
-
     response_data = {'model_result' : model_result, "path_to_compared_image" : path_to_compared_image, "similarity_result" : similarityResult}
     source_file = path_to_compared_image
     destination_folder = "geodesk_gis/static/gis/img/to_compare/img.png"
@@ -149,19 +137,23 @@ def output_model_result(request):
 
     return JsonResponse(response_data)
 
+
 def extract_image(request):
     tileX = request.POST.get('tile_X')
     tileY = request.POST.get('tile_Y')
     zoomLvl = request.POST.get("zoom_lvl")
-    print(tileX, tileY)
+
     source_file = 'geodesk_gis/static/gis/img/output/'+zoomLvl+"/"+tileX+"/"+tileY+'.png'
     destination_folder = 'Orefox_ModelDemo/selected_sample/img.png'
     display_folder = 'geodesk_gis/static/gis/img/to_display/img.png'
     shutil.copy(source_file, destination_folder)
     shutil.copy(source_file, display_folder)
+
     return JsonResponse({"message": "Image is sent to the model"})
 
+
 def display_image_update(request):
+
     return render(request, "selected_image.html")
 
 
@@ -170,13 +162,18 @@ def store_results(request):
     longitude = request.POST.get("longitude_to_store")
     similarity_result = request.POST.get("similarity_to_store")
     scale = request.POST.get("scale_to_store")
+    zoom_lvl = request.POST.get("zoom_lvl")
     results = request.session.get('search_results', [])
-    results.append({"latitude": latitude, "longitude": longitude, "similarity": similarity_result, "scale": scale})
-    sorted_results = sorted(results, key=lambda x: x["similarity"], reverse=True)
-    print(sorted_results)
+    length = len(results)
+
+    print(len(results) + 1)
+
+    results.append({"no": length, "latitude": latitude, "longitude": longitude, "similarity": similarity_result, "scale": scale, "zoom": zoom_lvl})
+    sorted_results = sorted(results, key=lambda x: x["no"], reverse=False)
+    # print(sorted_results)
     request.session['search_results'] = sorted_results
-    print("data is stored")
     search_results = list(sorted_results)
+
     return JsonResponse({"message": "Data is stored", "searchResults": search_results})
 
 
@@ -185,6 +182,48 @@ def retrieve_results(request):
     print ("data retrieved")
     print (search_results)
     return JsonResponse({"searchResults": search_results})
+
+
+def clear_results(request):
+    print ("data deleted")
+    search_results = []
+    request.session['search_results'] = search_results
+    return JsonResponse({"searchResults": search_results})
+
+def back_history(request):
+    temp = request.POST.get('current_history')
+    end_flag = False
+    results = request.session.get('search_results', [])
+    length = len(results) - 1
+
+    if temp == '':
+        temp = results[length]
+    else :
+        if int(temp) > 0:
+            temp  = results[int(temp) - 1]
+        else:
+            temp  = results[int(temp)]
+            end_flag = True
+
+    return JsonResponse({"backResults": temp, 'flag': end_flag})
+
+
+def forward_history(request):
+    temp = request.POST.get('current_history')
+    end_flag = False
+    results = request.session.get('search_results', [])
+    length = len(results) - 1
+
+    if temp == '':
+        temp = results[length]
+    else :
+        if int(temp) < length:
+            temp  = results[int(temp) + 1]
+        else:
+            temp  = results[int(temp)]
+            end_flag = True
+            
+    return JsonResponse({"forwardResults": temp, 'flag': end_flag})
 
 
 @login_required
