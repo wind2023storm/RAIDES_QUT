@@ -147,7 +147,6 @@ $(document).ready(function () {
   var size = 0.045;
 	const url =
 		"http://127.0.0.1:8000/static/gis/img/TMI_RTP_1VD_4326.tif";
-        //"http://127.0.0.1:8000/static/gis/img/1.tif";
 
 	L.tileLayer('/static/gis/img/output/{z}/{x}/{y}.png', {
 			minZoom: 2,

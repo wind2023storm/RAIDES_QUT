@@ -51,9 +51,9 @@ PROJECT_APPS = [
     'geochem',
     'interactive_map',
     'geodesk_gis',
+    'geodesk_tmi',
     'project_management',
     'autoform',
-
     'notification'
 ]
 
@@ -70,7 +70,6 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     'django.contrib.humanize',
     'leaflet',
-
     'channels'
 ] + PROJECT_APPS
 
