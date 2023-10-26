@@ -41,6 +41,7 @@ urlpatterns = [
     path('user/', include('user.urls'), name='user'),
     path('interactive_map/', include('interactive_map.urls'), name='interactive_map'),
     path('gis/', include('geodesk_gis.urls'), name='gis'),
+    path('tmi/', include('geodesk_tmi.urls'), name='tmi'),
     # path('search_engine/', include('search_engine.urls'), name='search_engine'),
     path('project_management/', include('project_management.urls'), name='project_management'),
     path('forms/', include('autoform.urls'), name='autoform'),
