@@ -142,3 +142,44 @@ def retrieve_results(request):
     return JsonResponse({"searchResults": search_results})
 
 
+def clear_results(request):
+    print("data deleted")
+    search_results = []
+    request.session['search_results'] = search_results
+    return JsonResponse({"searchResults": search_results})
+
+
+def back_history(request):
+    temp = request.POST.get('current_history')
+    end_flag = False
+    results = request.session.get('search_results', [])
+    length = len(results) - 1
+
+    if temp == '':
+        temp = results[length]
+    else:
+        if int(temp) > 0:
+            temp = results[int(temp) - 1]
+        else:
+            temp = results[int(temp)]
+            end_flag = True
+
+    return JsonResponse({"backResults": temp, 'flag': end_flag})
+
+
+def forward_history(request):
+    temp = request.POST.get('current_history')
+    end_flag = False
+    results = request.session.get('search_results', [])
+    length = len(results) - 1
+
+    if temp == '':
+        temp = results[length]
+    else:
+        if int(temp) < length:
+            temp = results[int(temp) + 1]
+        else:
+            temp = results[int(temp)]
+            end_flag = True
+
+    return JsonResponse({"forwardResults": temp, 'flag': end_flag})
