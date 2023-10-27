@@ -72,8 +72,8 @@ document.getElementById('zoom20km').addEventListener('click', function () {
 /* When click 'back' button */
 document.getElementById('back').addEventListener('click', function () {
     $.ajax({
-        headers: {"X-CSRFToken": csrf_token},
-        url: 'http://localhost:8000/gis/back_history',
+        headers: {"csrfmiddlewaretoken":csrf_token},
+        url: 'http://127.0.0.1:8000/tmi/back_history',
         type: 'POST',
         data: {
             'current_history': current_history,
@@ -100,8 +100,8 @@ document.getElementById('back').addEventListener('click', function () {
 /* When click 'forward' button */
 document.getElementById('forward').addEventListener('click', function () {
     $.ajax({
-        headers: {"X-CSRFToken": csrf_token},
-        url: 'http://localhost:8000/gis/forward_history',
+        headers: {"csrfmiddlewaretoken":csrf_token},
+        url: 'http://127.0.0.1:8000/tmi/forward_history',
         type: 'POST',
         data: {
             'current_history': current_history,
@@ -150,8 +150,8 @@ function detailMap () {
 
     /* Get similarity result */
     $.ajax({
-        headers: {"X-CSRFToken": csrf_token},
-        url: 'http://localhost:8000/gis/output_model_result',
+        headers: {"csrfmiddlewaretoken":csrf_token},
+        url: 'http://127.0.0.1:8000/tmi/output_model_result',
         type: 'POST',
         data: {
             'latitude': selected_latitude,
@@ -175,7 +175,7 @@ function detailMap () {
                 document.getElementById('longitude').textContent = selected_longitude;
 
                 var tileMarker = L.icon({
-                    iconUrl: '/static/gis/img/location_marker_4.png',
+                    iconUrl: '/static/tmi/img/location_marker_4.png',
                     iconSize: [64, 64],
                     iconAnchor: [16, 32],
                     popupAnchor: [0, -32]
@@ -194,8 +194,8 @@ function detailMap () {
             /* Save result */
             if (history_flag == false) {
                 $.ajax({
-                    headers: {"X-CSRFToken": csrf_token},
-                    url: 'http://localhost:8000/gis/store_results',
+                    headers: {"csrfmiddlewaretoken":csrf_token},
+                    url: 'http://127.0.0.1:8000/tmi/store_results',
                     type: 'POST',
                     data: {
                         'latitude_to_store': selected_latitude,
@@ -230,18 +230,20 @@ function detailMap () {
 
     /* */
     $.ajax({
-        headers: {"X-CSRFToken": csrf_token},
-        url: 'http://localhost:8000/gis/extract_image',
+        headers: {"csrfmiddlewaretoken":csrf_token},
+        url: 'http://127.0.0.1:8000/tmi/extract_image',
         type: 'POST',
         data: {
             'tile_X': tileCoordinates.x,
             'tile_Y': tileCoordinates.y,
-            'zoom_lvl' : zoomLevel,
+            'zoom_lvl' : tileCoordinates.z,
             'csrfmiddlewaretoken': csrf_token
         },
         dataType: "json",
         success: function(response) {
             console.log("coordinates are sent");
+            console.log(tileCoordinates.x);
+            console.log(tileCoordinates.y);
         },
         error: function(xhr, errmsg, err) {
             console.log("Error:", errmsg);
@@ -316,8 +318,8 @@ function showRankingTable() {
 
 function clearResult() {
     $.ajax({
-        headers: {"X-CSRFToken": csrf_token},
-        url: 'http://localhost:8000/gis/clear_results',
+        headers: {"csrfmiddlewaretoken":csrf_token},
+        url: 'http://127.0.0.1:8000/tmi/clear_results',
         type: 'POST',
         data: {
             'csrfmiddlewaretoken': csrf_token
