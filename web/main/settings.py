@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     'django.contrib.humanize',
     'leaflet',
+    'corsheaders',
     'channels'
 ] + PROJECT_APPS
 
@@ -77,6 +78,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -281,3 +283,9 @@ EMAIL_HOST_USER= 'testbot.orefox@gmail.com'
 EMAIL_HOST_PASSWORD= 'dmfuabickxfkkljk'
 PASSWORD_RESET_TIMEOUT = 1440
 
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]

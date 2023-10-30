@@ -40,7 +40,7 @@ function updateImages(comp_img_path) {
     document.getElementById('comparedImage').src = comparedImageUrl;
 }
 
-var zoomLevel;
+var zoomLevel = 6;
 var scale;
 var selected_latitude;
 var selected_longitude;
@@ -73,7 +73,7 @@ document.getElementById('zoom20km').addEventListener('click', function () {
 document.getElementById('back').addEventListener('click', function () {
     $.ajax({
         headers: {"csrfmiddlewaretoken":csrf_token},
-        url: 'http://127.0.0.1:8000/tmi/back_history',
+        url: 'http://localhost:8000/tmi/back_history',
         type: 'POST',
         data: {
             'current_history': current_history,
@@ -101,7 +101,7 @@ document.getElementById('back').addEventListener('click', function () {
 document.getElementById('forward').addEventListener('click', function () {
     $.ajax({
         headers: {"csrfmiddlewaretoken":csrf_token},
-        url: 'http://127.0.0.1:8000/tmi/forward_history',
+        url: 'http://localhost:8000/tmi/forward_history',
         type: 'POST',
         data: {
             'current_history': current_history,
@@ -151,7 +151,7 @@ function detailMap () {
     /* Get similarity result */
     $.ajax({
         headers: {"csrfmiddlewaretoken":csrf_token},
-        url: 'http://127.0.0.1:8000/tmi/output_model_result',
+        url: 'http://localhost:8000/tmi/output_model_result',
         type: 'POST',
         data: {
             'latitude': selected_latitude,
@@ -195,7 +195,7 @@ function detailMap () {
             if (history_flag == false) {
                 $.ajax({
                     headers: {"csrfmiddlewaretoken":csrf_token},
-                    url: 'http://127.0.0.1:8000/tmi/store_results',
+                    url: 'http://localhost:8000/tmi/store_results',
                     type: 'POST',
                     data: {
                         'latitude_to_store': selected_latitude,
@@ -231,7 +231,7 @@ function detailMap () {
     /* */
     $.ajax({
         headers: {"csrfmiddlewaretoken":csrf_token},
-        url: 'http://127.0.0.1:8000/tmi/extract_image',
+        url: 'http://localhost:8000/tmi/extract_image',
         type: 'POST',
         data: {
             'tile_X': tileCoordinates.x,
@@ -269,7 +269,7 @@ $(window).on("map:init", function (event) {
     map.on('dblclick', function(event) {
         selected_latitude = event.latlng.lat;
         selected_longitude = event.latlng.lng;
-        history_flag == false;
+        history_flag = false;
         detailMap();
     })
 })
@@ -319,7 +319,7 @@ function showRankingTable() {
 function clearResult() {
     $.ajax({
         headers: {"csrfmiddlewaretoken":csrf_token},
-        url: 'http://127.0.0.1:8000/tmi/clear_results',
+        url: 'http://localhost:8000/tmi/clear_results',
         type: 'POST',
         data: {
             'csrfmiddlewaretoken': csrf_token

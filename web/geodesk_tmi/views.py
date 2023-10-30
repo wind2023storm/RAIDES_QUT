@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 import shutil
+from datetime import datetime
 from django.shortcuts import render
 from .geodesk_tmi_model.SampleComparison import runModel
 
@@ -103,15 +104,17 @@ def output_model_result(request):
     return JsonResponse(response_data)
 
 def extract_image(request):
-    tileX = request.POST.get('tile_X')
-    tileY = request.POST.get('tile_Y')
-    zoomLvl = request.POST.get("zoom_lvl")
-    print(tileX, tileY)
-    source_file = 'geodesk_tmi/static/tmi/img/output/'+zoomLvl+"/"+tileX+"/"+tileY+'.png'
-    destination_folder = 'geodesk_tmi/geodesk_tmi_model/selected_sample/img.png'
-    display_folder = 'geodesk_tmi/static/tmi/img/to_display/img.png'
-    shutil.copy(source_file, destination_folder)
-    shutil.copy(source_file, display_folder)
+    if request.method == "POST":
+        tileX = request.POST.get('tile_X')
+        tileY = request.POST.get('tile_Y')
+        zoomLvl = request.POST.get("zoom_lvl")
+        # print(tileX, tileY)
+        source_file = 'geodesk_tmi/static/tmi/img/output/'+zoomLvl+"/"+tileX+"/"+tileY+'.png'
+        destination_folder = 'geodesk_tmi/geodesk_tmi_model/selected_sample/img.png'
+        display_folder = 'geodesk_tmi/static/tmi/img/to_display/img.png'
+        shutil.copy(source_file, destination_folder)
+        shutil.copy(source_file, display_folder)
+        
     return JsonResponse({"message": "Image is sent to the model"})
 
 
@@ -126,12 +129,15 @@ def store_results(request):
     similarity_result = request.POST.get("similarity_to_store")
     scale = request.POST.get("scale_to_store")
     results = request.session.get('search_results', [])
-    results.append({"latitude": latitude, "longitude": longitude, "similarity": similarity_result, "scale": scale})
-    sorted_results = sorted(results, key=lambda x: x["similarity"], reverse=True)
-    print(sorted_results)
+
+    results.append({"latitude": latitude, "longitude": longitude, "similarity": similarity_result, "scale": scale, "no": datetime.now().strftime("%Y%m%d%H%M%S")})
+    sorted_results = sorted(results, key=lambda x: x["no"], reverse=False)
+
     request.session['search_results'] = sorted_results
-    print("data is stored")
+    print("data is stored", '\n')
     search_results = list(sorted_results)
+    # print('!!!>>:<<!!!', results, '\n')
+    # print('!!!>>:<<!!!', sorted_results, '\n')
     return JsonResponse({"message": "Data is stored", "searchResults": search_results})
 
 
@@ -144,9 +150,8 @@ def retrieve_results(request):
 
 def clear_results(request):
     print("data deleted")
-    search_results = []
-    request.session['search_results'] = search_results
-    return JsonResponse({"searchResults": search_results})
+    request.session['search_results'] = []
+    return JsonResponse({"searchResults": []})
 
 
 def back_history(request):
@@ -154,15 +159,20 @@ def back_history(request):
     end_flag = False
     results = request.session.get('search_results', [])
     length = len(results) - 1
-
+    
     if temp == '':
         temp = results[length]
     else:
-        if int(temp) > 0:
-            temp = results[int(temp) - 1]
-        else:
-            temp = results[int(temp)]
+        for index, res in enumerate(results):
+            if temp == res['no']:
+                break
+        if index == 0:
+            temp = results[index]
             end_flag = True
+        else:
+            temp = results[index - 1]
+    
+    # print('---------------TEMP----------', temp, '\n')
 
     return JsonResponse({"backResults": temp, 'flag': end_flag})
 
@@ -174,12 +184,15 @@ def forward_history(request):
     length = len(results) - 1
 
     if temp == '':
-        temp = results[length]
+        temp = results[0]
     else:
-        if int(temp) < length:
-            temp = results[int(temp) + 1]
-        else:
-            temp = results[int(temp)]
+        for index, res in enumerate(results):
+            if temp == res['no']:
+                break
+        if index == length:
+            temp = results[index]
             end_flag = True
+        else:
+            temp = results[index + 1]        
 
     return JsonResponse({"forwardResults": temp, 'flag': end_flag})

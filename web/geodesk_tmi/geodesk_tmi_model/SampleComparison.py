@@ -202,7 +202,10 @@ def runModel():
 
     #####  Load Pretrained Weights Into Model
     #Load the weights
-    siamese_network.load_weights("geodesk_tmi/geodesk_tmi_model/training_1/checkPoint.ckpt").expect_partial()
+    # siamese_network.load_weights("geodesk_tmi/geodesk_tmi_model/training_1/checkPoint.ckpt").expect_partial()
+    ckpt = tf.train.Checkpoint(model=siamese_network)
+    status = ckpt.restore(tf.train.latest_checkpoint('Orefox_ModelDemo/training_1/'))
+    status.expect_partial()
 
 
     #####  Create Embeddings  #####
